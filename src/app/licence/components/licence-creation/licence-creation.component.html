@@ -1,0 +1,42 @@
+<div class="flex flex-col justify-center min-h-5/6 pt-10">
+    <div class="font-bold text-2xl pb-10">
+        <h2>Détails: </h2>
+    </div>
+    <form [formGroup]="form" (ngSubmit)="post()">
+            <div class="py-4">
+                <hr class="">
+            </div>
+        <div class="grid gap-6 mb-6 md:grid-cols-2">
+            <div>
+                <label for="description" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                <input matInput required name="description" formControlName="description" [(ngModel)]="licence.description" placeholder="description" type="text" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <mat-error *ngIf="form.hasError('required', 'description')">Ce champs est requis !</mat-error>
+                <mat-error *ngIf="form.hasError('minlength', 'description')">Cette valeur est trop courte !</mat-error>
+            </div>
+            <div>
+                <label for="value" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Valeur</label>
+                <input name="value" formControlName="value" [(ngModel)]="licence.value" placeholder="serial_number" type="text" id="value" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <mat-error *ngIf="form.hasError('required', 'value')">Ce champs est requis !</mat-error>
+                <mat-error *ngIf="form.hasError('minlength', 'value')">Cette valeur est trop courte !</mat-error>            
+            </div>
+            <div>
+                <div *ngIf="types">
+                    <mat-label>Type</mat-label>
+                    <mat-select [(value)]="licence.type.id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        <mat-option *ngFor="let type of types" [value]="type.id">
+                        {{type.name}}
+                        </mat-option>
+                    </mat-select>
+                </div>
+            </div>
+        </div>
+        <div class="py-4">
+            <hr class="">
+        </div>
+        <div class="flex flex-row-reverse justify-between">
+            <div class="flex flex-row-reverse mb-6">
+                <button [disabled]="!form.valid" mat-button mat-flat-button color="primary">Valider</button>
+            </div>
+        </div>
+    </form>
+</div>

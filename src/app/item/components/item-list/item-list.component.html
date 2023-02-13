@@ -1,0 +1,47 @@
+<div class="flex flex-row justify-end pt-5">
+  <a mat-button mat-flat-button color="primary" href="item/create">Ajouter</a>
+</div>
+<div class="flex items-center">
+  <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg sm:shadow-lg my-5 overflow-auto">
+    <thead class="text-white sm:border-b-2-black">
+      <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
+        <th class="p-3 text-left">ID</th>
+        <th class="p-3 text-left">Type</th>
+        <th class="p-3 text-left">Référence</th>
+        <th class="p-3 text-left">Numéro de série</th>
+        <th class="p-3 text-left">Unité</th>
+        <th class="p-3 text-left">Local</th>
+        <th class="p-3 text-left" width="110px">Actions</th>
+      </tr>
+      <tr *ngFor="let item of dataSource.data" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
+        <th class="p-3 text-left">ID</th>
+        <th class="p-3 text-left">Type</th>
+        <th class="p-3 text-left">Référence</th>
+        <th class="p-3 text-left">Numéro de série</th>
+        <th class="p-3 text-left">Unité</th>
+        <th class="p-3 text-left">Local</th>
+        <th class="p-3 text-left h-14" width="110px">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="flex-1 sm:flex-none">
+      <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 border-grey-light">
+        <td class="hover:bg-gray-100 p-3">Pas de donnée</td>
+        <td class="hover:bg-gray-100 p-3"></td>
+        <td class="hover:bg-gray-100 p-3"></td>
+        <td class="hover:bg-gray-100 p-3"></td>
+        <td class="hover:bg-gray-100 p-3"></td>
+        <td class="hover:bg-gray-100 p-3"></td>
+        <td class="hover:bg-gray-100 p-3"></td>
+      </tr>
+      <tr *ngFor="let item of dataSource.data" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light">
+        <td class="hover:bg-gray-100 p-3">{{item.id}}</td>
+        <td class="hover:bg-gray-100 p-3">{{item.type.name}}</td>
+        <td class="hover:bg-gray-100 p-3">{{item.reference}}</td>
+        <td class="hover:bg-gray-100 p-3">{{item.serial_number}}</td>
+        <td class="hover:bg-gray-100 p-3">{{item.unit}}</td>
+        <td class="hover:bg-gray-100 p-3">{{item.room}}</td>
+        <td class="hover:bg-gray-100 p-3 h-14"><button mat-flat-button color="accent" (click)="goTo(item.id)">Détails</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

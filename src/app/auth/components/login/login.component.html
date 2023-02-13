@@ -1,0 +1,27 @@
+<div class="flex justify-center min-h-5/6">
+    <div class="pt-10">
+        <mat-card-title class="pb-10 text-center">Login</mat-card-title>
+        <mat-card-content>
+          <form [formGroup]="form" (ngSubmit)="login()">
+            <p>
+              <mat-form-field>
+                <input matInput placeholder="Nom d'utilisateur" formControlName="username" autocomplete="username" required>
+                <mat-error *ngIf="form.hasError('required', 'username')">Le nom d'utilisateur est requis !</mat-error>
+            </mat-form-field>
+              <mat-error *ngIf="">Nom d'utilisateur incorrect</mat-error>
+            </p>
+            <p>
+              <mat-form-field>
+                <input matInput type="password" placeholder="Password" formControlName="password" autocomplete="current-password">
+                <mat-error *ngIf="form.hasError('required', 'password')">Le mot de passe est requis !</mat-error>
+              </mat-form-field>
+            </p>
+            <p>
+            </p>
+            <div class="flex flex-row justify-center">
+              <a mat-flat-button [disabled]="!form.valid" (click)="login()" color="primary" type="submit" mat-button class="w-full">Login</a>
+            </div>
+          </form>
+        </mat-card-content>
+      </div>
+</div>

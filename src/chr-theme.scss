@@ -1,0 +1,89 @@
+@use '@angular/material' as mat;
+@include mat.core();
+
+$StockManager-warn: mat.define-palette(mat.$red-palette);
+
+$chr-primary-map: (
+    50 : #e0e8f2,
+    100 : #b3c5dd,
+    200 : #809fc7,
+    300 : #4d78b1,
+    400 : #265ba0,
+    500 : #003e8f,
+    600 : #003887,
+    700 : #00307c,
+    800 : #002872,
+    900 : #001b60,
+    A100 : #90a5ff,
+    A200 : #5d7cff,
+    A400 : #2a52ff,
+    A700 : #113eff,
+  contrast: (
+    50 : #000000,
+    100 : #000000,
+    200 : #000000,
+    300 : #ffffff,
+    400 : #ffffff,
+    500 : #ffffff,
+    600 : #ffffff,
+    700 : #ffffff,
+    800 : #ffffff,
+    900 : #ffffff,
+    A100 : #000000,
+    A200 : #000000,
+    A400 : #ffffff,
+    A700 : #ffffff,
+  )
+);
+$chr-accent-map: (
+    50 : #e0f2fb,
+    100 : #b3e0f5,
+    200 : #80cbee,
+    300 : #4db6e7,
+    400 : #26a6e1,
+    500 : #0096dc,
+    600 : #008ed8,
+    700 : #0083d3,
+    800 : #0079ce,
+    900 : #0068c5,
+    A100 : #edf5ff,
+    A200 : #badaff,
+    A400 : #87bfff,
+    A700 : #6eb1ff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #000000,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+$chr-primary: mat.define-palette($chr-primary-map);
+$chr-accent: mat.define-palette($chr-accent-map, A200, A100, A400);
+
+$chr-theme: mat.define-light-theme((
+  color: (
+    primary: $chr-primary,
+    accent: $chr-accent,
+    warn: $StockManager-warn,
+  )
+));
+
+@mixin color($chr-theme) {
+  // Get the color config from the theme.
+  $color-config: mat.get-color-config($chr-theme);
+
+  // Get the primary color palette from the color-config.
+  $primary-palette: map.get($color-config, 'primary');
+  // Get the primary color palette from the color-config.
+  $accent-palette: map.get($color-config, 'accent');
+}
