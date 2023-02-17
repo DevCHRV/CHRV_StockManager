@@ -1,0 +1,92 @@
+<div *ngIf="intervention && intervention.item" class="flex flex-col justify-center min-h-5/6 pt-10">
+    <div class="font-bold text-2xl pb-10">
+        <p>Intervention: </p>
+    </div>
+    <div class="font-bold text-2xl pb-10">
+        <div class="flex flex-col justify-between">
+            <p>Sur {{intervention.item.reference}} | {{intervention.item.serial_number}}</p>
+            <p>{{intervention.unit}} | {{intervention.room}}</p>
+        </div>
+    </div>
+    <div class="py-4">
+        <hr class="">
+    </div>
+    <div *ngIf="intervention" (ngSubmit)="put()">
+        <div class="grid gap-6 mb-6 md:grid-cols-2">
+            <div class="col-span-2">
+                <label for="description" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                <textarea disabled name="description" matInput
+                    cdkTextareaAutosize
+                    #autosize="cdkTextareaAutosize"
+                    cdkAutosizeMinRows="1" 
+                    [(ngModel)]="intervention.description" placeholder="Description du travail à faire" type="text" id="description" class="h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                </textarea>
+            </div>
+            <div *ngIf="types">
+                <label for="type" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type</label>
+                <input disabled value="{{intervention.type.name}})" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+            </div>
+            <div>
+                <label for="unit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Unité</label>
+                <input disabled name="unit" [(ngModel)]="intervention.unit" type="text" id="unit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            </div>
+            <div>
+                <label for="room" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Local</label>
+                <input disabled name="room" [(ngModel)]="intervention.room" type="text" id="room" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            </div>
+            <div>
+                <label for="user" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Demandeur</label>
+                <input disabled value="{{intervention.notifier?.username}} ({{intervention.notifier?.firstname}} {{intervention.notifier?.lastname}})" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+            </div>
+            <div>
+                <label for="expectedDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date prévue</label>
+                <input disabled name="expectedDate" [ngModel]="intervention.expectedDate | date:'yyyy-MM-dd'" (ngModelChange)="intervention.expectedDate=$event" type="date" id="expectedDate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            </div>
+            <div>
+                <label for="actualDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date de réalisation</label>
+                <input [disabled]="is_locked" name="actualDate" [ngModel]="intervention.actualDate | date:'yyyy-MM-dd'" (ngModelChange)="intervention.actualDate=$event" type="date" id="actualDate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            </div>
+            <div>
+                <label for="ticket" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Numéro de ticket</label>
+                <input [disabled]="is_locked" name="ticketNumber" [(ngModel)]="intervention.ticketNumber" type="text" id="ticketNumber" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            </div>
+        </div>
+    </div>
+    <div class="flex flex-row-reverse justify-between">
+        <div *ngIf="!is_locked" class="flex flex-row-reverse mb-6">
+            <button (click)="put()" mat-button mat-flat-button color="primary">Valider</button>
+        </div>
+        <div *ngIf="is_locked" class="flex flex-row-reverse mb-6">
+            <a (click)="toggleLock()" mat-button mat-flat-button color="accent">Modifier</a>
+        </div>
+        <div *ngIf="!is_locked" class="flex flex-row-reverse mb-6">
+            <a (click)="toggleLock()" mat-button mat-flat-button color="warn">Annuler</a>
+        </div>
+    </div>
+    <div class="py-4">
+        <hr class="">
+    </div>
+    <div class="grid gap-6 mb-6 md:grid-cols-5">
+        <div class="font-bold text-xl pb-4 ">
+            <h2>Licences:</h2>
+        </div>
+    </div>
+    <table class="table-auto md:table-fixed">
+        <thead class="text-left">
+            <tr>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Valeur</th>
+                <th>Utilisateur</th>
+            </tr>
+        </thead>
+        <tbody *ngIf="intervention.licences" class="text-left">
+            <tr *ngFor="let licence of intervention.licences">
+            <td>{{licence.type.name}}</td>
+            <td>{{licence.description}}</td>
+            <td>{{licence.value}}</td>
+            <td>{{licence.user?.firstname}} {{licence.user?.lastname}}</td>
+            </tr>
+        </tbody>
+        </table>
+</div>

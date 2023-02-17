@@ -17,6 +17,8 @@ export class AuthService {
   }
 
   login(props: FormData, redirectUrl?:string) {
+    console.log(props.values)
+    console.log(`${this.base_url}login`)
     return this.http.post(`${this.base_url}login`, props, {responseType:'text'}).pipe(
       tap(res=>{
         localStorage.setItem('token', `${res}`)

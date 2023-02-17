@@ -1,19 +1,39 @@
-<div *ngIf="item" class="flex flex-col justify-center min-h-5/6 pt-10">
-    <div class="font-bold text-2xl pb-10">
+<div *ngIf="item" class="flex flex-col justify-center min-h-5/6 pt-10 overflow-auto">
+    <div class="font-bold text-2xl pb-10 flex flex-row justify-between">
         <h2>Détails: </h2>
+        <a mat-button mat-flat-button color="accent" href="intervention/create/{{item.id}}">Intervenir</a>
     </div>
-    <div class="grid gap-6 md:grid-rows-2 font-bold text-xl">
-        <!--ROW 1-->
-        <div class="flex flex-row justify-between">
+    <div class="grid gap-6 sm:grid-cols-3 font-bold text-xl">
+        <!--COL 1-->
+        <div class="flex flex-col justify-between">
             <p>{{item.reference}} | {{item.serial_number}} ({{item.type.name}})</p>
-            <a (click)="toggleAvailability()" *ngIf="item.is_available" [ngClass]="{'cursor-pointer':!is_locked}" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-green-100 max-w-sm text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Disponible</a>    
-            <a (click)="toggleAvailability()" *ngIf="!item.is_available" [ngClass]="{'cursor-pointer':!is_locked}" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Indisponible</a>
-        </div>
-        <!--ROW 1-->
-        <div class="flex flex-row justify-between">
             <p>{{item.unit}} | {{item.room}}</p>
+        </div>
+        <div class="flex flex-col justify-center align-middle items-center">
+            <qrcode
+            [qrdata]="getQRCodeUrl()"
+            [allowEmptyString]="true"
+            [ariaLabel]="'QR Code for item'"
+            [cssClass]="'center'"
+            [colorDark]="'#000000ff'"
+            [colorLight]="'#ffffffff'"
+            [elementType]="'canvas'"
+            [errorCorrectionLevel]="'M'"
+            [imageSrc]="'./assets/CHRV_logo.png'"
+            [imageHeight]="45"
+            [imageWidth]="45"
+            [margin]="1"
+            [scale]="4"
+            [title]="'Item Name'"
+            [width]="200"
+          ></qrcode>
+        </div>
+        <!--COL 3-->
+        <div class="flex sm:flex-col justify-between sm:items-end">
             <a (click)="togglePlacement()" *ngIf="item.is_placed" [ngClass]="{'cursor-pointer':!is_locked}" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Installé</a>
             <a (click)="togglePlacement()" *ngIf="!item.is_placed" [ngClass]="{'cursor-pointer':!is_locked}" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Pas installé</a>
+            <a (click)="toggleAvailability()" *ngIf="item.is_available" [ngClass]="{'cursor-pointer':!is_locked}" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-green-100 max-w-sm text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Disponible</a>    
+            <a (click)="toggleAvailability()" *ngIf="!item.is_available" [ngClass]="{'cursor-pointer':!is_locked}" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Indisponible</a>
         </div>
     </div>
         <div class="py-4">
@@ -66,6 +86,32 @@
                 <input name="checkup_interval" [disabled]="is_locked" [(ngModel)]="item.checkup_interval" type="number" min="1" step="1" placeholder="checkup_interval" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
             </div>
         </div>
+        <div class="py-4">
+            <hr class="">
+        </div>
+        <div class="font-bold text-xl pb-4 ">
+            <h2>Interventions:</h2>
+        </div>
+        <table class="table-auto md:table-fixed">
+            <thead class="text-left">
+            <tr>
+                <th>Type</th>
+                <th>Utilisateur</th>
+                <th>Matériel</th>
+                <th>Date de réalisation</th>
+                <th>Emplacement</th>
+            </tr>
+            </thead>
+            <tbody *ngIf="interventions" class="text-left">
+            <tr *ngFor="let intervention of interventions" class="w-full">
+                <td>{{intervention.type.name}}</td>
+                <td>{{intervention.user.firstname}} {{intervention.user.lastname}}</td>
+                <td>{{intervention.item.reference}}</td>
+                <td>{{intervention.actualDate|date:'dd-MM-yyyy'}}|</td>
+                <td>{{intervention.unit}} {{intervention.room}}</td>
+            </tr>
+            </tbody>
+        </table>
         <div class="py-4">
             <hr class="">
         </div>

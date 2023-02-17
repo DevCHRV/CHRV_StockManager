@@ -11,6 +11,7 @@ import { Licence } from '../../../licence/models/licences';
 import { LicenceService } from '../../../licence/services/licence/licence.service';
 import { User } from '../../../user/models/user';
 import { UserService } from '../../../user/services/user/user.service';
+import { ToastService } from '../../../services/toast/toast.service';
 
 @Component({
   selector: 'app-item-creation',
@@ -24,18 +25,18 @@ export class ItemCreationComponent {
     description: '',
     type: {id:1} as ItemType,
     checkup_interval: '',
-    last_checkup_at: '',
+    last_checkup_at: this._getCurrentDateForInput(),
     price: '',
     provider: '',
     room: '',
     unit: '',
     licence: [],
     serial_number: '',
-    purchased_at: '',
-    received_at: '',
-    warranty_expires_at:'',
-    is_available:true, 
-    is_placed:false
+    purchased_at: null,
+    received_at: null,
+    warranty_expires_at: null,
+    is_available: true, 
+    is_placed: false
   } as unknown as Item;
 
   public itemLicences:Licence[] = [];
@@ -49,7 +50,7 @@ export class ItemCreationComponent {
 
   form:FormGroup
 
-  constructor(private service:ItemService, private typeService:ItemTypeService, private licenceService:LicenceService, private userService:UserService, private router:RouterService, private builder:FormBuilder, private route:ActivatedRoute){
+  constructor(private toast:ToastService, private service:ItemService, private typeService:ItemTypeService, private licenceService:LicenceService, private userService:UserService, private router:RouterService, private builder:FormBuilder, private route:ActivatedRoute){
     this.getItem()
     this.form = builder.group({
       reference: ['', [Validators.required]],
@@ -146,6 +147,7 @@ export class ItemCreationComponent {
       this.service.post(this.item).subscribe(
         res => {
           this.router.navigateTo(`/item/${res}`)
+          this.toast.setSuccess()
         }
       )
   }
@@ -176,6 +178,14 @@ export class ItemCreationComponent {
       startWith(''),
       map(value => this._filterLicence(value!||-1)),
       map(value => value.filter(l=>l.item==null)))
+  }
+
+  private _getCurrentDateForInput(){
+    return this._getDateForInput(new Date(Date.now()))
+  }
+
+  private _getDateForInput(date:Date){
+    return date.toISOString().split('T')[0]
   }
 
   private _filterLicence(value: number|string): Licence[] {

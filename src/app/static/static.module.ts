@@ -5,20 +5,42 @@ import { RouterModule, Routes } from '@angular/router';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from '../config/AuthInterceptor';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { MatButtonModule } from '@angular/material/button';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { LoggedGuard } from '../guards/logged.guard';
+import { HeaderComponent } from './components/header/header.component';
+import { LayoutModule } from '@angular/cdk/layout';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
 
 const staticRoutes: Routes = [
-  {path: '', component: DashboardComponent},
+  {path: '', component: DashboardComponent, canActivate:[LoggedGuard]},
   {path: '**', component: NotFoundComponent}
 ] 
  
 @NgModule({
   declarations: [
     NotFoundComponent,
-    DashboardComponent
+    DashboardComponent,
+    HeaderComponent,
   ],
   imports: [
     CommonModule,
-    RouterModule.forChild(staticRoutes)
+    RouterModule.forChild(staticRoutes),
+    FormsModule,
+    LayoutModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule,  
+    MatCardModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule,
   ],
   providers:[
     {
@@ -29,6 +51,8 @@ const staticRoutes: Routes = [
   ],
   exports: [
     NotFoundComponent,
+    DashboardComponent,
+    HeaderComponent,
   ]
 })
 export class StaticModule { }

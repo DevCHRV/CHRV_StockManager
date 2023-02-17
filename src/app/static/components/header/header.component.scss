@@ -1,0 +1,41 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+@import '../../../../styles.scss';
+
+$color-config:    mat.get-color-config($chr-theme);
+$accent-palette: map.get($color-config, 'accent');
+$error-palette: map.get($color-config, 'warn');
+
+thead {
+  background-color: mat.get-color-from-palette($accent-palette, A200);
+}
+
+.toast-container {
+  z-index: 3;
+}
+
+.sidenav-container {
+  height: 100%;
+}
+
+.sidenav {
+  width: 200px;
+}
+
+.sidenav .mat-toolbar {
+  background: inherit;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.success{
+  background-color: mat.get-color-from-palette($accent-palette, A200);
+}
+
+.error {
+  background-color: mat.get-color-from-palette($error-palette, A200);
+}

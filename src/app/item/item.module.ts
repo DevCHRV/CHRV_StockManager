@@ -16,11 +16,15 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
+import { QRCodeModule } from 'angularx-qrcode';
+import { LoggedGuard } from '../guards/logged.guard';
+import { MatIconModule } from '@angular/material/icon';
+import { PipeModule } from '../pipe/pipe.module';
 
 const itemRoutes: Routes = [
-  {path:'item', component:ItemListComponent},
-  {path:'item/create', component:ItemCreationComponent},
-  {path:'item/:id', component:ItemDetailsComponent},
+  {path:'item', component:ItemListComponent, canActivate:[LoggedGuard]},
+  {path:'item/create', component:ItemCreationComponent, canActivate:[LoggedGuard]},
+  {path:'item/:id', component:ItemDetailsComponent, canActivate:[LoggedGuard]},
 ]
 
 @NgModule({
@@ -28,18 +32,22 @@ const itemRoutes: Routes = [
     ItemListComponent,
     ItemCreationComponent,
     ItemUpdateComponent,
-    ItemDetailsComponent
+    ItemDetailsComponent,
   ],
   imports: [
     CommonModule,
+    PipeModule,
     RouterModule.forChild(itemRoutes),
     FormsModule,
+    MatIconModule,
+    MatSortModule,
     MatInputModule,
     MatNativeDateModule,
     ReactiveFormsModule,
     MatSelectModule,
     MatAutocompleteModule,
     MatButtonModule,
+    QRCodeModule,
   ],
   providers:[
     {

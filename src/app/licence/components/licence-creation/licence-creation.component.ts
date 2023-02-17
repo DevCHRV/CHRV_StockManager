@@ -10,6 +10,7 @@ import { LicenceService } from '../../../licence/services/licence/licence.servic
 import { User } from '../../../user/models/user';
 import { UserService } from '../../../user/services/user/user.service';
 import { LicenceTypeService } from '../../services/type/type.service';
+import { ToastService } from '../../../services/toast/toast.service';
 
 @Component({
   selector: 'app-licence-creation',
@@ -30,7 +31,7 @@ export class LicenceCreationComponent {
 
   form:FormGroup
 
-  constructor(private service:LicenceService, private typeService:LicenceTypeService, private userService:UserService, private router:RouterService, private builder:FormBuilder, private route:ActivatedRoute){
+  constructor(private toast:ToastService, private service:LicenceService, private typeService:LicenceTypeService, private userService:UserService, private router:RouterService, private builder:FormBuilder, private route:ActivatedRoute){
     this.typeService.get().subscribe(
       res=>this.types = res
     )
@@ -49,7 +50,8 @@ export class LicenceCreationComponent {
       this.service.post(this.licence).subscribe(
         res => {
           this.router.navigateTo(`/licence/${res}`)
+          this.toast.setSuccess()
         }
-      )
+      ) 
   }
 }

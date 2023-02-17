@@ -1,4 +1,5 @@
 export const environment = {
     production: true,
-    apiUrl: 'http://my-prod-url/'
+    appUrl: 'http://localhost/',
+    apiUrl: 'http://LPADM100506.chplt.be:9080/stockmanagerLDAPJDBC/api/'
 };

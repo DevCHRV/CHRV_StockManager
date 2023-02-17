@@ -10,11 +10,14 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { LicenceDetailsComponent } from './components/licence-details/licence-details.component';
 import { LicenceCreationComponent } from './components/licence-creation/licence-creation.component';
+import { LoggedGuard } from '../guards/logged.guard';
+import { PipeModule } from '../pipe/pipe.module';
+import { MatIconModule } from '@angular/material/icon';
 
 const licenceRoutes: Routes = [
-  {path:'licence', component:LicenceListComponent},
-  {path:'licence/create', component:LicenceCreationComponent},
-  {path:'licence/:id', component:LicenceDetailsComponent},
+  {path:'licence', component:LicenceListComponent, canActivate:[LoggedGuard]},
+  {path:'licence/create', component:LicenceCreationComponent, canActivate:[LoggedGuard]},
+  {path:'licence/:id', component:LicenceDetailsComponent, canActivate:[LoggedGuard]},
 ]
 
 @NgModule({
@@ -27,6 +30,8 @@ const licenceRoutes: Routes = [
     CommonModule,
     RouterModule.forChild(licenceRoutes),
     FormsModule,
+    PipeModule,
+    MatIconModule,
     ReactiveFormsModule,
     MatSelectModule,
     MatAutocompleteModule,

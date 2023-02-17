@@ -14,16 +14,18 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card'; 
-import { HeaderComponent } from './components/header/header.component';
 import { AuthModule } from './auth/auth.module';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './config/AuthInterceptor';
 import { LicenceModule } from './licence/licence.module';
+import { IonicModule } from '@ionic/angular';
+import { ErrorInterceptor } from './config/ErrorInterceptor';
+import { SuccessInterceptor } from './config/SuccessInterceptor';
+import { InterventionModule } from './intervention/intervention.module';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HeaderComponent
   ],
   imports: [
     BrowserModule,
@@ -33,18 +35,12 @@ import { LicenceModule } from './licence/licence.module';
     ItemModule,
     LicenceModule,
     HttpClientModule,
+    InterventionModule,
 
     //IMPORTANT: LEAVE THE STATIC MODULE AFTER THE OTHER APP MODULES OR IT WILL OVERRIDE OTHER MODULES' ROUTES
     StaticModule,
     BrowserAnimationsModule,
-    LayoutModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatIconModule,  
-    MatListModule,  
-    MatCardModule,
-    FormsModule,
+    IonicModule.forRoot(),
   ],
   exports:[
     HttpClientModule,
@@ -52,7 +48,13 @@ import { LicenceModule } from './licence/licence.module';
   providers: [
     {provide: HTTP_INTERCEPTORS,
     useClass: AuthInterceptor,
-    multi:true}
+    multi:true},
+    {provide: HTTP_INTERCEPTORS,
+      useClass: ErrorInterceptor,
+      multi:true},
+    {provide: HTTP_INTERCEPTORS,
+      useClass: SuccessInterceptor,
+      multi:true}
   ],
   bootstrap: [AppComponent]
 })

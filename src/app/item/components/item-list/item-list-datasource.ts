@@ -1,8 +1,8 @@
 import { DataSource } from '@angular/cdk/collections';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { map } from 'rxjs/operators';
-import { Observable, of as observableOf, merge } from 'rxjs';
+import { Observable, of as observableOf, merge, of, tap } from 'rxjs';
 import { ItemService } from '../../services/item/item.service';
 import { Item } from '../../models/item';
 
@@ -13,13 +13,45 @@ import { Item } from '../../models/item';
  */
 export class ItemListDataSource extends DataSource<Item> {
   data: Item[] = [];
+  sortedData: Observable<Item[]> = new Observable<Item[]>();
   paginator: MatPaginator | undefined;
   sort: MatSort | undefined;
+  sortBy: string = '';
+  isAsc: boolean = true;
+  filterBy:number = 1;
 
   constructor(private items:Item[]) {
     super();
     this.data=items
+    this.sortedData=of(items)
   }
+
+  private _doSortBy(items: Item[]){
+    if(!this.sortBy)
+      return this.data
+    return items.sort((a,b)=>compare(`${a[this.sortBy as keyof Item]}`,`${b[this.sortBy as keyof Item]}`, this.isAsc))
+  }
+
+  private _doFilterBy(items:Item[]){
+    return items.filter(i=>i.type.id==this.filterBy)
+  }
+
+  /*
+  public sortBy(property:string, isAsc:boolean){
+    this.sortedData.pipe(
+      
+      map(value=>value.sort((a,b)=>compare(`${a[property as keyof Item]}`,`${b[property as keyof Item]}`, isAsc))),
+    ).subscribe()
+  }
+
+  public filterBy(typeId:number|string){
+    this.sortedData.pipe(
+      tap(value=>console.log(value)),
+      map(value=>value.filter(i=>i.type.id==typeId)),
+      tap(value=>console.log(value)),
+    ).subscribe()
+  }
+  */
 
   /**
    * Connect this data source to the table. The table will only update when

@@ -1,0 +1,7 @@
+{
+  "name": "StockManager",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "custom"
+}

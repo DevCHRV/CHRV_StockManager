@@ -30,14 +30,12 @@ export class LicenceService {
   }
 
   put = (licence:Licence) => {
-    licence.user!.licences = null;
     return this.http.put(`${this.base_url}`, licence).pipe(
       map((data) => data as Licence)
     )
   }
 
   post(licence: Licence) {
-    console.log(licence)
     return this.http.post(`${this.base_url}`, licence).pipe(
       map((data) => data as Item)
     )  

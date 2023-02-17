@@ -1,4 +1,44 @@
-<div class="flex flex-row justify-end pt-5">
+<div class="flex flex-row justify-between pt-5 items-center content-center align-middle">
+  <div class="flex flex-row md:w-3/5 justify-between items-center content-center align-middle">
+    <div>
+      <div>
+        <label>Trier par: </label>
+        <div class="flex flex-row items-center content-center align-middle">
+          <select matInput [formControl]="sortBy" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <option value="id">ID</option>
+            <option value="reference">Référence</option>
+            <option value="serial_number">Numéro de Série</option>
+            <option value="unit">Unité</option>
+            <option value="room">Local</option>
+          </select>
+          <button *ngIf="isAsc.value" (click)="setAsc(false)">
+            <mat-icon>arrow_upward</mat-icon>
+          </button>
+          <button *ngIf="!isAsc.value" (click)="setAsc(true)">
+            <mat-icon>arrow_downward</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div>
+        <label>Filtrer par: </label>
+        <div class="flex flex-row items-center content-center align-middle">
+          <select matInput [formControl]="filterBy" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <option [value]="null" selected>---</option>
+            <option *ngFor="let type of types" [value]="type.id">{{type.name}}</option>
+          </select>
+          <button (click)="resetFilter()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <label>Chercher: </label>
+      <input matInput [formControl]="searchBy" name="search" placeholder="Rechercher" type="text" id="search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+    </div>
+  </div>
   <a mat-button mat-flat-button color="primary" href="item/create">Ajouter</a>
 </div>
 <div class="flex items-center">
@@ -11,16 +51,16 @@
         <th class="p-3 text-left">Numéro de série</th>
         <th class="p-3 text-left">Unité</th>
         <th class="p-3 text-left">Local</th>
-        <th class="p-3 text-left" width="110px">Actions</th>
+        <th class="p-3 text-left h-14" >Actions</th>
       </tr>
-      <tr *ngFor="let item of dataSource.data" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
+      <tr *ngFor="let item of dataSource.data | filter:filterBy.value!:['type','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
         <th class="p-3 text-left">ID</th>
         <th class="p-3 text-left">Type</th>
         <th class="p-3 text-left">Référence</th>
         <th class="p-3 text-left">Numéro de série</th>
         <th class="p-3 text-left">Unité</th>
         <th class="p-3 text-left">Local</th>
-        <th class="p-3 text-left h-14" width="110px">Actions</th>
+        <th class="p-3 text-left h-14">Actions</th>
       </tr>
     </thead>
     <tbody class="flex-1 sm:flex-none">
@@ -31,9 +71,9 @@
         <td class="hover:bg-gray-100 p-3"></td>
         <td class="hover:bg-gray-100 p-3"></td>
         <td class="hover:bg-gray-100 p-3"></td>
-        <td class="hover:bg-gray-100 p-3"></td>
+        <td class="hover:bg-gray-100 p-3 h-14"></td>
       </tr>
-      <tr *ngFor="let item of dataSource.data" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light">
+      <tr *ngFor="let item of dataSource.data | filter:filterBy.value!:['type','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light">
         <td class="hover:bg-gray-100 p-3">{{item.id}}</td>
         <td class="hover:bg-gray-100 p-3">{{item.type.name}}</td>
         <td class="hover:bg-gray-100 p-3">{{item.reference}}</td>

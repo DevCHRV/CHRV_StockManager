@@ -2,7 +2,7 @@
     <div class="pt-10">
         <mat-card-title class="pb-10 text-center">Login</mat-card-title>
         <mat-card-content>
-          <form [formGroup]="form" (ngSubmit)="login()">
+          <form [formGroup]="form" (ngSubmit)="login()" (keyup.enter)="login()">
             <p>
               <mat-form-field>
                 <input matInput placeholder="Nom d'utilisateur" formControlName="username" autocomplete="username" required>

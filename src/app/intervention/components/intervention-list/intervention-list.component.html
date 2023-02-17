@@ -1,0 +1,106 @@
+<div class="flex flex-row md:w-5/5 justify-between items-center content-center align-middle pt-5">
+  <div>
+    <div>
+      <label>Trier par: </label>
+      <div class="flex flex-row items-center content-center align-middle">
+        <select matInput [formControl]="sortBy" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          <option value="id">ID</option>
+          <option value="reference">Référence</option>
+          <option value="serial_number">Numéro de Série</option>
+          <option value="unit">Unité</option>
+          <option value="room">Local</option>
+        </select>
+        <button *ngIf="isAsc.value" (click)="setAsc(false)">
+          <mat-icon>arrow_upward</mat-icon>
+        </button>
+        <button *ngIf="!isAsc.value" (click)="setAsc(true)">
+          <mat-icon>arrow_downward</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div>
+      <label>Filtrer par type: </label>
+      <div class="flex flex-row items-center content-center align-middle">
+        <select matInput [formControl]="filterBy" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          <option [value]="null" selected>---</option>
+          <option *ngFor="let type of types" [value]="type.id">{{type.name}}</option>
+        </select>
+        <button (click)="resetFilter()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div>
+    <div>
+      <label>Filtrer par utilisateur: </label>
+      <div class="flex flex-row items-center content-center align-middle">
+        <select matInput [formControl]="filterBy2" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          <option [value]="null" selected>---</option>
+          <option *ngFor="let user of users" [value]="user.id">{{user.firstname}} {{user.lastname}}</option>
+        </select>
+        <button (click)="resetFilter2()">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div>
+    <label>Ticket: </label>
+    <input matInput [formControl]="searchBy" name="search" placeholder="Rechercher" type="text" id="search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+  </div>
+</div>
+<div class="flex items-center">
+  <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg sm:shadow-lg my-5 overflow-auto">
+    <thead class="text-white sm:border-b-2-black">
+      <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
+        <th class="p-3 text-left">ID</th>
+        <th class="p-3 text-left">Ticket</th>
+        <th class="p-3 text-left">Type</th>
+        <th class="p-3 text-left">Utilisateur</th>
+        <th class="p-3 text-left">Matériel</th>
+        <th class="p-3 text-left">Date de réalisation</th>
+        <th class="p-3 text-left">Local</th>
+        <th class="p-3 text-left">Unité</th>
+        <th class="p-3 text-left h-14" width="110px">Actions</th>
+      </tr>
+      <tr *ngFor="let item of dataSource.data | filter:filterBy.value!:['type','id'] | filter:filterBy2.value:['user','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
+        <th class="p-3 text-left">ID</th>
+        <th class="p-3 text-left">Ticket</th>
+        <th class="p-3 text-left">Type</th>
+        <th class="p-3 text-left">Utilisateur</th>
+        <th class="p-3 text-left">Matériel</th>
+        <th class="p-3 text-left">Date de réalisation</th>
+        <th class="p-3 text-left">Local</th>
+        <th class="p-3 text-left">Unité</th>
+        <th class="p-3 text-left h-14" width="110px">Actions</th>
+      </tr>
+    </thead>
+    <tbody class="flex-1 sm:flex-none">
+      <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 border-grey-light">
+        <td class="hover:bg-gray-100 p-3">Pas de donnée</td>
+        <td class="hover:bg-gray-100 p-3"></td>
+        <td class="hover:bg-gray-100 p-3"></td>
+        <td class="hover:bg-gray-100 p-3"></td>
+        <td class="hover:bg-gray-100 p-3"></td>
+        <td class="hover:bg-gray-100 p-3"></td>
+        <td class="hover:bg-gray-100 p-3"></td>
+        <td class="hover:bg-gray-100 p-3"></td>
+        <td class="hover:bg-gray-100 p-3 h-14"></td>
+      </tr>
+      <tr *ngFor="let intervention of dataSource.data | filter:filterBy.value!:['type','id'] | filter:filterBy2.value:['user','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light">
+        <td class="p-3 text-left">{{intervention.id}}</td>
+        <td class="p-3 text-left">{{intervention.ticketNumber||'Pas de ticket'}}</td>
+        <td class="p-3 text-left">{{intervention.type.name}}</td>
+        <td class="p-3 text-left">{{intervention.user.firstname}} {{intervention.user.lastname}}</td>
+        <td class="p-3 text-left">{{intervention.item.reference}}</td>
+        <td class="p-3 text-left">{{intervention.actualDate}}</td>
+        <td class="p-3 text-left">{{intervention.unit}}</td>
+        <td class="p-3 text-left">{{intervention.room}}</td>
+        <td class="hover:bg-gray-100 p-3 h-14"><button mat-flat-button color="accent" (click)="goTo(intervention.id)">Détails</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

@@ -1,3 +1,4 @@
+import { Location } from '@angular/common';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -6,7 +7,7 @@ import { Router } from '@angular/router';
 })
 export class RouterService {
 
-  constructor(private router:Router) {
+  constructor(private router:Router, private location:Location) {
     
   }
 
@@ -14,5 +15,9 @@ export class RouterService {
     this.router.navigateByUrl('/', {skipLocationChange: false}).then(() => {
       this.router.navigate([uri]);
     });
+  }
+
+  public navigateBack(){
+    this.location.back()
   }
 }

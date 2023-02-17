@@ -1,0 +1,146 @@
+<div *ngIf="intervention.item" class="flex flex-col justify-center min-h-5/6 pt-10">
+    <div class="font-bold text-2xl pb-10">
+        <p>Intervention: </p>
+    </div>
+    <div class="font-bold text-2xl pb-10">
+        <div class="flex flex-col justify-between">
+            <p>Sur {{intervention.item.reference}} | {{intervention.item.serial_number}} ({{intervention.item.type.name}})</p>
+            <p>{{intervention.item.unit}} | {{intervention.item.room}}</p>
+        </div>
+    </div>
+    <div class="py-4">
+        <hr class="">
+    </div>
+    <form *ngIf="intervention.item.id" [formGroup]="form" (ngSubmit)="post()">
+        <div class="grid gap-6 mb-6 md:grid-cols-2">
+            <div class="col-span-2">
+                <label for="description" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                <textarea name="description" matInput
+                    cdkTextareaAutosize
+                    #autosize="cdkTextareaAutosize"
+                    cdkAutosizeMinRows="1" 
+                    formControlName="description" [(ngModel)]="intervention.description" placeholder="Description du travail à faire" type="text" id="description" class="h-10 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                </textarea>
+                <mat-error *ngIf="form.hasError('required', 'description')">Ce champs est requis !</mat-error>
+                <mat-error *ngIf="form.hasError('minlength', 'description')">Cette valeur est trop courte !</mat-error>
+            </div>
+            <div *ngIf="types">
+                <label for="type" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Type</label>
+                <mat-select [(value)]="intervention.type.id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <mat-option *ngFor="let type of types" [value]="type.id">
+                    {{type.name}}
+                    </mat-option>
+                </mat-select>
+            </div>
+            <div>
+                <label for="unit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Unité</label>
+                <input name="unit" formControlName="unit" [(ngModel)]="intervention.unit" type="text" id="unit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <mat-error *ngIf="form.hasError('required', 'unit')">Ce champs est requis !</mat-error>
+                <mat-error *ngIf="form.hasError('minlength', 'unit')">Cette valeur est trop courte !</mat-error>
+            </div>
+            <div>
+                <label for="room" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Local</label>
+                <input name="room" formControlName="room" [(ngModel)]="intervention.room" type="text" id="room" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <mat-error *ngIf="form.hasError('required', 'room')">Ce champs est requis !</mat-error>
+                <mat-error *ngIf="form.hasError('minlength', 'room')">Cette valeur est trop courte !</mat-error>
+            </div>
+            <div>
+                <label for="user" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Demandeur</label>
+                <div *ngIf="users" class="mr-2 h-10 col-span-1">
+                    <input type="text" matInput [formControl]="searchNotifierSelect"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Chercher un Utilisateur"
+                    required
+                    [matAutocomplete]="autoNotifier">
+                    <mat-autocomplete #autoNotifier="matAutocomplete" [displayWith]="getUserDisplay.bind(this)" >
+                    <mat-option *ngFor="let user of filteredNotifierOptions | async" [value]="user.id">
+                        {{user.username}} ({{user.firstname}} {{user.lastname}})
+                    </mat-option>
+                    </mat-autocomplete>
+                </div>
+            </div>
+            <div>
+                <label for="expectedDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date prévue</label>
+                <input name="expectedDate" formControlName="expectedDate" [ngModel]="intervention.expectedDate | date:'yyyy-MM-dd'" (ngModelChange)="intervention.expectedDate=$event" type="date" id="expectedDate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <mat-error *ngIf="form.hasError('required', 'expectedDate')">Ce champs est requis !</mat-error>
+            </div>
+            <div>
+                <label for="actualDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date de réalisation</label>
+                <input name="actualDate" formControlName="actualDate" [ngModel]="intervention.actualDate | date:'yyyy-MM-dd'" (ngModelChange)="intervention.actualDate=$event" type="date" id="actualDate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <mat-error *ngIf="form.hasError('required', 'actualDate')">Ce champs est requis !</mat-error>
+            </div>
+        </div>
+    </form>
+    <div class="py-4">
+        <hr class="">
+    </div>
+    <div class="grid gap-6 mb-6 md:grid-cols-5">
+        <div class="font-bold text-xl pb-4 ">
+            <h2>Licences:</h2>
+        </div>
+        <div class="col-span-4 grid gap-6 md:grid-cols-4 items-center justify-center align-middle">
+            <div class="col-span-1">
+                <div class="mr-2 h-10 col-span-1">
+                    <input type="text" matInput [formControl]="searchUserSelect"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Chercher un Utilisateur"
+                    [matAutocomplete]="autoUser">
+                    <mat-autocomplete #autoUser="matAutocomplete" [displayWith]="getUserDisplay.bind(this)" >
+                    <mat-option *ngFor="let user of filteredUserOptions | async" [value]="user.id">
+                        {{user.username}} ({{user.firstname}} {{user.lastname}})
+                    </mat-option>
+                    </mat-autocomplete>
+                </div>
+            </div>
+            <div class="flex flex-row items-center justify-center align-middle col-span-3">
+                <div class="mr-4 h-10 w-full">
+                    <input type="text" matInput [formControl]="searchLicenceSelect"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Chercher une licence"
+                    [matAutocomplete]="autoLicence">
+                    <mat-autocomplete #autoLicence="matAutocomplete" [displayWith]="getLicenceDescription.bind(this)" >
+                    <mat-option *ngFor="let licence of filteredLicenceOptions | async" [value]="licence.id">
+                        {{licence.description}}
+                    </mat-option>
+                    </mat-autocomplete>
+                </div>
+                <button mat-button mat-flat-button color="accent" (click)="addLicence()">Ajouter</button>
+            </div>
+        </div>
+    </div>
+    <table class="table-auto md:table-fixed">
+        <thead class="text-left">
+            <tr>
+            <th>Type</th>
+            <th>Description</th>
+            <th>Valeur</th>
+            <th>Utilisateur</th>
+            <th class="w-44"></th>
+            </tr>
+        </thead>
+        <tbody *ngIf="itemLicences" class="text-left">
+            <tr *ngFor="let licence of itemLicences">
+            <td>{{licence.type.name}}</td>
+            <td>{{licence.description}}</td>
+            <td>{{licence.value}}</td>
+            <td>{{licence.user?.firstname}} {{licence.user?.lastname}}</td>
+            <td class="md:flex md:flex-row">
+                <div class="w-fit pr-2">
+                    <button mat-button mat-flat-button color="warn" (click)="removeLicence(licence.id)">Supprimer</button>
+                </div>
+                <div>
+                    <button mat-button mat-flat-button color="warn" (click)="removeUserFromLicence(licence.id)">Libérer</button>
+                </div>
+            </td>
+            </tr>
+        </tbody>
+        </table>
+    <div class="py-4">
+        <hr class="">
+    </div>
+    <div class="flex flex-row-reverse justify-between">
+        <div class="flex flex-row-reverse mb-6">
+            <button [disabled]="!form.valid" mat-button mat-flat-button color="primary" (click)="post()">Valider</button>
+        </div>
+    </div>
+</div>

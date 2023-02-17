@@ -1,3 +1,4 @@
+import { environment } from 'src/environments/environment';
 import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { map, startWith, Observable, of, filter } from 'rxjs';
@@ -11,6 +12,9 @@ import { Licence } from '../../../licence/models/licences';
 import { LicenceService } from '../../../licence/services/licence/licence.service';
 import { User } from '../../../user/models/user';
 import { UserService } from '../../../user/services/user/user.service';
+import { ToastService } from '../../../services/toast/toast.service';
+import { Intervention } from '../../../intervention/models/intervention';
+import { InterventionService } from '../../../intervention/services/intervenction/intervention.service';
 
 @Component({
   selector: 'app-item-details',
@@ -23,6 +27,7 @@ export class ItemDetailsComponent {
   public itemLicences:Licence[];
   public types:ItemType[];
   public licences:Licence[];
+  public interventions:Intervention[];
   public users:User[];
   public is_locked:boolean = true;
   public filteredLicenceOptions:Observable<Licence[]>;
@@ -30,12 +35,17 @@ export class ItemDetailsComponent {
   public searchLicenceSelect = new FormControl<string>('---');
   public searchUserSelect = new FormControl<string>('---');
 
-  constructor(private service:ItemService, private typeService:ItemTypeService, private licenceService:LicenceService, private userService:UserService, private router:RouterService, private route:ActivatedRoute){
-    this.getItem()
+  constructor(private toast:ToastService, private service:ItemService, private interventionService:InterventionService, private typeService:ItemTypeService, private licenceService:LicenceService, private userService:UserService, private router:RouterService, private route:ActivatedRoute){
+    this.load()
   }
 
   ngOnInit(){
     this.filterOptions()
+  }
+
+  getQRCodeUrl(){
+    //    return `${environment.appUrl}item/${this.item.id}`
+    return `${this.item.id}`
   }
 
   addLicence(){
@@ -63,7 +73,7 @@ export class ItemDetailsComponent {
   removeLicence(id:number){
     const licence = this.item.licence.find(l=>l.id==id)
       licence!.item = null
-    this.itemLicences = this.item.licence.filter(l=>l.id!=id)
+    this.itemLicences = this.itemLicences.filter(l=>l.id!=id)
   }
 
   removeUserFromLicence(id:number){
@@ -73,7 +83,7 @@ export class ItemDetailsComponent {
 
   toggleLock(){
     this.is_locked = !this.is_locked
-    this.getItem()
+    this.load()
   }
 
   toggleAvailability(){
@@ -98,25 +108,28 @@ export class ItemDetailsComponent {
     }
   }
 
-  getItem(){
+  load(){
     //We get Item first so that the page display quickly
     this.service.getById(this.route.snapshot.paramMap.get('id')!).subscribe(
       res=>{
         this.item=res
         this.itemLicences=res.licence
+        this.interventionService.getFor(this.item).subscribe(
+          res => this.interventions = res
+        )
       })
     //Then we fetch what is needed to populate the rest
     this.userService.get().subscribe(
       res => {
         this.users = res
-        this.licenceService.get().subscribe(
+      }
+    )
+    this.licenceService.get().subscribe(
+      res=>{
+        this.licences = res
+        this.typeService.get().subscribe(
           res=>{
-            this.licences = res
-            this.typeService.get().subscribe(
-              res=>{
-                this.types = res
-              }
-            )
+            this.types = res
           }
         )
       }
@@ -127,7 +140,8 @@ export class ItemDetailsComponent {
     this.service.put(this.item).subscribe(
       res => {
         this.is_locked=true
-        this.getItem()
+        this.load()
+        this.toast.setSuccess()
       }
     )
   }

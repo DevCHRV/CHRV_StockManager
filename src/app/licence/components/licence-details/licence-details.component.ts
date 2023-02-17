@@ -10,6 +10,7 @@ import { UserService } from '../../../user/services/user/user.service';
 import { LicenceType } from '../../models/licences';
 import { LicenceTypeService } from '../../services/type/type.service';
 import { Item } from '../../../item/models/item';
+import { ToastService } from '../../../services/toast/toast.service';
 
 @Component({
   selector: 'app-licence-details',
@@ -25,7 +26,7 @@ export class LicenceDetailsComponent {
   filteredUserOptions:Observable<User[]>;
   searchUserSelect = new FormControl<string>('---');
 
-  constructor(private service:LicenceService, private userService:UserService, private licenceTypeService:LicenceTypeService, private router:RouterService, private route:ActivatedRoute){
+  constructor(private toast:ToastService, private service:LicenceService, private userService:UserService, private licenceTypeService:LicenceTypeService, public router:RouterService, private route:ActivatedRoute){
     this.getLicence()
   }
 
@@ -79,6 +80,7 @@ export class LicenceDetailsComponent {
       res => {
         this.is_locked=true
         this.getLicence()
+        this.toast.setSuccess()
       }
     )
   }
