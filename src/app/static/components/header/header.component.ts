@@ -30,9 +30,34 @@ export class HeaderComponent {
     this.is_opened = !this.is_opened
   }
 
-  //This is only to smoothen the dashboard button
+  //This is only to smoothen the buttons and allow us to modify urls for both the burger menu and the toolbar at the same time
+  goToLogout(){
+    this.auth.logout()
+    this.goToLogin()
+  }
+
+  goToLogin(){
+    this.router.navigateTo('login')
+  }
+
   goToDashboard(){
     this.router.navigateTo('/')
+  }
+
+  goToItem(){
+    this.router.navigateTo('item')
+  }
+
+  goToLicence(){
+    this.router.navigateTo('licence')
+  }
+
+  goToIntervention(){
+    this.router.navigateTo('intervention')
+  }
+
+  goToOrder(){
+    this.router.navigateTo('order')
   }
 
 }

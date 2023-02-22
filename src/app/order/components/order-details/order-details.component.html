@@ -1,0 +1,57 @@
+<div *ngIf="order" class="flex flex-col justify-center min-h-5/6 pt-10 overflow-auto">
+    <div class="font-bold text-2xl pb-10 flex flex-row justify-between">
+        <h2>Commande: </h2>
+        <a *ngIf="order.isReceived" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Reçue</a>
+        <a *ngIf="!order.isReceived" mat-button mat-flat-button color="accent" (click)="put()">Réceptionner</a>
+    </div>
+    <form>
+        <div class="grid gap-6 mb-6 md:grid-cols-2">
+            <div>
+                <label for="date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date de la commande</label>
+                <input disabled name="date" [ngModel]="order.date | date:'yyyy-MM-dd'" (ngModelChange)="order.date=$event" type="date" id="date" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            </div>
+            <div>
+                <label for="user" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Utilisateur</label>
+                <input disabled value="{{order.user?.username}} ({{order.user?.firstname}} {{order.user?.lastname}})" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
+            </div>
+        </div>
+        <div class="py-4 ">
+            <hr class="bg-black">
+        </div>
+        <div class="flex flex-row justify-between align-middle items-center pb-4">
+            <div class="font-bold text-xl">
+                <h2>Matériel:</h2>
+            </div>
+        </div>
+        <table class="table-auto md:table-fixed">
+            <thead class="text-left">
+            <tr class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
+                <th class="p-3 text-left">Type</th>
+                <th class="p-3 text-left">Quantité</th>
+                <th class="p-3 text-left">Matériel</th>
+            </tr>
+            </thead>
+            <tbody *ngIf="order.types" class="text-left flex-1 sm:flex-none">
+                <tr *ngFor="let type of order.types" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
+                    <td class="p-3 text-left">{{type.type.name}}</td>
+                    <td class="p-3 text-left">{{type.quantity}}</td>
+                    <td class="p-3 text-left">
+                        <div *ngFor="let item of type.items">
+                            {{item.reference}} | {{item.serial_number}}
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="py-4">
+            <hr class="">
+        </div>
+        <!--
+        <div class="flex flex-row-reverse justify-between">
+            <div class="flex flex-row-reverse mb-6">
+                <button [disabled]="is_locked" (click)="put()" mat-button mat-flat-button color="primary">Modifier</button>
+            </div>
+        </div>
+        -->
+    </form>
+</div>

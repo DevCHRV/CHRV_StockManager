@@ -42,6 +42,10 @@ export class ItemListComponent implements OnInit {
     this.router.navigateTo(`/item/${id}`)
   }
 
+  goToItemCreation(){
+    this.router.navigateTo(`/item/create`)
+  }
+
   setAsc(asc:boolean){
     this.isAsc.setValue(asc)
   }

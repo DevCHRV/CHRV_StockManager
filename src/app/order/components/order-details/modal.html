@@ -1,0 +1,90 @@
+<h2 mat-dialog-title>Ajouter du matériel</h2>
+<mat-dialog-content [formGroup]="form" class="mat-typography">
+    <div class="grid gap-6 mb-6 md:grid-cols-2">
+        <div>
+            <label for="reference" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Référence</label>
+            <input matInput required name="reference" formControlName="reference" [(ngModel)]="data.reference" placeholder="reference" type="text" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <mat-error *ngIf="form.hasError('required', 'reference')">Ce champs est requis !</mat-error>
+            <mat-error *ngIf="form.hasError('minlength', 'reference')">Cette valeur est trop courte !</mat-error>
+        </div>
+        <div>
+            <label for="serial_number" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Numéro de série</label>
+            <input name="serial_number" formControlName="serial_number" [(ngModel)]="data.serial_number" placeholder="serial_number" type="text" id="serial_number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <mat-error *ngIf="form.hasError('required', 'serial_number')">Ce champs est requis !</mat-error>
+            <mat-error *ngIf="form.hasError('minlength', 'serial_number')">Cette valeur est trop courte !</mat-error>            
+        </div>
+        <div>
+            <label for="unit" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Unité</label>
+            <input name="unit" formControlName="unit" [(ngModel)]="data.unit" placeholder="unit" type="text" id="unit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <mat-error *ngIf="form.hasError('required', 'unit')">Ce champs est requis !</mat-error>
+            <mat-error *ngIf="form.hasError('minlength', 'unit')">Cette valeur est trop courte !</mat-error>
+        </div>
+        <div>
+            <label for="room" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Local</label>
+            <input name="room" formControlName="room" [(ngModel)]="data.room" placeholder="room" type="text" id="room" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <mat-error *ngIf="form.hasError('required', 'room')">Ce champs est requis !</mat-error>
+            <mat-error *ngIf="form.hasError('minlength', 'room')">Cette valeur est trop courte !</mat-error>
+        </div>
+        <div>
+            <label for="description" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+            <input name="description" formControlName="description" [(ngModel)]="data.description" placeholder="description" type="text" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <mat-error *ngIf="form.hasError('required', 'description')">Ce champs est requis !</mat-error>
+            <mat-error *ngIf="form.hasError('minlength', 'description')">Cette valeur est trop courte !</mat-error>
+        </div>
+        <div>
+            <div *ngIf="types">
+                <mat-label>Type</mat-label>
+                <mat-select [(value)]="data.type" formControlName="type" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <mat-option *ngFor="let type of types" [value]="types[0]" selected>
+                    {{type.name}}
+                    </mat-option>
+                </mat-select>
+            </div>
+        </div>
+        <div>
+            <label for="provider" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Fournisseur</label>
+            <input name="provider" formControlName="provider" [(ngModel)]="data.provider" placeholder="provider" type="text" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <mat-error *ngIf="form.hasError('required', 'provider')">Ce champs est requis !</mat-error>
+            <mat-error *ngIf="form.hasError('minlength', 'provider')">Cette valeur est trop courte !</mat-error>
+        </div>
+        <div>
+            <label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix</label>
+            <input name="price" formControlName="price" [(ngModel)]="data.price" placeholder="price" type="number" step="0.01" min="0" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <mat-error *ngIf="form.hasError('required', 'price')">Ce champs est requis !</mat-error>
+            <mat-error *ngIf="form.hasError('min', 'price')">Cette valeur est trop petite !</mat-error>
+        </div>
+    </div>
+    <div class="py-4">
+        <hr class="">
+    </div>
+    <div class="grid gap-6 mb-6 md:grid-cols-2">
+        <div>
+            <label for="purchased_at" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date d'achat</label>
+            <input name="purchased_at" formControlName="purchased_at" [ngModel]="data.purchased_at | date:'yyyy-MM-dd'" (ngModelChange)="data.purchased_at=$event" type="date" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <mat-error *ngIf="form.hasError('required', 'purchased_at')">Ce champs est requis !</mat-error>
+        </div>
+        <div>
+            <label for="received_at" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date de réception</label>
+            <input name="received_at" formControlName="received_at" placeholder="received_at" [ngModel]="data.received_at| date:'yyyy-MM-dd'" (ngModelChange)="data.received_at=$event" type="date" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <mat-error *ngIf="form.hasError('required', 'received_at')">Ce champs est requis !</mat-error>
+        </div>
+        <div>
+            <label for="warranty_expires_at" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date fin de garantie</label>
+            <input name="warranty_expires_at" formControlName="warranty_expires_at" [ngModel]="data.warranty_expires_at | date:'yyyy-MM-dd'" (ngModelChange)="data.warranty_expires_at=$event" type="date" placeholder="warranty_expires_at" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <mat-error *ngIf="form.hasError('required', 'warranty_expires_at')">Ce champs est requis !</mat-error>
+        </div>
+        <div>
+            <label for="checkup_interval" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Interval de maintenance</label>
+            <input name="checkup_interval" formControlName="checkup_interval" [(ngModel)]="data.checkup_interval" type="number" min="1" step="1" placeholder="checkup_interval" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <mat-error *ngIf="form.hasError('required', 'checkup_interval')">Ce champs est requis !</mat-error>
+            <mat-error *ngIf="form.hasError('min', 'checkup_interval')">Cette valeur est trop petite !</mat-error>
+        </div>
+    </div>
+</mat-dialog-content>
+<div class="py-4">
+    <hr class="">
+</div>
+<mat-dialog-actions align="end">
+    <button mat-button mat-flat-button mat-dialog-close color="warn">Annuler</button>
+    <button [disabled]="!form.valid" mat-button mat-flat-button [mat-dialog-close]="true" (click)="close()" color="accent">Valider</button>
+</mat-dialog-actions>

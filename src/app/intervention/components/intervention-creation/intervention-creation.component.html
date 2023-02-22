@@ -1,6 +1,6 @@
 <div *ngIf="intervention.item" class="flex flex-col justify-center min-h-5/6 pt-10">
     <div class="font-bold text-2xl pb-10">
-        <p>Intervention: </p>
+        <p>Opération: </p>
     </div>
     <div class="font-bold text-2xl pb-10">
         <div class="flex flex-col justify-between">
@@ -118,8 +118,8 @@
             <th class="w-44"></th>
             </tr>
         </thead>
-        <tbody *ngIf="itemLicences" class="text-left">
-            <tr *ngFor="let licence of itemLicences">
+        <tbody *ngIf="intervention.licences" class="text-left">
+            <tr *ngFor="let licence of intervention.licences">
             <td>{{licence.type.name}}</td>
             <td>{{licence.description}}</td>
             <td>{{licence.value}}</td>

@@ -200,4 +200,8 @@ export class ItemDetailsComponent {
   private _doFilterUserString(input:string){
     return this.users.filter(u=>`${u.username}${u.firstname}${u.lastname}`.toLowerCase().includes(input))
   }
+
+  goToInterventionCreation(){
+    this.router.navigateTo(`intervention/create/${this.item.id}`)
+  }
 }

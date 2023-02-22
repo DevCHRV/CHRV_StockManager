@@ -32,7 +32,6 @@ export class InterventionCreationComponent {
     room:'',
     type: {id:1} as unknown as InterventionType,
   } as unknown as Intervention;
-  public itemLicences:Licence[] = [];
   public licences:Licence[];
   public users:User[];
   public types:InterventionType[];
@@ -55,6 +54,7 @@ export class InterventionCreationComponent {
   ngOnInit(){
     this.itemService.getById(this.route.snapshot.paramMap.get('item_id')!).subscribe(
       res=>{
+        this.intervention.licences = res.licence
         res.licence = []
         this.intervention.item = res
         this.intervention.item = res
@@ -97,14 +97,12 @@ export class InterventionCreationComponent {
     licence!.item = this.intervention.item.id as unknown as Item
     const user = this.users.find(l=>l.id==parseInt(userValue!))
     licence!.user = user ? user : null
-    licence && this.itemLicences.push(licence)
     licence && this.intervention.licences.push(licence)
     this.resetInputs()
   }
 
   removeLicence(id:number){
     this.intervention.item.licence =  this.intervention.item.licence.filter(l=>l.id!=id)
-    this.itemLicences = this.itemLicences.filter(l=>l.id!=id)
     this.intervention.licences = this.intervention.licences.filter(l=>l.id!=id)
   }
 

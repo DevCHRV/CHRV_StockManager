@@ -48,6 +48,10 @@ export class LicenceListComponent implements OnInit {
   goTo(id:number){
     this.router.navigateTo(`/licence/${id}`)
   }
+
+  goToLicenceCreation(){
+    this.router.navigateTo(`licence/create`)
+  }
   
   setAsc(asc:boolean){
     this.isAsc.setValue(asc)

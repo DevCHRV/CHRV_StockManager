@@ -22,6 +22,7 @@ import { IonicModule } from '@ionic/angular';
 import { ErrorInterceptor } from './config/ErrorInterceptor';
 import { SuccessInterceptor } from './config/SuccessInterceptor';
 import { InterventionModule } from './intervention/intervention.module';
+import { OrderModule } from './order/order.module';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { InterventionModule } from './intervention/intervention.module';
     LicenceModule,
     HttpClientModule,
     InterventionModule,
+    OrderModule,
 
     //IMPORTANT: LEAVE THE STATIC MODULE AFTER THE OTHER APP MODULES OR IT WILL OVERRIDE OTHER MODULES' ROUTES
     StaticModule,

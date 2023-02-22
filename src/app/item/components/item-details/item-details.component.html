@@ -1,7 +1,7 @@
 <div *ngIf="item" class="flex flex-col justify-center min-h-5/6 pt-10 overflow-auto">
     <div class="font-bold text-2xl pb-10 flex flex-row justify-between">
         <h2>Détails: </h2>
-        <a mat-button mat-flat-button color="accent" href="intervention/create/{{item.id}}">Intervenir</a>
+        <a mat-button mat-flat-button color="accent" (click)="goToInterventionCreation()">Nouvelle opération</a>
     </div>
     <div class="grid gap-6 sm:grid-cols-3 font-bold text-xl">
         <!--COL 1-->
