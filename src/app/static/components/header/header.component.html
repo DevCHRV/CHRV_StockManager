@@ -67,6 +67,7 @@
           <div [ngClass]="toast.showError()?'opacity-1 w-full h-9':'opacity-0 w-1 h-1'" class="z-50 transition-all duration-1000 text-white text-center font-bold rounded-2xl mt-5 p-2 error">{{toast.errorMessage()}}</div>
         </div>
         <div class="align-middle">
+          <app-spinner></app-spinner>
           <router-outlet></router-outlet>
         </div>
       </div>

@@ -15,6 +15,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
+import { SpinnerComponent } from './components/spinner/spinner.component';
 
 const staticRoutes: Routes = [
   {path: '', component: DashboardComponent, canActivate:[LoggedGuard]},
@@ -26,6 +27,7 @@ const staticRoutes: Routes = [
     NotFoundComponent,
     DashboardComponent,
     HeaderComponent,
+    SpinnerComponent,
   ],
   imports: [
     CommonModule,

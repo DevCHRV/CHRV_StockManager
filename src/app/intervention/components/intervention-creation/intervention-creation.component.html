@@ -74,67 +74,69 @@
     <div class="py-4">
         <hr class="">
     </div>
-    <div class="grid gap-6 mb-6 md:grid-cols-5">
-        <div class="font-bold text-xl pb-4 ">
-            <h2>Licences:</h2>
-        </div>
-        <div class="col-span-4 grid gap-6 md:grid-cols-4 items-center justify-center align-middle">
-            <div class="col-span-1">
-                <div class="mr-2 h-10 col-span-1">
-                    <input type="text" matInput [formControl]="searchUserSelect"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Chercher un Utilisateur"
-                    [matAutocomplete]="autoUser">
-                    <mat-autocomplete #autoUser="matAutocomplete" [displayWith]="getUserDisplay.bind(this)" >
-                    <mat-option *ngFor="let user of filteredUserOptions | async" [value]="user.id">
-                        {{user.username}} ({{user.firstname}} {{user.lastname}})
-                    </mat-option>
-                    </mat-autocomplete>
+    <div *ngIf="isLicenceIntervention()">
+        <div class="grid gap-6 mb-6 md:grid-cols-5">
+            <div class="font-bold text-xl pb-4 ">
+                <h2>Licences:</h2>
+            </div>
+            <div class="col-span-4 grid gap-6 md:grid-cols-4 items-center justify-center align-middle">
+                <div class="col-span-1">
+                    <div class="mr-2 h-10 col-span-1">
+                        <input type="text" matInput [formControl]="searchUserSelect"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Chercher un Utilisateur"
+                        [matAutocomplete]="autoUser">
+                        <mat-autocomplete #autoUser="matAutocomplete" [displayWith]="getUserDisplay.bind(this)" >
+                        <mat-option *ngFor="let user of filteredUserOptions | async" [value]="user.id">
+                            {{user.username}} ({{user.firstname}} {{user.lastname}})
+                        </mat-option>
+                        </mat-autocomplete>
+                    </div>
+                </div>
+                <div class="flex flex-row items-center justify-center align-middle col-span-3">
+                    <div class="mr-4 h-10 w-full">
+                        <input type="text" matInput [formControl]="searchLicenceSelect"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Chercher une licence"
+                        [matAutocomplete]="autoLicence">
+                        <mat-autocomplete #autoLicence="matAutocomplete" [displayWith]="getLicenceDescription.bind(this)" >
+                        <mat-option *ngFor="let licence of filteredLicenceOptions | async" [value]="licence.id">
+                            {{licence.description}}
+                        </mat-option>
+                        </mat-autocomplete>
+                    </div>
+                    <button mat-button mat-flat-button color="accent" (click)="addLicence()">Ajouter</button>
                 </div>
             </div>
-            <div class="flex flex-row items-center justify-center align-middle col-span-3">
-                <div class="mr-4 h-10 w-full">
-                    <input type="text" matInput [formControl]="searchLicenceSelect"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Chercher une licence"
-                    [matAutocomplete]="autoLicence">
-                    <mat-autocomplete #autoLicence="matAutocomplete" [displayWith]="getLicenceDescription.bind(this)" >
-                    <mat-option *ngFor="let licence of filteredLicenceOptions | async" [value]="licence.id">
-                        {{licence.description}}
-                    </mat-option>
-                    </mat-autocomplete>
-                </div>
-                <button mat-button mat-flat-button color="accent" (click)="addLicence()">Ajouter</button>
-            </div>
         </div>
-    </div>
-    <table class="table-auto md:table-fixed">
-        <thead class="text-left">
-            <tr>
-            <th>Type</th>
-            <th>Description</th>
-            <th>Valeur</th>
-            <th>Utilisateur</th>
-            <th class="w-44"></th>
-            </tr>
-        </thead>
-        <tbody *ngIf="intervention.licences" class="text-left">
-            <tr *ngFor="let licence of intervention.licences">
-            <td>{{licence.type.name}}</td>
-            <td>{{licence.description}}</td>
-            <td>{{licence.value}}</td>
-            <td>{{licence.user?.firstname}} {{licence.user?.lastname}}</td>
-            <td class="md:flex md:flex-row">
-                <div class="w-fit pr-2">
-                    <button mat-button mat-flat-button color="warn" (click)="removeLicence(licence.id)">Supprimer</button>
-                </div>
-                <div>
-                    <button mat-button mat-flat-button color="warn" (click)="removeUserFromLicence(licence.id)">Libérer</button>
-                </div>
-            </td>
-            </tr>
-        </tbody>
+        <table class="table-auto md:table-fixed">
+            <thead class="text-left">
+                <tr>
+                <th>Type</th>
+                <th>Description</th>
+                <th>Valeur</th>
+                <th>Utilisateur</th>
+                <th class="w-44"></th>
+                </tr>
+            </thead>
+            <tbody *ngIf="intervention.licences" class="text-left">
+                <tr *ngFor="let licence of intervention.licences">
+                <td>{{licence.type.name}}</td>
+                <td>{{licence.description}}</td>
+                <td>{{licence.value}}</td>
+                <td>{{licence.user?.firstname}} {{licence.user?.lastname}}</td>
+                <td class="md:flex md:flex-row">
+                    <div class="w-fit pr-2">
+                        <button mat-button mat-flat-button color="warn" (click)="removeLicence(licence.id)">Supprimer</button>
+                    </div>
+                    <div>
+                        <button mat-button mat-flat-button color="warn" (click)="removeUserFromLicence(licence.id)">Libérer</button>
+                    </div>
+                </td>
+                </tr>
+            </tbody>
         </table>
+    </div>
     <div class="py-4">
         <hr class="">
     </div>

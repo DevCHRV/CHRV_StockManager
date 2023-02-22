@@ -12,6 +12,7 @@ import { ItemService } from '../../../item/services/item/item.service';
 import { Item } from '../../../item/models/item';
 import { Licence } from '../../../licence/models/licences';
 import { LicenceService } from '../../../licence/services/licence/licence.service';
+import { InterventionTypeEnum } from '../../models/InterventionTypeEnum';
 
 @Component({
   selector: 'app-intervention-creation',
@@ -58,6 +59,7 @@ export class InterventionCreationComponent {
         res.licence = []
         this.intervention.item = res
         this.intervention.item = res
+        this.licences = res.licence
         this._init()
       })
     this.service.getTypes().subscribe(
@@ -80,7 +82,7 @@ export class InterventionCreationComponent {
   post(){
     if(this.form.valid)
       this.service.post(this.intervention).subscribe(
-        res=>this.router.navigateBack()
+        res=>this.router.navigateTo(`item/${this.intervention.item.id}`)
       )
   }
 
@@ -155,6 +157,10 @@ export class InterventionCreationComponent {
       map(value => this._filterLicence(value!||-1)),
       map(value => value.filter(l=>l.item==null)),
       )
+  }
+
+  isLicenceIntervention(){
+    return this.intervention.type.id == InterventionTypeEnum.InstallationLicence || this.intervention.type.id == InterventionTypeEnum.DesinstallationLicence
   }
 
   private _init(){
