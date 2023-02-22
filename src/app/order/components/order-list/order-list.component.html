@@ -7,6 +7,7 @@
           <select matInput [formControl]="sortBy" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
             <option value="id">ID</option>
             <option value="date">Date</option>
+            <option value="isReceived">Réception</option>
           </select>
           <button *ngIf="isAsc.value" (click)="setAsc(false)">
             <mat-icon>arrow_upward</mat-icon>
@@ -61,7 +62,7 @@
         <td class="hover:bg-gray-100 p-3"></td>
         <td class="hover:bg-gray-100 p-3 h-14"></td>
       </tr>
-      <tr *ngFor="let order of dataSource.data | filter:filterBy.value!:['user','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light">
+      <tr *ngFor="let order of dataSource.data | filter:filterBy.value!:['user','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" [className]="!order.isReceived?'bg-orange-200':''" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light">
         <td class="hover:bg-gray-100 p-3">{{order.id}}</td>
         <td class="hover:bg-gray-100 p-3">{{order.date}}</td>
         <td class="hover:bg-gray-100 p-3">{{order.user.firstname}} {{order.user.lastname}}</td>

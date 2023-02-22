@@ -8,6 +8,7 @@
             <option value="id">ID</option>
             <option value="reference">Référence</option>
             <option value="serial_number">Numéro de Série</option>
+            <option value="last_checkup_at">Dernier Entretien</option>
             <option value="unit">Unité</option>
             <option value="room">Local</option>
           </select>
@@ -73,7 +74,7 @@
         <td class="hover:bg-gray-100 p-3"></td>
         <td class="hover:bg-gray-100 p-3 h-14"></td>
       </tr>
-      <tr *ngFor="let item of dataSource.data | filter:filterBy.value!:['type','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light">
+      <tr *ngFor="let item of dataSource.data | filter:filterBy.value!:['type','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" [className]="isCheckUpClose(item) == 1?'bg-red-200':isCheckUpClose(item)==0?'bg-orange-200':''"  class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light">
         <td class="hover:bg-gray-100 p-3">{{item.id}}</td>
         <td class="hover:bg-gray-100 p-3">{{item.type.name}}</td>
         <td class="hover:bg-gray-100 p-3">{{item.reference}}</td>

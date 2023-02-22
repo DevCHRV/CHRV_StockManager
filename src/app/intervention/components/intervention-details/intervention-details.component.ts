@@ -12,6 +12,7 @@ import { ItemService } from '../../../item/services/item/item.service';
 import { Item } from '../../../item/models/item';
 import { Licence } from '../../../licence/models/licences';
 import { LicenceService } from '../../../licence/services/licence/licence.service';
+import { InterventionTypeEnum } from '../../models/InterventionTypeEnum';
 
 @Component({
   selector: 'app-intervention-details',
@@ -68,5 +69,9 @@ export class InterventionDetailsComponent {
         this.intervention = res
       }
     )
+  }
+
+  isLicenceIntervention(){
+    return this.intervention.type.id == InterventionTypeEnum.InstallationLicence || this.intervention.type.id == InterventionTypeEnum.DesinstallationLicence
   }
 }

@@ -13,6 +13,7 @@ export class SortPipe implements PipeTransform {
 
     return values.sort((a: any, b:any) => {
         switch (typeof(a[property])){
+        case 'boolean': return this._compare(+a[property], +b[property], isAsc!);
         case 'number': return this._compare(+a[property], +b[property], isAsc!);
         case 'string': return this._compare(a[property], b[property], isAsc!);
         default: return 0;

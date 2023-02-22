@@ -9,6 +9,7 @@ import { ItemListDataSource } from './item-list-datasource';
 import { FormControl } from '@angular/forms';
 import { tap } from 'rxjs';
 import { ItemTypeService } from '../../../type/services/type/type.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-item-list',
@@ -36,6 +37,19 @@ export class ItemListComponent implements OnInit {
       }
     );
     this.typeService.get().subscribe(res=>this.types = res)
+  }
+
+  //Return 1 if date is equal or passed
+  isCheckUpClose(item:Item){
+    const last = moment(item.last_checkup_at)
+    const current = moment()
+    const days = current.diff(last, 'days')
+    const days_left = item.checkup_interval-days
+    if(days_left<=0)
+      return 1
+    if(days_left <=30)
+      return 0
+    return -1
   }
 
   goTo(id:number){

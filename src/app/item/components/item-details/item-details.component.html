@@ -15,8 +15,8 @@
             [allowEmptyString]="true"
             [ariaLabel]="'QR Code for item'"
             [cssClass]="'center'"
-            [colorDark]="'#000000ff'"
-            [colorLight]="'#ffffffff'"
+            [colorDark]="'#003e8f'"
+            [colorLight]="'#fafafa'"
             [elementType]="'canvas'"
             [errorCorrectionLevel]="'M'"
             [imageSrc]="'./assets/CHRV_Logo.png'"
@@ -107,8 +107,8 @@
                 <td>{{intervention.type.name}}</td>
                 <td>{{intervention.user.firstname}} {{intervention.user.lastname}}</td>
                 <td>{{intervention.item.reference}}</td>
-                <td>{{intervention.actualDate|date:'dd-MM-yyyy'}}|</td>
-                <td>{{intervention.unit}} {{intervention.room}}</td>
+                <td>{{intervention.actualDate|date:'dd-MM-yyyy'}}</td>
+                <td>{{intervention.unit}} | {{intervention.room}}</td>
             </tr>
             </tbody>
         </table>

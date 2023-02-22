@@ -47,7 +47,6 @@ export class OrderCreationComponent {
     const dialogRef = this.dialog.open(Modal);
 
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result)
       typeof result == "object" && this.order.items.push(result)
     });
   }
