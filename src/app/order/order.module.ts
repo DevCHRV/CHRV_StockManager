@@ -15,6 +15,7 @@ import {MatDialogModule} from '@angular/material/dialog'
 import { OrderListComponent } from './components/order-list/order-list.component';
 import { OrderDetailsComponent } from './components/order-details/order-details.component';
 import {MatTreeModule} from '@angular/material/tree'
+import { MatExpansionModule } from '@angular/material/expansion';
 
 const orderRoutes: Routes = [
   {path:'order', component:OrderListComponent, canActivate:[LoggedGuard]},
@@ -42,6 +43,7 @@ const orderRoutes: Routes = [
     MatButtonModule,
     RouterModule.forChild(orderRoutes),
     CommonModule,
+    MatExpansionModule,
     MatNativeDateModule,
     MatDialogModule,
     MatTreeModule,

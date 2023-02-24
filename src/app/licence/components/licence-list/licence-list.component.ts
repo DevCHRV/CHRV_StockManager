@@ -10,6 +10,8 @@ import { LicenceType } from '../../models/licences';
 import { LicenceTypeService } from '../../services/type/type.service';
 import { UserService } from '../../../user/services/user/user.service';
 import { User } from '../../../user/models/user';
+import { tap, pipe, map } from 'rxjs';
+import { ItemType } from '../../../type/models/type';
 
 @Component({
   selector: 'app-licence-list',
@@ -23,11 +25,16 @@ export class LicenceListComponent implements OnInit {
   public filterBy2 = new FormControl<number|null>(null);
   public searchBy = new FormControl<string>('');
   public types:LicenceType[];
-  public users:User[]
-;  dataSource: LicenceListDataSource= new LicenceListDataSource([]);
+  public users:User[];
+  dataSource: LicenceListDataSource= new LicenceListDataSource([]);
 
   constructor(private licences:LicenceService, private licenceTypeService:LicenceTypeService, private userService:UserService ,private router:RouterService) {
-
+    this.filterBy.valueChanges.pipe(
+      map(value=> (typeof(value)=='string' && value =='null')? null: value)
+    ).subscribe()
+    this.filterBy2.valueChanges.pipe(
+      map(value=> (typeof(value)=='string' && value =='null')? null: value)
+    ).subscribe()
   }
 
   ngOnInit(): void {
@@ -45,8 +52,26 @@ export class LicenceListComponent implements OnInit {
     )
   }
 
+  getLicenceType(){
+    if(this.filterBy.value && this.filterBy2.value && this.types){
+      return {totalQuantity: this.dataSource.data.filter(l=>l.type.id == this.filterBy.value).filter(l=>l.user?.id==this.filterBy2.value).length, availableQuantity: 0, type: this.types.find(t=>t.id == this.filterBy.value)}
+    }
+    if(this.filterBy.value && this.types){
+      const entries = this.dataSource.data.filter(l=>l.type.id == this.filterBy.value)
+      return {totalQuantity: entries.length, availableQuantity: entries.filter(l=>l.user==null).length, type: this.types.find(t=>t.id == this.filterBy.value)}
+    }
+    if(this.filterBy2.value && this.types){
+      return {totalQuantity: this.dataSource.data.filter(l=>l.user?.id==this.filterBy2.value).length,  availableQuantity: 0, type: this.types.find(t=>t.id == this.filterBy.value)}
+    }
+    return {totalQuantity: this.dataSource.data.length, availableQuantity: this.dataSource.data.filter(l=>l.user==null).length}
+  }
+
   goTo(id:number){
     this.router.navigateTo(`/licence/${id}`)
+  }
+
+  goToLicenceImport(){
+    this.router.navigateTo(`licence/import`)
   }
 
   goToLicenceCreation(){
@@ -63,5 +88,17 @@ export class LicenceListComponent implements OnInit {
 
   resetFilter2(){
     this.filterBy2.setValue(null)
+  }
+
+  checkNotNull(event:any){
+    let value = event.target.value
+    if(value==null || value=='null')
+      this.resetFilter()
+  }
+
+  checkNotNull2(event:any){
+    let value = event.target.value
+    if(value==null || value=='null')
+      this.resetFilter2()
   }
 }

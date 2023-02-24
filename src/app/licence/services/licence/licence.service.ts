@@ -30,7 +30,7 @@ export class LicenceService {
   }
 
   put = (licence:Licence) => {
-    return this.http.put(`${this.base_url}`, licence).pipe(
+    return this.http.put(`${this.base_url}${licence.id}`, licence).pipe(
       map((data) => data as Licence)
     )
   }

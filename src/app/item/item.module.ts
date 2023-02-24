@@ -20,10 +20,17 @@ import { QRCodeModule } from 'angularx-qrcode';
 import { LoggedGuard } from '../guards/logged.guard';
 import { MatIconModule } from '@angular/material/icon';
 import { PipeModule } from '../pipe/pipe.module';
+import {MatExpansionModule} from '@angular/material/expansion'
+import { MatCard, MatCardModule } from '@angular/material/card';
+import {MatBadgeModule} from '@angular/material/badge';
+import {MatChipsModule} from '@angular/material/chips';
+import { ItemImportComponent } from './components/item-import/item-import.component'
+import { MatDivider, MatDividerModule } from '@angular/material/divider';
 
 const itemRoutes: Routes = [
   {path:'item', component:ItemListComponent, canActivate:[LoggedGuard]},
   {path:'item/create', component:ItemCreationComponent, canActivate:[LoggedGuard]},
+  {path:'item/import', component:ItemImportComponent, canActivate:[LoggedGuard]},
   {path:'item/:id', component:ItemDetailsComponent, canActivate:[LoggedGuard]},
 ]
 
@@ -33,6 +40,7 @@ const itemRoutes: Routes = [
     ItemCreationComponent,
     ItemUpdateComponent,
     ItemDetailsComponent,
+    ItemImportComponent,
   ],
   imports: [
     CommonModule,
@@ -47,6 +55,11 @@ const itemRoutes: Routes = [
     MatSelectModule,
     MatAutocompleteModule,
     MatButtonModule,
+    MatCardModule,
+    MatChipsModule,
+    MatBadgeModule,
+    MatExpansionModule,
+    MatDividerModule,
     QRCodeModule,
   ],
   providers:[
@@ -60,7 +73,8 @@ const itemRoutes: Routes = [
     ItemListComponent,
     ItemCreationComponent,
     ItemUpdateComponent,
-    ItemDetailsComponent
+    ItemDetailsComponent,
+    ItemImportComponent,
   ]
 })
 export class ItemModule { }

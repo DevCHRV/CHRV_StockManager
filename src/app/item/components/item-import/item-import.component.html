@@ -1,0 +1,63 @@
+<div class="flex flex-col justify-center min-h-5/6 pt-10 overflow-auto">
+    <div class="font-bold text-2xl pb-10 flex flex-row justify-between">
+        <h2>Importation: </h2>
+
+    </div>
+    <div class="grid gap-6 sm:grid-cols-3 font-bold text-xl">
+        <!--COL 1-->
+        <div class="flex flex-col justify-between">
+
+        </div>
+    </div>
+    <div class="py-4">
+        <hr class="">
+    </div>
+    <div class="flex justify-center overflow-auto h-14">
+        <input #csvInput hidden="true" type="file" onclick="this.value=null" (change)="fileChange($event)" accept=".xlsx"/>
+        <button mat-flat-button color="primary" (click)="csvInput.click()">Choisir un fichier (CSV)</button>
+    </div>
+    <mat-expansion-panel hideToggle *ngFor="let type of item_types">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{type.type.name}}
+          </mat-panel-title>
+          <mat-panel-description>
+            Quantité: {{type.items?.length}}
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <table class="table-auto md:table-fixed">
+            <thead class="text-left">
+            <tr class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
+                <th class="p-3 text-left">Référence</th>
+                <th class="p-3 text-left">Numéro de série</th>
+                <th class="p-3 text-left">Description</th>
+                <th class="p-3 text-left">Date d'achat</th>
+                <th class="p-3 text-left">Date de réception</th>
+                <th class="p-3 text-left">Prix</th>
+                <th class="p-3 text-left">Fournisseur</th>
+                <th class="p-3 text-left">Unité</th>
+                <th class="p-3 text-left">Local</th>
+            </tr>
+            </thead>
+            <tbody *ngIf="type" class="text-left flex-1 sm:flex-none">
+                <tr *ngFor="let item of type.items" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
+                    <td class="p-3 text-left">{{item.reference}}</td>
+                    <td class="p-3 text-left">{{item.serial_number}}</td>
+                    <td class="p-3 text-left">{{item.description}}</td>
+                    <td class="p-3 text-left">{{item.purchased_at}}</td>
+                    <td class="p-3 text-left">{{item.received_at}}</td>
+                    <td class="p-3 text-left">{{item.price}}</td>
+                    <td class="p-3 text-left">{{item.provider}}</td>
+                    <td class="p-3 text-left">{{item.unit}}</td>
+                    <td class="p-3 text-left">{{item.room}}</td>
+                </tr>
+            </tbody>
+        </table>          
+    </mat-expansion-panel>
+    <div class="py-4">
+        <hr class="">
+    </div>
+    <div class="flex justify-center overflow-auto h-14">
+        <button [disabled]="!(item_types.length>0)" mat-flat-button color="primary" (click)="post()">Valider</button>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Item, ItemType } from '../../../item/models/item';
+import { Item } from '../../../item/models/item';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Order } from '../../models/order';
 import { ItemTypeService } from '../../../type/services/type/type.service';
@@ -30,7 +30,12 @@ export class OrderDetailsComponent {
 
   public put(){
     this.orderService.put(this.order).subscribe(
-      res=>this.toast.setSuccess()
+      res=>{
+        console.log(res)
+        this.order = res
+        this._mergeItemsAndTypes();
+        this.toast.setSuccess()
+      }
     )
   }
 

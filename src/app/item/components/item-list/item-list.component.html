@@ -1,5 +1,4 @@
-<div class="flex flex-row justify-between pt-5 items-center content-center align-middle">
-  <div class="flex flex-row md:w-3/5 justify-between items-center content-center align-middle">
+<div class="grid grid-cols-2 sm:grid-cols-5 gap-6 justify-between pt-5 items-center content-center align-middle">
     <div>
       <div>
         <label>Trier par: </label>
@@ -25,7 +24,7 @@
       <div>
         <label>Filtrer par: </label>
         <div class="flex flex-row items-center content-center align-middle">
-          <select matInput [formControl]="filterBy" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          <select matInput [formControl]="filterBy" (change)="checkNotNull($event)" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
             <option [value]="null" selected>---</option>
             <option *ngFor="let type of types" [value]="type.id">{{type.name}}</option>
           </select>
@@ -39,14 +38,27 @@
       <label>Chercher: </label>
       <input matInput [formControl]="searchBy" name="search" placeholder="Rechercher" type="text" id="search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
     </div>
+  <div class="flex flex-row content-end items-end justify-end sm:col-span-2">
+    <a mat-button mat-flat-button color="accent" (click)="goToItemImport()" class="mr-4">Importer</a>
+    <a mat-button mat-flat-button color="primary" (click)="goToItemCreation()">Ajouter</a>
   </div>
-  <a mat-button mat-flat-button color="primary" (click)="goToItemCreation()">Ajouter</a>
 </div>
-<div class="flex items-center">
-  <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg sm:shadow-lg my-5 overflow-auto">
+<div class="flex flex-col items-center my-5">
+  <div class="w-full flex flex-row">
+    <div class="inline-block whitespace-nowrap rounded-[0.27rem] bg-success-100 px-[0.65em] pt-[0.35em] pb-[0.25em] text-center align-baseline text-[0.75em] font-bold leading-none">
+      {{getType().type?getType()!.type!.name:'Total'}}:
+    </div>
+    <div class="inline-block whitespace-nowrap rounded-[0.27rem] bg-primary-100 px-[0.65em] pt-[0.35em] pb-[0.25em] text-center align-baseline text-[0.75em] font-bold leading-none text-primary">
+      Total: {{getType().totalQuantity}}
+    </div>
+    <div class="inline-block whitespace-nowrap rounded-[0.27rem] bg-success-100 px-[0.65em] pt-[0.35em] pb-[0.25em] text-center align-baseline text-[0.75em] font-bold leading-none text-green-700">
+      Disponible: {{getType().availableQuantity}}
+    </div>
+  </div>
+  <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg sm:shadow-lg  overflow-auto">
     <thead class="text-white sm:border-b-2-black">
       <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
-        <th class="p-3 text-left">ID</th>
+        <th class="p-3 text-left h-14 sm:w-40">ID</th>
         <th class="p-3 text-left">Type</th>
         <th class="p-3 text-left">Référence</th>
         <th class="p-3 text-left">Numéro de série</th>
@@ -55,7 +67,7 @@
         <th class="p-3 text-left h-14" >Actions</th>
       </tr>
       <tr *ngFor="let item of dataSource.data | filter:filterBy.value!:['type','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
-        <th class="p-3 text-left">ID</th>
+        <th class="p-3 text-left h-14 sm:w-40">ID</th>
         <th class="p-3 text-left">Type</th>
         <th class="p-3 text-left">Référence</th>
         <th class="p-3 text-left">Numéro de série</th>
@@ -66,7 +78,7 @@
     </thead>
     <tbody class="flex-1 sm:flex-none">
       <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 border-grey-light">
-        <td class="hover:bg-gray-100 p-3">Pas de donnée</td>
+        <td class="hover:bg-gray-100 p-3 h-14 sm:w-40">Pas de donnée</td>
         <td class="hover:bg-gray-100 p-3"></td>
         <td class="hover:bg-gray-100 p-3"></td>
         <td class="hover:bg-gray-100 p-3"></td>
@@ -74,14 +86,18 @@
         <td class="hover:bg-gray-100 p-3"></td>
         <td class="hover:bg-gray-100 p-3 h-14"></td>
       </tr>
-      <tr *ngFor="let item of dataSource.data | filter:filterBy.value!:['type','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" [className]="isCheckUpClose(item) == 1?'bg-red-200':isCheckUpClose(item)==0?'bg-orange-200':''"  class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light">
-        <td class="hover:bg-gray-100 p-3">{{item.id}}</td>
-        <td class="hover:bg-gray-100 p-3">{{item.type.name}}</td>
-        <td class="hover:bg-gray-100 p-3">{{item.reference}}</td>
-        <td class="hover:bg-gray-100 p-3">{{item.serial_number}}</td>
-        <td class="hover:bg-gray-100 p-3">{{item.unit}}</td>
-        <td class="hover:bg-gray-100 p-3">{{item.room}}</td>
-        <td class="hover:bg-gray-100 p-3 h-14"><button mat-flat-button color="accent" (click)="goTo(item.id)">Détails</button></td>
+      <tr *ngFor="let item of dataSource.data | filter:filterBy.value!:['type','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" [className]="isCheckUpClose(item) == 1?'bg-red-200 flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light':isCheckUpClose(item)==0?'bg-orange-200 flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light':'flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light'">
+        <td [ngClass]="isCheckUpClose(item)==1?'hover:bg-red-400':isCheckUpClose(item)==0?'hover:bg-orange-400':'hover:bg-gray-100'" class="h-14 sm:w-40 p-3 flex flex-row justify-between items-center">
+          {{item.id}}
+          <span *ngIf="item.is_available" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-green-100 text-green-800 text-xs font-medium py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Disponible</span>
+          <span *ngIf="!item.is_available" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-red-100 text-red-800 text-xs font-medium py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Indisponible</span>
+        </td>
+        <td [ngClass]="isCheckUpClose(item)==1?'hover:bg-red-400':isCheckUpClose(item)==0?'hover:bg-orange-400':'hover:bg-gray-100'" class="p-3">{{item.type.name}}</td>
+        <td [ngClass]="isCheckUpClose(item)==1?'hover:bg-red-400':isCheckUpClose(item)==0?'hover:bg-orange-400':'hover:bg-gray-100'" class="p-3">{{item.reference}}</td>
+        <td [ngClass]="isCheckUpClose(item)==1?'hover:bg-red-400':isCheckUpClose(item)==0?'hover:bg-orange-400':'hover:bg-gray-100'" class="p-3">{{item.serial_number}}</td>
+        <td [ngClass]="isCheckUpClose(item)==1?'hover:bg-red-400':isCheckUpClose(item)==0?'hover:bg-orange-400':'hover:bg-gray-100'" class="p-3">{{item.unit}}</td>
+        <td [ngClass]="isCheckUpClose(item)==1?'hover:bg-red-400':isCheckUpClose(item)==0?'hover:bg-orange-400':'hover:bg-gray-100'" class="p-3">{{item.room}}</td>
+        <td [ngClass]="isCheckUpClose(item)==1?'hover:bg-red-400':isCheckUpClose(item)==0?'hover:bg-orange-400':'hover:bg-gray-100'" class="p-3 h-14"><button mat-flat-button color="accent" (click)="goTo(item.id)">Détails</button></td>
       </tr>
     </tbody>
   </table>

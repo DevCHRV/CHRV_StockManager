@@ -1,5 +1,6 @@
 import { Licence } from '../../licence/models/licences';
 import { Order } from '../../order/models/order';
+import { ItemType } from '../../type/models/type';
 export interface Item {
     id:number,
     reference:string,
@@ -19,13 +20,4 @@ export interface Item {
     checkup_interval:number,
     provider:string
     order:Order | null,
-}
-
-export interface ItemType {
-    id:number,
-    name:string,
-    description:string,
-    expected_lifetime:number,
-    total_quantity:number,
-    available_quantity:number,
 }

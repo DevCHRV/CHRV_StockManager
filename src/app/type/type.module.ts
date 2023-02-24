@@ -7,6 +7,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from '../config/AuthInterceptor';
 import { LoggedGuard } from '../guards/logged.guard';
+import { ItemType } from './models/type';
 
 const typeRoutes: Routes = [
   {path:'type', component:TypeListComponent, canActivate:[LoggedGuard]},

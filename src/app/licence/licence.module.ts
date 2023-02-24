@@ -13,10 +13,13 @@ import { LicenceCreationComponent } from './components/licence-creation/licence-
 import { LoggedGuard } from '../guards/logged.guard';
 import { PipeModule } from '../pipe/pipe.module';
 import { MatIconModule } from '@angular/material/icon';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { LicenceImportComponent } from './components/licence-import/licence-import.component';
 
 const licenceRoutes: Routes = [
   {path:'licence', component:LicenceListComponent, canActivate:[LoggedGuard]},
   {path:'licence/create', component:LicenceCreationComponent, canActivate:[LoggedGuard]},
+  {path:'licence/import', component:LicenceImportComponent, canActivate:[LoggedGuard]},
   {path:'licence/:id', component:LicenceDetailsComponent, canActivate:[LoggedGuard]},
 ]
 
@@ -25,6 +28,7 @@ const licenceRoutes: Routes = [
     LicenceListComponent,
     LicenceDetailsComponent,
     LicenceCreationComponent,
+    LicenceImportComponent,
   ],
   imports: [
     CommonModule,
@@ -36,6 +40,7 @@ const licenceRoutes: Routes = [
     MatSelectModule,
     MatAutocompleteModule,
     MatButtonModule,
+    MatExpansionModule,
     MatSelectModule,
     MatOptionModule,
     MatInputModule,
@@ -44,6 +49,7 @@ const licenceRoutes: Routes = [
     LicenceListComponent,
     LicenceDetailsComponent,
     LicenceCreationComponent,
+    LicenceImportComponent,
   ]
 })
 export class LicenceModule { }

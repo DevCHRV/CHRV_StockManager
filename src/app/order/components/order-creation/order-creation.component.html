@@ -16,21 +16,26 @@
             <div class="font-bold text-xl">
                 <h2>Matériel:</h2>
             </div>
-            <a mat-button mat-flat-button color="accent" (click)="openDialog()">Ajouter du matériel</a>
+            <a mat-button mat-flat-button color="accent" (click)="createDialog()">Ajouter du matériel</a>
         </div>
         <table class="table-auto md:table-fixed">
             <thead class="text-left">
             <tr>
-                <th>Type</th>
-                <th>Référence</th>
-                <th>Numéro de série</th>
+                <th class="p-3">Type</th>
+                <th class="p-3">Référence</th>
+                <th class="p-3">Numéro de série</th>
+                <th class="p-3">Actions</th>
             </tr>
             </thead>
             <tbody *ngIf="order.items" class="text-left">
             <tr *ngFor="let item of order.items" class="w-full">
-                <td>{{item.type.name}}</td>
-                <td>{{item.reference}}</td>
-                <td>{{item.serial_number}}</td>
+                <td class="p-3">{{item.type.name}}</td>
+                <td class="p-3">{{item.reference}}</td>
+                <td class="p-3">{{item.serial_number}}</td>
+                <td class="p-3">
+                    <button class="mr-2" (click)="updateDialog(item)" mat-button mat-flat-button color="accent">Modifier</button>
+                    <button (click)="removeItem(item)" mat-button mat-flat-button color="warn">Supprimer</button>
+                </td>
             </tr>
             </tbody>
         </table>

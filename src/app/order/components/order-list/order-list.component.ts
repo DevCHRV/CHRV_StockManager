@@ -8,10 +8,10 @@ import { FormControl } from '@angular/forms';
 import { tap } from 'rxjs';
 import { ItemTypeService } from '../../../type/services/type/type.service';
 import { ItemService } from '../../../item/services/item/item.service';
-import { ItemType } from '../../../item/models/item';
 import { OrderService } from '../../service/order/order.service';
 import { UserService } from '../../../user/services/user/user.service';
 import { User } from 'src/app/user/models/user';
+import { Order } from '../../models/order';
 
 @Component({
   selector: 'app-order-list',

@@ -1,5 +1,5 @@
 import { environment } from 'src/environments/environment';
-import { AfterViewInit, Component, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { map, startWith, Observable, of, filter } from 'rxjs';
 import { RouterService } from 'src/app/services/router/router.service';
@@ -15,6 +15,9 @@ import { UserService } from '../../../user/services/user/user.service';
 import { ToastService } from '../../../services/toast/toast.service';
 import { Intervention } from '../../../intervention/models/intervention';
 import { InterventionService } from '../../../intervention/services/intervenction/intervention.service';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import { CanvasRenderer } from 'html2canvas/dist/types/render/canvas/canvas-renderer';
 
 @Component({
   selector: 'app-item-details',
@@ -34,6 +37,7 @@ export class ItemDetailsComponent {
   public filteredUserOptions:Observable<User[]>;
   public searchLicenceSelect = new FormControl<string>('---');
   public searchUserSelect = new FormControl<string>('---');
+  @ViewChild('pdfContainer', {read: ElementRef, static:false}) pdfRef: ElementRef
 
   constructor(private toast:ToastService, private service:ItemService, private interventionService:InterventionService, private typeService:ItemTypeService, private licenceService:LicenceService, private userService:UserService, private router:RouterService, private route:ActivatedRoute){
     this.load()
@@ -46,6 +50,22 @@ export class ItemDetailsComponent {
   getQRCodeUrl(){
     //    return `${environment.appUrl}item/${this.item.id}`
     return `${this.item.id}`
+  }
+
+  getAsPdf(){    
+    let data = this.pdfRef.nativeElement
+    this.generatePDF(data)
+  }
+
+  generatePDF(data: any) {
+    html2canvas(data, {scale: 2, scrollY:-window.scrollY}).then(canvas=>{
+      let width = 210 //Max A4 page width
+      let height = (canvas.height*width)/canvas.width
+      const url = canvas.toDataURL('image/png')
+      let pdf = new jsPDF('p', 'mm', 'a4') //We want the pdf to be 'portrait' and the widt/height to be calculated in milimeters and the page format to be A4
+      pdf.addImage(url, 'PNG', 0, 0, width, height, 'NONE')
+      pdf.save(`item_${this.item.id}.pdf`)
+    })
   }
 
   addLicence(){
