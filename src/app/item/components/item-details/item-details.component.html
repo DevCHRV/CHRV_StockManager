@@ -115,7 +115,7 @@
                 </tr>
                 </thead>
                 <tbody *ngIf="interventions" class="text-left">
-                <tr *ngFor="let intervention of interventions" class="w-full shadow-xl shadow-black">
+                <tr *ngFor="let intervention of interventions" class="w-full">
                     <td class="p-3">{{intervention.type.name}}</td>
                     <td class="p-3">{{intervention.user.firstname}} {{intervention.user.lastname}}</td>
                     <td class="p-3">{{intervention.description}}</td>

@@ -1,69 +1,77 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
-import { tap } from 'rxjs';
+import { map, tap } from 'rxjs';
 import { RouterService } from 'src/app/services/router/router.service';
 import { environment } from 'src/environments/environment';
+import { User } from '../../../user/models/user';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private base_url: string = `${environment.apiUrl}auth/`;
+  private user_url: string = `${environment.apiUrl}user/`;
+
+  private user:User | null;
 
   constructor(private http: HttpClient, private router: RouterService) {
 
   }
 
+  init(){
+    const logged = localStorage.getItem("isLoggedIn")
+    if(logged=="true"){
+      this.fetchUser().subscribe(res=>this.user=res)
+    }
+  }
+
   login(props: FormData, redirectUrl?:string) {
-    console.log(props.values)
-    console.log(`${this.base_url}login`)
-    return this.http.post(`${this.base_url}login`, props, {responseType:'text'}).pipe(
+    return this.http.post(`${this.base_url}login`, props).pipe(
       tap(res=>{
-        localStorage.setItem('token', `${res}`)
+        this.user = res as User
+        localStorage.setItem("isLoggedIn", "true")
         redirectUrl && this.router.navigateTo(redirectUrl)
       }),
     )
   }
 
 
-  logout(){
-    localStorage.removeItem('token')
+  logout(redirectUrl?:string){
+    return this.http.post(`${this.base_url}logout`, null).pipe(
+      tap(res=>{
+        this.user=null
+        localStorage.removeItem("isLoggedIn")
+        redirectUrl && this.router.navigateTo(redirectUrl)
+      }),
+    )
   }
 
   getId(){
-    const token = localStorage.getItem('token')
-    if(token){
-      const value:any = jwtDecode(token)
-      return `${value.id}`
+    if(this.user){
+      return `${this.user.id}`
     }
     return null
   }
 
   getUsername(){
-    const token = localStorage.getItem('token')
-    if(token){
-      const value:any = jwtDecode(token)
-      return `${value.firstname} ${value.lastname}`
+    if(this.user){
+      return `${this.user.firstname} ${this.user.lastname}`
     }
     return null
   }
 
   getFirstname(){
-    const token = localStorage.getItem('token')
-    if(token){
-      const value:any = jwtDecode(token)
-      return `${value.firstname}`
+    if(this.user){
+      return `${this.user.firstname}`
     }
     return null
   }
 
   getLastname(){
-    const token = localStorage.getItem('token')
-    if(token){
-      const value:any = jwtDecode(token)
-      return `${value.lastname}`
+    if(this.user){
+      return `${this.user.lastname}`
     }
     return null
   }
@@ -78,12 +86,30 @@ export class AuthService {
   }
 
   isLoggedIn(){
+    /*
     const token = localStorage.getItem('token')
     if(token){
       const value:any = jwtDecode(token)
       return (new Date().getTime()) < (value.exp*1000)
     }
     return false;
+    */
+    const logged = localStorage.getItem('isLoggedIn')
+    if(logged){
+      return logged=="true"
+    } else  
+      return this.user != null && this.user != undefined;
+  }
+
+  removeUser(){
+    localStorage.removeItem("isLoggedIn")
+    this.user=null
+  }
+
+  fetchUser(){
+    return this.http.get(`${this.user_url}current`).pipe(
+      map((data)=>data as User)
+    )
   }
 }
 

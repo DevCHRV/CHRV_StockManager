@@ -32,7 +32,9 @@ export class HeaderComponent {
 
   //This is only to smoothen the buttons and allow us to modify urls for both the burger menu and the toolbar at the same time
   goToLogout(){
-    this.auth.logout()
+    this.auth.logout().subscribe(res=>{
+      this.toast.setSuccess("Déconnexion réussie !")
+    })
     this.goToLogin()
   }
 

@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import axios from 'axios';
+import { AuthService } from './auth/services/auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -9,13 +10,7 @@ import axios from 'axios';
 export class AppComponent {
   title = 'StockManager';
 
-  constructor(){
-    axios.interceptors.request.use((config)=>{
-      const token = localStorage.getItem('token') || null
-      if(token!=null){
-        config.headers.set("Authorization",`Bearer ${token}`)
-      }
-      return config
-    })
+  constructor(private auth:AuthService){
+    this.auth.init()
   }
 }
