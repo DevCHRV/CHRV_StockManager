@@ -19,6 +19,7 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { CanvasRenderer } from 'html2canvas/dist/types/render/canvas/canvas-renderer';
 import { AuthService } from '../../../auth/services/auth/auth.service';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-item-details',
@@ -196,6 +197,11 @@ export class ItemDetailsComponent {
       map(value => this._filterLicence(value!||-1)
       .filter(l=>!this.item.licence.map(l=>l.id).includes(l.id))))
   }
+
+  isMobile(){
+    return Capacitor.getPlatform()!="web"
+  }
+
   private _filterLicence(value: number|string): Licence[] {
     return typeof(value)=="string" ? this._doFilterLicenceString(`${value}`)
       :this._doFilterLicenceInt(value)
