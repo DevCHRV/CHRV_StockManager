@@ -77,7 +77,7 @@
       </tr>
     </thead>
     <tbody class="flex-1 sm:flex-none">
-      <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 border-grey-light">
+      <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0">
         <td class="hover:bg-gray-100 p-3 h-14 sm:w-40">Pas de donnée</td>
         <td class="hover:bg-gray-100 p-3"></td>
         <td class="hover:bg-gray-100 p-3"></td>
@@ -86,7 +86,7 @@
         <td class="hover:bg-gray-100 p-3"></td>
         <td class="hover:bg-gray-100 p-3 h-14"></td>
       </tr>
-      <tr *ngFor="let item of dataSource.data | filter:filterBy.value!:['type','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" [className]="isCheckUpClose(item) == 1?'bg-red-200 flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light':isCheckUpClose(item)==0?'bg-orange-200 flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light':'flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light'">
+      <tr *ngFor="let item of dataSource.data | filter:filterBy.value!:['type','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" [className]="isCheckUpClose(item) == 1?'bg-red-200 flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-red-300':isCheckUpClose(item)==0?'bg-orange-200 flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-orange-300':'flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light'">
         <td [ngClass]="isCheckUpClose(item)==1?'hover:bg-red-400':isCheckUpClose(item)==0?'hover:bg-orange-400':'hover:bg-gray-100'" class="h-14 sm:w-40 p-3 flex flex-row justify-between items-center">
           {{item.id}}
           <span *ngIf="item.is_available" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-green-100 text-green-800 text-xs font-medium py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Disponible</span>

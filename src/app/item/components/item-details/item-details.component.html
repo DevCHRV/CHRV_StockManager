@@ -101,29 +101,31 @@
             <div class="py-4">
                 <hr class="">
             </div>
-            <div class="font-bold text-xl pb-4 ">
-                <h2>Interventions:</h2>
+            <div class="max-w-full overflow-auto">
+                <div class="font-bold text-xl pb-4 ">
+                    <h2>Interventions:</h2>
+                </div>
+                <table class="table-auto w-full">
+                    <thead class="text-left">
+                    <tr>
+                        <th class="p-2 sm:p-3">Type</th>
+                        <th class="p-2 sm:p-3">Utilisateur</th>
+                        <th class="p-2 sm:p-3">Description</th>
+                        <th class="p-2 sm:p-3">Date</th>
+                        <th class="p-2 sm:p-3">Emplacement</th>
+                    </tr>
+                    </thead>
+                    <tbody *ngIf="interventions" class="text-left">
+                    <tr *ngFor="let intervention of interventions" class="w-full">
+                        <td class="p-2 sm:p-3">{{intervention.type.name}}</td>
+                        <td class="p-2 sm:p-3">{{intervention.user.firstname}} {{intervention.user.lastname}}</td>
+                        <td class="p-2 sm:p-3">{{intervention.description}}</td>
+                        <td class="p-2 sm:p-3">{{intervention.actualDate|date:'dd-MM-yyyy'}}</td>
+                        <td class="p-2 sm:p-3">{{intervention.unit}} | {{intervention.room}}</td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
-            <table class="table-fixed w-full">
-                <thead class="text-left">
-                <tr>
-                    <th class="p-1 sm:p-3">Type</th>
-                    <th class="p-1 sm:p-3">Utilisateur</th>
-                    <th class="p-1 sm:p-3">Description</th>
-                    <th class="p-1 sm:p-3">Date</th>
-                    <th class="p-1 sm:p-3">Emplacement</th>
-                </tr>
-                </thead>
-                <tbody *ngIf="interventions" class="text-left">
-                <tr *ngFor="let intervention of interventions" class="w-full">
-                    <td class="p-1 sm:p-3">{{intervention.type.name}}</td>
-                    <td class="p-1 sm:p-3">{{intervention.user.firstname}} {{intervention.user.lastname}}</td>
-                    <td class="p-1 sm:p-3">{{intervention.description}}</td>
-                    <td class="p-1 sm:p-3">{{intervention.actualDate|date:'dd-MM-yyyy'}}</td>
-                    <td class="p-1 sm:p-3">{{intervention.unit}} | {{intervention.room}}</td>
-                </tr>
-                </tbody>
-            </table>
             <div class="py-4">
                 <hr class="">
             </div>
@@ -161,33 +163,35 @@
                     </div>
                 </div>
             </div>
-            <table class="table-fixed w-full">
-                <thead class="text-left">
-                <tr>
-                    <th class="p-3">Type</th>
-                    <th class="p-3">Description</th>
-                    <th class="p-3">Valeur</th>
-                    <th class="p-3">Utilisateur</th>
-                    <th *ngIf="!is_locked" class="p-3 w-44"></th>
-                </tr>
-                </thead>
-                <tbody *ngIf="itemLicences" class="text-left">
-                <tr *ngFor="let licence of itemLicences">
-                    <td class="p-3">{{licence.type.name}}</td>
-                    <td class="p-3">{{licence.description}}</td>
-                    <td class="p-3">{{licence.value}}</td>
-                    <td class="p-3">{{licence.user?.firstname}} {{licence.user?.lastname}}</td>
-                    <td *ngIf="!is_locked" class="p-3 md:flex md:flex-row">
-                        <div class="w-fit pr-2">
-                            <button mat-button mat-flat-button color="warn" (click)="removeLicence(licence.id)">Supprimer</button>
-                        </div>
-                        <div>
-                            <button mat-button mat-flat-button color="warn" (click)="removeUserFromLicence(licence.id)">Libérer</button>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+            <div class="max-w-full overflow-auto">
+                <table class="table-auto w-full">
+                    <thead class="text-left">
+                    <tr>
+                        <th class="p-3">Type</th>
+                        <th class="p-3">Description</th>
+                        <th class="p-3">Valeur</th>
+                        <th class="p-3">Utilisateur</th>
+                        <th *ngIf="!is_locked" class="p-3 w-44"></th>
+                    </tr>
+                    </thead>
+                    <tbody *ngIf="itemLicences" class="text-left">
+                    <tr *ngFor="let licence of itemLicences">
+                        <td class="p-3">{{licence.type.name}}</td>
+                        <td class="p-3">{{licence.description}}</td>
+                        <td class="p-3">{{licence.value}}</td>
+                        <td class="p-3">{{licence.user?.firstname}} {{licence.user?.lastname}}</td>
+                        <td *ngIf="!is_locked" class="p-3 md:flex md:flex-row">
+                            <div class="w-fit pr-2">
+                                <button mat-button mat-flat-button color="warn" (click)="removeLicence(licence.id)">Supprimer</button>
+                            </div>
+                            <div>
+                                <button mat-button mat-flat-button color="warn" (click)="removeUserFromLicence(licence.id)">Libérer</button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </form>
         <div class="py-4">
         </div>

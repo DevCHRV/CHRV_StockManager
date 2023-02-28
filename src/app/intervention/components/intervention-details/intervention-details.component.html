@@ -67,27 +67,27 @@
     <div class="py-4">
         <hr class="">
     </div>
-    <div *ngIf="isLicenceIntervention()">
+    <div *ngIf="isLicenceIntervention()" class="max-w-full overflow-auto">
         <div class="grid gap-6 mb-6 md:grid-cols-5">
             <div class="font-bold text-xl pb-4 ">
                 <h2>Licences:</h2>
             </div>
         </div>
-        <table class="table-auto md:table-fixed">
+        <table class="table-auto w-full md:table-fixed">
             <thead class="text-left">
                 <tr>
-                    <th>Type</th>
-                    <th>Description</th>
-                    <th>Valeur</th>
-                    <th>Utilisateur</th>
+                    <th class="p-3">Type</th>
+                    <th class="p-3">Description</th>
+                    <th class="p-3">Valeur</th>
+                    <th class="p-3">Utilisateur</th>
                 </tr>
             </thead>
             <tbody *ngIf="intervention.licences" class="text-left">
                 <tr *ngFor="let licence of intervention.licences">
-                <td>{{licence.type.name}}</td>
-                <td>{{licence.description}}</td>
-                <td>{{licence.value}}</td>
-                <td>{{licence.user?.firstname}} {{licence.user?.lastname}}</td>
+                <td class="p-3">{{licence.type.name}}</td>
+                <td class="p-3">{{licence.description}}</td>
+                <td class="p-3">{{licence.value}}</td>
+                <td class="p-3">{{licence.user?.firstname}} {{licence.user?.lastname}}</td>
                 </tr>
             </tbody>
         </table>
