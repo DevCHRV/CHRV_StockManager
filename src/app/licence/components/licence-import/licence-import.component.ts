@@ -13,7 +13,7 @@ import { Item } from '../../../item/models/item';
 
 export interface LicenceTypeMap{
   type:LicenceType, 
-  licences?:Licence[]
+  licences?:LicenceFromCSV[]
 }
 
 export interface CSVLicence{
@@ -25,6 +25,15 @@ export interface CSVLicence{
   TYPE_ID: number,
 }
 
+export interface LicenceFromCSV{
+  id:number,
+  description:string,
+  value:string,
+  user:IUser|null,
+  type:LicenceType,
+  is_valid:boolean,
+}
+
 @Component({
   selector: 'app-licence-import',
   templateUrl: './licence-import.component.html',
@@ -33,7 +42,7 @@ export interface CSVLicence{
 export class LicenceImportComponent {
 
   public licence_types:LicenceTypeMap[] = []
-  public licences: Licence[] = []
+  public licences: LicenceFromCSV[] = []
   private csv_licences: CSVLicence[] = []
   public types:LicenceType[] = []
   
@@ -50,12 +59,12 @@ export class LicenceImportComponent {
   }
 
   public post(){
-    for(const item of this.licences){
-      this.licenceService.post(item).subscribe(
+    for(const licence of this._getValidLicences()){
+      this.licenceService.post(licence as unknown as Licence).subscribe(
         res => this.toast.setSuccess()
       )
     }
-    this.router.navigateTo('item')
+    this.router.navigateTo('licence')
   }
 
   public fileChange($event:any){
@@ -73,20 +82,21 @@ export class LicenceImportComponent {
 
   private convertCSVItemsToItems(){
     for(let licence of this.csv_licences){
-      const type = this.types.find(i=>i.id==licence.TYPE_ID)
-      if(type == null){
-        continue
+      let valid = true
+      let type = this.types.find(i=>i.id==licence.TYPE_ID)
+      if(!this._verifyCSVLicence(licence)){
+        valid = false
+        type = {id:-1, name:"Invalides"}
+        this.toast.setError("Certaines entrées étaient invalides. Elles ne seront pas importées.")
       }
-      else{
-        this.licences.push({
-          id: licence.ID,
-          description: licence.DESCRIPTION,
-          value: licence.VALUE,
-          item: null,
-          user: null,
-          type: type
-        })
-      }
+      this.licences.push({
+        id: licence.ID,
+        description: licence.DESCRIPTION,
+        value: licence.VALUE,
+        user: null,
+        type: type,
+        is_valid: valid
+      } as LicenceFromCSV)
     }
   }
 
@@ -94,6 +104,28 @@ export class LicenceImportComponent {
     for(let type of this.types){
       this.licence_types.push({type:type, licences:this.licences.filter(i=>i.type.id == type.id) })
     }
+    const invalid_licences= this.licences.filter(i=>i.is_valid==false)
+    this.licence_types.push({type: {id:-1, name:"Invalides"}, licences: invalid_licences})
+ 
+  }
+
+  private _getValidLicences(){
+    return this.licences.filter(i=>i.is_valid)
+  }
+
+  private _verifyCSVLicence(licence:CSVLicence){
+    if(!licence.VALUE || !licence.DESCRIPTION || !licence.TYPE_ID){
+      return false
+    }
+    return true
+  }
+
+  private _verifyItem(licence:LicenceFromCSV){
+    if(!licence.description || !licence.value || !licence.type){
+      licence.is_valid = false
+      return false
+    }
+    return true
   }
 
   private reset(){

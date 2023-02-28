@@ -16,7 +16,7 @@
         <input #csvInput hidden="true" type="file" onclick="this.value=null" (change)="fileChange($event)" accept=".xlsx"/>
         <button mat-flat-button color="primary" (click)="csvInput.click()">Choisir un fichier (CSV)</button>
     </div>
-    <mat-expansion-panel hideToggle *ngFor="let type of licence_types">
+    <mat-expansion-panel hideToggle *ngFor="let type of licence_types" [expanded]="true" class="items-center justify-center content-center align-middle">
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{type.type.name}}
@@ -25,17 +25,20 @@
             Quantité: {{type.licences?.length}}
           </mat-panel-description>
         </mat-expansion-panel-header>
-        <table class="table-auto md:table-fixed">
+        <table class="table-auto w-full md:table-fixed">
             <thead class="text-left">
-            <tr class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
+            <tr class="rounded-l-lg sm:rounded-none mb-0 sm:mb-2 hidden sm:table-row">
                 <th class="p-3 text-left">Description</th>
                 <th class="p-3 text-left">Valeur</th>
+                <th class="p-3 text-center">Validité</th>
             </tr>
             </thead>
             <tbody *ngIf="type" class="text-left flex-1 sm:flex-none">
                 <tr *ngFor="let licence of type.licences" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
                     <td class="p-3 text-left">{{licence.description}}</td>
                     <td class="p-3 text-left">{{licence.value}}</td>
+                    <td *ngIf="licence.is_valid" class="p-3 h-full text-center color bg-green-100"><div class="flex justify-center items-center"><mat-icon>check-circle</mat-icon></div></td>
+                    <td *ngIf="!licence.is_valid" class="p-3 h-full text-center color bg-red-100"><div class="flex justify-center items-center"><mat-icon>close</mat-icon></div></td>
                 </tr>
             </tbody>
         </table>          

@@ -26,7 +26,6 @@ import { AuthService } from '../../../auth/services/auth/auth.service';
   styleUrls: ['./item-details.component.scss']
 })
 export class ItemDetailsComponent {
-  
   public item:Item;
   public itemLicences:Licence[];
   public types:ItemType[];
@@ -58,15 +57,18 @@ export class ItemDetailsComponent {
     this.generatePDF(data)
   }
 
+  //For the love of god, please don't touch this.
   generatePDF(data: any) {
-    html2canvas(data, {scale: 2, scrollY:-window.scrollY}).then(canvas=>{
+    data.style.width="1100px"
+    html2canvas(data, {scale:2, scrollY:-window.scrollY}).then((canvas) => {
       let width = 190 //Max A4 page width
       let height = (canvas.height*width)/canvas.width
       const url = canvas.toDataURL('image/png')
       let pdf = new jsPDF('p', 'mm', 'a4') //We want the pdf to be 'portrait' and the widt/height to be calculated in milimeters and the page format to be A4
       pdf.addImage(url, 'PNG', 10, 10, width, height, 'NONE')
       pdf.save(`item_${this.item.id}.pdf`)
-    })
+      data.style.width="100%"
+    });
   }
 
   addLicence(){
