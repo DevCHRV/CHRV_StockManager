@@ -57,7 +57,7 @@
   </div>
   <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg sm:shadow-lg  overflow-auto">
     <thead class="text-white sm:border-b-2-black">
-      <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
+      <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2 border-primary">
         <th class="p-3 text-left h-14 sm:w-40">ID</th>
         <th class="p-3 text-left">Type</th>
         <th class="p-3 text-left">Référence</th>
@@ -66,7 +66,7 @@
         <th class="p-3 text-left">Local</th>
         <th class="p-3 text-left h-14" >Actions</th>
       </tr>
-      <tr *ngFor="let item of dataSource.data | filter:filterBy.value!:['type','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
+      <tr *ngFor="let item of dataSource.data | filter:filterBy.value!:['type','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2 border-primary">
         <th class="p-3 text-left h-14 sm:w-40">ID</th>
         <th class="p-3 text-left">Type</th>
         <th class="p-3 text-left">Référence</th>
@@ -77,7 +77,7 @@
       </tr>
     </thead>
     <tbody class="flex-1 sm:flex-none">
-      <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0">
+      <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 border-primary">
         <td class="hover:bg-gray-100 p-3 h-14 sm:w-40">Pas de donnée</td>
         <td class="hover:bg-gray-100 p-3"></td>
         <td class="hover:bg-gray-100 p-3"></td>
