@@ -7,7 +7,7 @@ import { ItemTypeService } from 'src/app/type/services/type/type.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Licence, LicenceType } from '../../../licence/models/licences';
 import { LicenceService } from '../../../licence/services/licence/licence.service';
-import { User } from '../../../user/models/user';
+import { IUser } from '../../../user/models/user';
 import { UserService } from '../../../user/services/user/user.service';
 import { LicenceTypeService } from '../../services/type/type.service';
 import { ToastService } from '../../../services/toast/toast.service';

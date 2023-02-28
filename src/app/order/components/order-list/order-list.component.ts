@@ -10,7 +10,7 @@ import { ItemTypeService } from '../../../type/services/type/type.service';
 import { ItemService } from '../../../item/services/item/item.service';
 import { OrderService } from '../../service/order/order.service';
 import { UserService } from '../../../user/services/user/user.service';
-import { User } from 'src/app/user/models/user';
+import { IUser } from 'src/app/user/models/user';
 import { Order } from '../../models/order';
 
 @Component({
@@ -21,7 +21,7 @@ import { Order } from '../../models/order';
 export class OrderListComponent implements OnInit {
 
   dataSource: OrderListDataSource = new OrderListDataSource([]);
-  public users: User[];
+  public users: IUser[];
   public sortBy = new FormControl<string>('id');
   public isAsc = new FormControl<boolean>(true);
   public filterBy = new FormControl<number|null>(null);

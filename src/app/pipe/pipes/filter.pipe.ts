@@ -29,6 +29,6 @@ export class FilterPipe implements PipeTransform {
     if(properties.length>1)
       return value[properties[0]] ? this._filter(value[properties[0]], properties.slice(1, properties.length), filter) : false
     else
-      return value[properties[0]] ? value[properties[0]]==filter : false
+      return value[properties[0]] ? value[properties[0]] == filter : false
   }
 }

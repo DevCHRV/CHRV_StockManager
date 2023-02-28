@@ -13,10 +13,10 @@
             <a *ngIf="!auth.isLoggedIn()" mat-list-item (click)="goToLogin()"><mat-icon>fingerprint</mat-icon> Login</a>
             <a *ngIf="auth.isLoggedIn()" mat-list-item (click)="goToLogout()"><mat-icon>exit_to_app</mat-icon> Logout</a>
             <div *ngIf="auth.isLoggedIn()">
-              <a mat-list-item (click)="goToItem()" data-bs-dismiss="offcanvas">Matériel</a>
-              <a mat-list-item (click)="goToLicence()" data-bs-dismiss="offcanvas">Licences</a>
-              <a mat-list-item (click)="goToIntervention()" data-bs-dismiss="offcanvas">Opérations</a>
-              <a mat-list-item (click)="goToOrder()" data-bs-dismiss="offcanvas">Commandes</a>
+              <a *ngIf="auth.hasAuthority('PGM')" mat-list-item (click)="goToItem()" data-bs-dismiss="offcanvas">Matériel</a>
+              <a *ngIf="auth.hasAuthority('PGM')" mat-list-item (click)="goToLicence()" data-bs-dismiss="offcanvas">Licences</a>
+              <a *ngIf="auth.hasAuthority('TEC')" mat-list-item (click)="goToIntervention()" data-bs-dismiss="offcanvas">Opérations</a>
+              <a *ngIf="auth.hasAuthority('PGM')" mat-list-item (click)="goToOrder()" data-bs-dismiss="offcanvas">Commandes</a>
             </div>
           </mat-nav-list>
         </div>
@@ -40,16 +40,16 @@
         <button (click)="goToDashboard()" class="text-white">StockManager | {{auth.getUsername()}}</button>
       </div>
       <div class="justify-between invisible md:visible">
-        <span *ngIf="true" class="">
+        <span *ngIf="auth.hasAuthority('PGM')" class="">
           <a (click)="goToItem()" mat-flat-button color="primary">Matériel</a>
         </span>
-        <span *ngIf="true" class="">
+        <span *ngIf="auth.hasAuthority('PGM')" class="">
           <a (click)="goToLicence()" mat-flat-button color="primary">Licences</a>
         </span>
-        <span *ngIf="true" class="">
+        <span *ngIf="auth.hasAuthority('TEC')" class="">
           <a (click)="goToIntervention()" mat-flat-button color="primary">Opérations</a>
         </span>
-        <span *ngIf="true" class="">
+        <span *ngIf="auth.hasAuthority('PGM')" class="">
           <a (click)="goToOrder()" mat-flat-button color="primary">Commandes</a>
         </span>
         <span *ngIf="!auth.isLoggedIn()" class="">
@@ -62,9 +62,9 @@
     </mat-toolbar>
     <div class="flex h-screen justify-center">
       <div class="w-screen md:w-5/6 h-full">
-        <div [ngClass]="toast.showError()||toast.showSuccess()?'opacity-1 w-full sticky top-16 z-0':'absolute top-0 left-0 w-1 h-1'" class="transition duration-1000 ease-in-out flex flex-row toast-container">
-          <div [ngClass]="toast.showSuccess()?'opacity-1 w-full':'opacity-0 w-1 h-1'" class="z-50 transition-all duration-1000 text-white text-center font-bold rounded-2xl mt-5 p-2 success">{{toast.successMessage()}}</div>
-          <div [ngClass]="toast.showError()?'opacity-1 w-full':'opacity-0 w-1 h-1'" class="z-50 transition-all duration-1000 text-white text-center font-bold rounded-2xl mt-5 p-2 error">{{toast.errorMessage()}}</div>
+        <div [ngClass]="toast.showError()||toast.showSuccess()?'opacity-1 w-full sticky top-16 z-0':'absolute top-0 left-0 w-1 h-1'" class="transition duration-1000 ease-in-out toast-container sm:flex sm:flex-row">
+          <div [ngClass]="toast.showSuccess()?'opacity-1 w-full':'opacity-0 w-0 h-0'" class="z-50 transition-all duration-1000 text-white text-center font-bold rounded-2xl mt-5 p-2 success">{{toast.successMessage()}}</div>
+          <div [ngClass]="toast.showError()?'opacity-1 w-full':'opacity-0 w-0 h-0'" class="z-50 transition-all duration-1000 text-white text-center font-bold rounded-2xl mt-5 p-2 error">{{toast.errorMessage()}}</div>
         </div>
         <div class="align-middle">
           <app-spinner></app-spinner>

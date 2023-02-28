@@ -5,7 +5,7 @@ import jwtDecode from 'jwt-decode';
 import { map, tap } from 'rxjs';
 import { RouterService } from 'src/app/services/router/router.service';
 import { environment } from 'src/environments/environment';
-import { User } from '../../../user/models/user';
+import { IUser, User } from '../../../user/models/user';
 
 @Injectable({
   providedIn: 'root',
@@ -23,14 +23,17 @@ export class AuthService {
   init(){
     const logged = localStorage.getItem("isLoggedIn")
     if(logged=="true"){
-      this.fetchUser().subscribe(res=>this.user=res)
+      this.fetchUser().subscribe(res=>{
+        this.user = new User(res.id, res.username, res.firstname, res.lastname, res.roles, res.licences);
+      })
     }
   }
 
   login(props: FormData, redirectUrl?:string) {
     return this.http.post(`${this.base_url}login`, props).pipe(
+      map((data)=>data as IUser),
       tap(res=>{
-        this.user = res as User
+        this.user = new User(res.id, res.username, res.firstname, res.lastname, res.roles, res.licences);
         localStorage.setItem("isLoggedIn", "true")
         redirectUrl && this.router.navigateTo(redirectUrl)
       }),
@@ -46,6 +49,14 @@ export class AuthService {
         redirectUrl && this.router.navigateTo(redirectUrl)
       }),
     )
+  }
+
+  hasRole(role_name:string){
+    return this.user?.hasRole(role_name)
+  }
+
+  hasAuthority(authority_name:string){
+    return this.user?.hasAuthority(authority_name)
   }
 
   getId(){
@@ -108,7 +119,7 @@ export class AuthService {
 
   fetchUser(){
     return this.http.get(`${this.user_url}current`).pipe(
-      map((data)=>data as User)
+      map((data)=>data as IUser)
     )
   }
 }

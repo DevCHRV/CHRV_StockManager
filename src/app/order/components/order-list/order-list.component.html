@@ -68,7 +68,7 @@
           <span *ngIf="order.isReceived" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-green-100 text-green-800 text-xs font-medium py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Reçue</span>
           <span *ngIf="!order.isReceived" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-red-100 text-red-800 text-xs font-medium py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">En attente</span>
         </td>
-        <td class="p-3">{{order.date}}</td>
+        <td class="p-3">{{order.date | date:'dd-MM-YYYY'}}</td>
         <td class="p-3">{{order.user.firstname}} {{order.user.lastname}}</td>
         <td class="p-3 h-14"><button mat-flat-button color="accent" (click)="goTo(order.id)">Détails</button></td>
       </tr>

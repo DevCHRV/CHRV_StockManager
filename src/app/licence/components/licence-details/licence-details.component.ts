@@ -5,7 +5,7 @@ import { RouterService } from 'src/app/services/router/router.service';
 import { FormControl } from '@angular/forms';
 import { Licence } from '../../../licence/models/licences';
 import { LicenceService } from '../../../licence/services/licence/licence.service';
-import { User } from '../../../user/models/user';
+import { IUser } from '../../../user/models/user';
 import { UserService } from '../../../user/services/user/user.service';
 import { LicenceType } from '../../models/licences';
 import { LicenceTypeService } from '../../services/type/type.service';
@@ -20,10 +20,10 @@ import { ToastService } from '../../../services/toast/toast.service';
 export class LicenceDetailsComponent {
   
   public licence:Licence;
-  public users:User[];
+  public users:IUser[];
   public types:LicenceType[] = [];
   public is_locked:boolean = true;
-  filteredUserOptions:Observable<User[]>;
+  filteredUserOptions:Observable<IUser[]>;
   searchUserSelect = new FormControl<string>('---');
 
   constructor(private toast:ToastService, private service:LicenceService, private userService:UserService, private licenceTypeService:LicenceTypeService, public router:RouterService, private route:ActivatedRoute){
@@ -100,7 +100,7 @@ export class LicenceDetailsComponent {
       map(value =>this._filterUser(value!||-1)))
   }
 
-  private _filterUser(value: number|string): User[] {
+  private _filterUser(value: number|string): IUser[] {
     return typeof(value)=="string" ? this._doFilterUserString(`${value}`)
       :this._doFilterUserInt(value)
   }

@@ -7,7 +7,6 @@ import { AuthInterceptor } from '../config/AuthInterceptor';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { MatButtonModule } from '@angular/material/button';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { LoggedGuard } from '../guards/logged.guard';
 import { HeaderComponent } from './components/header/header.component';
 import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -16,6 +15,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { SpinnerComponent } from './components/spinner/spinner.component';
+import { LoggedGuard } from '../guards/logged/logged.guard';
 
 const staticRoutes: Routes = [
   {path: '', component: DashboardComponent, canActivate:[LoggedGuard]},

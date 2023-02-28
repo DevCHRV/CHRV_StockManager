@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
-import { LoggedGuard } from '../guards/logged.guard';
 import { InterventionCreationComponent } from './components/intervention-creation/intervention-creation.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -14,12 +13,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { MatIconModule } from '@angular/material/icon';
 import { PipeModule } from '../pipe/pipe.module';
 import { InterventionDetailsComponent } from './components/intervention-details/intervention-details.component';
+import { LoggedGuard } from '../guards/logged/logged.guard';
+import { TechnicianGuard } from '../guards/technician/technician.guard';
 
 const interventionRoutes: Routes = [
-  {path:'intervention', component:InterventionListComponent, canActivate:[LoggedGuard]},
-  {path:'intervention/create/:item_id', component:InterventionCreationComponent, canActivate:[LoggedGuard]},
+  {path:'intervention', component:InterventionListComponent, canActivate:[TechnicianGuard]},
+  {path:'intervention/create/:item_id', component:InterventionCreationComponent, canActivate:[TechnicianGuard]},
   //{path:'item/create', component:ItemCreationComponent, canActivate:[LoggedGuard]},
-  {path:'intervention/:intervention_id', component:InterventionDetailsComponent, canActivate:[LoggedGuard]},
+  {path:'intervention/:intervention_id', component:InterventionDetailsComponent, canActivate:[TechnicianGuard]},
 ]    
 
 @NgModule({

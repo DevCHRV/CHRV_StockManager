@@ -17,7 +17,6 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatNativeDateModule } from '@angular/material/core';
 import { QRCodeModule } from 'angularx-qrcode';
-import { LoggedGuard } from '../guards/logged.guard';
 import { MatIconModule } from '@angular/material/icon';
 import { PipeModule } from '../pipe/pipe.module';
 import {MatExpansionModule} from '@angular/material/expansion'
@@ -26,12 +25,15 @@ import {MatBadgeModule} from '@angular/material/badge';
 import {MatChipsModule} from '@angular/material/chips';
 import { ItemImportComponent } from './components/item-import/item-import.component'
 import { MatDivider, MatDividerModule } from '@angular/material/divider';
+import { LoggedGuard } from '../guards/logged/logged.guard';
+import { ProgrammerGuard } from '../guards/programmer/programmer.guard';
+import { TechnicianGuard } from '../guards/technician/technician.guard';
 
 const itemRoutes: Routes = [
-  {path:'item', component:ItemListComponent, canActivate:[LoggedGuard]},
-  {path:'item/create', component:ItemCreationComponent, canActivate:[LoggedGuard]},
-  {path:'item/import', component:ItemImportComponent, canActivate:[LoggedGuard]},
-  {path:'item/:id', component:ItemDetailsComponent, canActivate:[LoggedGuard]},
+  {path:'item', component:ItemListComponent, canActivate:[ProgrammerGuard]},
+  {path:'item/create', component:ItemCreationComponent, canActivate:[ProgrammerGuard]},
+  {path:'item/import', component:ItemImportComponent, canActivate:[ProgrammerGuard]},
+  {path:'item/:id', component:ItemDetailsComponent, canActivate:[TechnicianGuard]},
 ]
 
 @NgModule({

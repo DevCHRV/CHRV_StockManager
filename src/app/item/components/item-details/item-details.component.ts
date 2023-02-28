@@ -10,7 +10,7 @@ import { ItemService } from '../../services/item/item.service';
 import { FormControl } from '@angular/forms';
 import { Licence } from '../../../licence/models/licences';
 import { LicenceService } from '../../../licence/services/licence/licence.service';
-import { User } from '../../../user/models/user';
+import { IUser } from '../../../user/models/user';
 import { UserService } from '../../../user/services/user/user.service';
 import { ToastService } from '../../../services/toast/toast.service';
 import { Intervention } from '../../../intervention/models/intervention';
@@ -18,6 +18,7 @@ import { InterventionService } from '../../../intervention/services/intervenctio
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { CanvasRenderer } from 'html2canvas/dist/types/render/canvas/canvas-renderer';
+import { AuthService } from '../../../auth/services/auth/auth.service';
 
 @Component({
   selector: 'app-item-details',
@@ -31,15 +32,15 @@ export class ItemDetailsComponent {
   public types:ItemType[];
   public licences:Licence[];
   public interventions:Intervention[];
-  public users:User[];
+  public users:IUser[];
   public is_locked:boolean = true;
   public filteredLicenceOptions:Observable<Licence[]>;
-  public filteredUserOptions:Observable<User[]>;
+  public filteredUserOptions:Observable<IUser[]>;
   public searchLicenceSelect = new FormControl<string>('---');
   public searchUserSelect = new FormControl<string>('---');
   @ViewChild('pdfContainer', {read: ElementRef, static:false}) pdfRef: ElementRef
 
-  constructor(private toast:ToastService, private service:ItemService, private interventionService:InterventionService, private typeService:ItemTypeService, private licenceService:LicenceService, private userService:UserService, private router:RouterService, private route:ActivatedRoute){
+  constructor(private toast:ToastService, private service:ItemService, private interventionService:InterventionService, private typeService:ItemTypeService, private licenceService:LicenceService, private userService:UserService, private router:RouterService, private route:ActivatedRoute, public auth:AuthService){
     this.load()
   }
 
@@ -59,11 +60,11 @@ export class ItemDetailsComponent {
 
   generatePDF(data: any) {
     html2canvas(data, {scale: 2, scrollY:-window.scrollY}).then(canvas=>{
-      let width = 210 //Max A4 page width
+      let width = 190 //Max A4 page width
       let height = (canvas.height*width)/canvas.width
       const url = canvas.toDataURL('image/png')
       let pdf = new jsPDF('p', 'mm', 'a4') //We want the pdf to be 'portrait' and the widt/height to be calculated in milimeters and the page format to be A4
-      pdf.addImage(url, 'PNG', 0, 0, width, height, 'NONE')
+      pdf.addImage(url, 'PNG', 10, 10, width, height, 'NONE')
       pdf.save(`item_${this.item.id}.pdf`)
     })
   }
@@ -207,7 +208,7 @@ export class ItemDetailsComponent {
     return this.licences.filter(l=>l.description.toLowerCase().includes(input))
   }
 
-  private _filterUser(value: number|string): User[] {
+  private _filterUser(value: number|string): IUser[] {
     return typeof(value)=="string" ? this._doFilterUserString(`${value}`)
       :this._doFilterUserInt(value)
   }

@@ -1,11 +1,57 @@
+import { first } from 'rxjs';
 import { Licence } from '../../licence/models/licences';
-export interface User {
+export interface IUser {
     id:number,
     username:string,
     firstname:string,
     lastname:string,
     licences:Licence[] | null,
     roles:Role[],
+}
+
+export class User implements IUser {
+    id:number;
+    username:string;
+    firstname:string;
+    lastname:string;
+    licences:Licence[] | null;
+    roles:Role[];
+
+    constructor(id:number, username:string, firstname:string, lastname:string, roles:Role[], licences:Licence[]|null = []){
+        this.id = id;
+        this.username = username;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.licences = licences || [];
+        this.roles = roles;
+    }
+
+    hasAuthority(role_name:any){
+        for(const role of this.roles){
+            if(RoleHierarchy[this._parseRole(role) as any] <= RoleHierarchy[role_name]){
+                return true
+            }
+        }
+        return false    
+    }
+
+    hasRole(role_name:string){
+        for(const role of this.roles){
+            if (role.name.split('_')[1] == role_name)
+                return true
+        }
+        return false;
+    }
+
+    private _parseRole(role:Role){
+        return role.name.split('_')[1]
+    }
+}
+
+export enum RoleHierarchy{
+    ADM = 1,
+    PGM = 2,
+    TEC = 3,
 }
 
 export interface Role {

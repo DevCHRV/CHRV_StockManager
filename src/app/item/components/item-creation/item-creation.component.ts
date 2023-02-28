@@ -9,7 +9,7 @@ import { ItemService } from '../../services/item/item.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Licence } from '../../../licence/models/licences';
 import { LicenceService } from '../../../licence/services/licence/licence.service';
-import { User } from '../../../user/models/user';
+import { IUser } from '../../../user/models/user';
 import { UserService } from '../../../user/services/user/user.service';
 import { ToastService } from '../../../services/toast/toast.service';
 
@@ -42,9 +42,9 @@ export class ItemCreationComponent {
   public itemLicences:Licence[] = [];
   public types:ItemType[];
   public licences:Licence[];
-  public users:User[];
+  public users:IUser[];
   public filteredLicenceOptions:Observable<Licence[]>;
-  public filteredUserOptions:Observable<User[]>;
+  public filteredUserOptions:Observable<IUser[]>;
   public searchLicenceSelect = new FormControl<string>('---');
   public searchUserSelect = new FormControl<string>('---');
 
@@ -202,7 +202,7 @@ export class ItemCreationComponent {
     return this.licences.filter(l=>l.description.toLowerCase().includes(input))
   }
 
-  private _filterUser(value: number|string): User[] {
+  private _filterUser(value: number|string): IUser[] {
     return typeof(value)=="string" ? this._doFilterUserString(`${value}`)
       :this._doFilterUserInt(value)
   }

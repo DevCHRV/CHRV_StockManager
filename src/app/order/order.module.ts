@@ -10,18 +10,19 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterModule, Routes } from '@angular/router';
 import { MatNativeDateModule } from '@angular/material/core';
-import { LoggedGuard } from '../guards/logged.guard';
 import {MatDialogModule} from '@angular/material/dialog'
 import { OrderListComponent } from './components/order-list/order-list.component';
 import { OrderDetailsComponent } from './components/order-details/order-details.component';
 import {MatTreeModule} from '@angular/material/tree'
 import { MatExpansionModule } from '@angular/material/expansion';
+import { LoggedGuard } from '../guards/logged/logged.guard';
+import { ProgrammerGuard } from '../guards/programmer/programmer.guard';
 
 const orderRoutes: Routes = [
-  {path:'order', component:OrderListComponent, canActivate:[LoggedGuard]},
-  {path:'order/create', component:OrderCreationComponent, canActivate:[LoggedGuard]},
+  {path:'order', component:OrderListComponent, canActivate:[ProgrammerGuard]},
+  {path:'order/create', component:OrderCreationComponent, canActivate:[ProgrammerGuard]},
   //{path:'item/create', component:ItemCreationComponent, canActivate:[LoggedGuard]},
-  {path:'order/:order_id', component:OrderDetailsComponent, canActivate:[LoggedGuard]},
+  {path:'order/:order_id', component:OrderDetailsComponent, canActivate:[ProgrammerGuard]},
 ]    
 
 @NgModule({

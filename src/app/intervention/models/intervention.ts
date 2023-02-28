@@ -1,4 +1,4 @@
-import { User } from '../../user/models/user';
+import { IUser } from '../../user/models/user';
 import { Item } from '../../item/models/item';
 import { Licence } from 'src/app/licence/models/licences';
 export interface Intervention {
@@ -9,8 +9,8 @@ export interface Intervention {
     actualDate?:Date,
     unit:string,
     room:string,
-    user:User,
-    notifier?:User,
+    user:IUser,
+    notifier?:IUser,
     type:InterventionType,
     licences:Licence[],
     item:Item,

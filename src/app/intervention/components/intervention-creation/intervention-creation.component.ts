@@ -3,7 +3,7 @@ import { ToastService } from '../../../services/toast/toast.service';
 import { UserService } from '../../../user/services/user/user.service';
 import { RouterService } from '../../../services/router/router.service';
 import { ActivatedRoute } from '@angular/router';
-import { User } from '../../../user/models/user';
+import { IUser } from '../../../user/models/user';
 import { Observable, startWith, map, tap } from 'rxjs';
 import { FormControl, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Intervention, InterventionType } from '../../models/intervention';
@@ -34,13 +34,13 @@ export class InterventionCreationComponent {
     type: {id:1} as unknown as InterventionType,
   } as unknown as Intervention;
   public licences:Licence[];
-  public users:User[];
+  public users:IUser[];
   public types:InterventionType[];
 
-  public filteredNotifierOptions:Observable<User[]>;
+  public filteredNotifierOptions:Observable<IUser[]>;
   public searchNotifierSelect = new FormControl<string>('---');
 
-  public filteredUserOptions:Observable<User[]>;
+  public filteredUserOptions:Observable<IUser[]>;
   public searchUserSelect = new FormControl<string>('---');
 
   public searchLicenceSelect = new FormControl<string>('---');
@@ -191,7 +191,7 @@ export class InterventionCreationComponent {
     return date.toISOString().split('T')[0]
   }
 
-  private _filterUser(value: number|string): User[] {
+  private _filterUser(value: number|string): IUser[] {
     return typeof(value)=="string" ? this._doFilterUserString(`${value}`)
       :this._doFilterUserInt(value)
   }

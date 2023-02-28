@@ -8,7 +8,10 @@ import { InterventionService } from '../../services/intervenction/intervention.s
 import { FormControl } from '@angular/forms';
 import { InterventionType } from '../../models/intervention';
 import { UserService } from '../../../user/services/user/user.service';
-import { User } from '../../../user/models/user';
+import { IUser } from '../../../user/models/user';
+import { Item } from '../../../item/models/item';
+import { ItemService } from '../../../item/services/item/item.service';
+import { Observable, startWith, map } from 'rxjs';
 
 @Component({
   selector: 'app-intervention-list',
@@ -19,13 +22,18 @@ export class InterventionListComponent implements OnInit {
   public sortBy = new FormControl<string>('id');
   public isAsc = new FormControl<boolean>(true);
   public filterBy = new FormControl<number|null>(null);
-  public filterBy2 = new FormControl<number|null>(null);
+  public filteredItemsOptions:Observable<Item[]>;
+  public searchItemSelect = new FormControl<string>('');
+  public filteredUsersOptions:Observable<IUser[]>;
+  public searchUserSelect = new FormControl<string>('');
+
   public searchBy = new FormControl<string>('');
   public types:InterventionType[];
-  public users:User[];
+  public users:IUser[] = [];
+  public items:Item[] = [];
   dataSource: InterventionListDataSource = new InterventionListDataSource([]);
 
-  constructor(private interventions:InterventionService, private UserService:UserService, private router:RouterService) {
+  constructor(private interventions:InterventionService, private userService:UserService, private router:RouterService, private itemService:ItemService) {
 
   }
 
@@ -34,14 +42,25 @@ export class InterventionListComponent implements OnInit {
     this.interventions.get().subscribe(
       res => {
         this.dataSource = new InterventionListDataSource(res)
+        this._mergeItems()
+        this.init()
       }
     );
     this.interventions.getTypes().subscribe(
       res=>this.types = res
     )
-    this.UserService.get().subscribe(
+    this.userService.get().subscribe(
       res=>this.users = res
     )
+  }
+
+  init(){
+    this.filteredItemsOptions = this.searchItemSelect.valueChanges.pipe(
+      startWith(''),
+      map(value =>this._filterItem(value!||-1)))
+    this.filteredUsersOptions = this.searchUserSelect.valueChanges.pipe(
+      startWith(''),
+      map(value =>this._filterUser(value!||-1)))
   }
 
   goTo(id:number){
@@ -56,49 +75,59 @@ export class InterventionListComponent implements OnInit {
     this.filterBy.setValue(null)
   }
 
-  resetFilter2(){
-    this.filterBy2.setValue(null)
+  resetSearchUserSelect(){
+    this.searchUserSelect.setValue(null)
+  }
+  
+  resetSearchItemSelect(){
+    this.searchItemSelect.setValue(null)
+  }
+
+  getItemDisplay(id:number){
+    const tmp = this.items.find(u=>u.id==id)
+    return tmp ? `${tmp.reference}`: ''
+  }
+
+  getUserDisplay(id:number){
+    const tmp = this.users.find(u=>u.id==id)
+    return tmp ? `${tmp.username}`: ''
+  }
+
+  private _filterItem(value: number|string): Item[] {
+    return typeof(value)=="string" ? this._doFilterItemString(`${value}`)
+      :this._doFilterItemInt(value)
+  }
+
+  
+  private _doFilterItemInt(id:number){
+    const tmp = this.items.find(i=>i.id==id)
+    return tmp ? this.items.filter(i=>i.id==tmp.id):this.items
+  }
+
+  private _doFilterItemString(input:string){
+    return this.items.filter(i=>`${i.reference}`.toLowerCase().includes(input.toLowerCase()))
+  }
+
+  private _filterUser(value: number|string): IUser[] {
+    return typeof(value)=="string" ? this._doFilterUserString(`${value}`)
+      :this._doFilterUserInt(value)
+  }
+
+  
+  private _doFilterUserInt(id:number){
+    const tmp = this.users.find(i=>i.id==id)
+    return tmp ? this.users.filter(i=>i.id==tmp.id):this.users
+  }
+
+  private _doFilterUserString(input:string){
+    return this.users.filter(u=>`${u.username}${u.firstname}${u.lastname}`.toLowerCase().includes(input.toLowerCase()))
+  }
+
+
+  private _mergeItems(){
+    for(const i of this.dataSource.data){
+      if(!this.items.find(item=>item.id == i.item.id))
+        this.items.push(i.item)
+    }
   }
 }
-/*
-    <!-- Id Column -->
-    <ng-container matColumnDef="id">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Id</th>
-      <td mat-cell *matCellDef="let row">{{row.id}}</td>
-    </ng-container>
-
-    <!-- Reference Column -->
-    <ng-container matColumnDef="reference">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Référence</th>
-      <td mat-cell *matCellDef="let row">{{row.reference}}</td>
-    </ng-container>
-
-    <!-- Serial Column -->
-    <ng-container matColumnDef="serial_number">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Numéro de Série</th>
-      <td mat-cell *matCellDef="let row">{{row.serial_number}}</td>
-    </ng-container>
-
-    <!-- Unit Column -->
-    <ng-container matColumnDef="unit">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Unité</th>
-      <td mat-cell *matCellDef="let row">{{row.unit}}</td>
-    </ng-container>
-
-    <!-- Room Column -->
-    <ng-container matColumnDef="room">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Local</th>
-      <td mat-cell *matCellDef="let row">{{row.room}}</td>
-    </ng-container>
-
-    <!-- Action Column -->
-    <ng-container matColumnDef="actions">
-      <th mat-header-cell *matHeaderCellDef mat-sort-header>Actions</th>
-      <td mat-cell *matCellDef="let row">
-        <button (click)="goTo(row.id)" mat-flat-button color="accent">Détails</button>
-      </td>
-    </ng-container>
-
-    <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true" ></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-*/

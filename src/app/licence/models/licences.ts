@@ -1,11 +1,11 @@
 import { Item } from '../../item/models/item';
-import { User } from '../../user/models/user';
+import { IUser } from '../../user/models/user';
 
 export interface Licence {
     id:number,
     description:string,
     value:string,
-    user: User|null,
+    user: IUser|null,
     type:LicenceType,
     item:Item|null,
 }

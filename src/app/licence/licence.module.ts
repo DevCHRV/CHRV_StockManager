@@ -10,17 +10,19 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { LicenceDetailsComponent } from './components/licence-details/licence-details.component';
 import { LicenceCreationComponent } from './components/licence-creation/licence-creation.component';
-import { LoggedGuard } from '../guards/logged.guard';
 import { PipeModule } from '../pipe/pipe.module';
 import { MatIconModule } from '@angular/material/icon';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { LicenceImportComponent } from './components/licence-import/licence-import.component';
+import { LoggedGuard } from '../guards/logged/logged.guard';
+import { ProgrammerGuard } from '../guards/programmer/programmer.guard';
+import { TechnicianGuard } from '../guards/technician/technician.guard';
 
 const licenceRoutes: Routes = [
-  {path:'licence', component:LicenceListComponent, canActivate:[LoggedGuard]},
-  {path:'licence/create', component:LicenceCreationComponent, canActivate:[LoggedGuard]},
-  {path:'licence/import', component:LicenceImportComponent, canActivate:[LoggedGuard]},
-  {path:'licence/:id', component:LicenceDetailsComponent, canActivate:[LoggedGuard]},
+  {path:'licence', component:LicenceListComponent, canActivate:[ProgrammerGuard]},
+  {path:'licence/create', component:LicenceCreationComponent, canActivate:[ProgrammerGuard]},
+  {path:'licence/import', component:LicenceImportComponent, canActivate:[ProgrammerGuard]},
+  {path:'licence/:id', component:LicenceDetailsComponent, canActivate:[TechnicianGuard]},
 ]
 
 @NgModule({

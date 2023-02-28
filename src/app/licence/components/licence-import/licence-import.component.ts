@@ -8,7 +8,7 @@ import { RouterService } from '../../../services/router/router.service';
 import { Licence, LicenceType } from '../../models/licences';
 import { LicenceService } from '../../services/licence/licence.service';
 import { LicenceTypeService } from '../../services/type/type.service';
-import { User } from '../../../user/models/user';
+import { IUser } from '../../../user/models/user';
 import { Item } from '../../../item/models/item';
 
 export interface LicenceTypeMap{

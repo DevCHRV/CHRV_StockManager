@@ -33,13 +33,19 @@
     </div>
     <div>
       <div>
-        <label>Filtrer par utilisateur: </label>
+        <label>Filtrer par Utilisateur: </label>
         <div class="flex flex-row items-center content-center align-middle">
-          <select matInput [formControl]="filterBy2" (change)="checkNotNull2($event)" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            <option [value]="null" selected>---</option>
-            <option *ngFor="let user of users" [value]="user.id">{{user.firstname}} {{user.lastname}}</option>
-          </select>
-          <button (click)="resetFilter2()">
+          <input type="text" matInput [formControl]="searchUserSelect"
+          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          placeholder="Chercher un utilisateur"
+          required
+          [matAutocomplete]="autoUser">
+          <mat-autocomplete #autoUser="matAutocomplete" [displayWith]="getUserDisplay.bind(this)" >
+          <mat-option *ngFor="let user of filteredUsersOptions | async" [value]="user.id">
+              {{user.firstname}} {{user.lastname}}
+          </mat-option>
+          </mat-autocomplete>
+          <button (click)="resetSearchUserSelect()">
             <mat-icon>close</mat-icon>
           </button>
         </div>
@@ -76,7 +82,7 @@
         <th class="p-3 text-left">Utilisateur</th>
         <th class="p-3 text-left h-14">Actions</th>
       </tr>
-      <tr *ngFor="let licence of dataSource.data | filter:filterBy.value!:['type','id'] | filter:filterBy2.value:['user','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
+      <tr *ngFor="let licence of dataSource.data | filter:filterBy.value!:['type','id'] | filter:searchUserSelect.value:['user','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
         <th class="p-3 text-left h-14 sm:w-40">ID</th>
         <th class="p-3 text-left h-12">Type</th>
         <th class="p-3 text-left h-12">Description</th>
@@ -94,7 +100,7 @@
         <td class="hover:bg-gray-100 p-3 h-12"></td>
         <td class="hover:bg-gray-100 p-3 h-14"></td>
       </tr>
-      <tr *ngFor="let licence of dataSource.data | filter:filterBy.value!:['type','id'] | filter:filterBy2.value:['user','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light">
+      <tr *ngFor="let licence of dataSource.data | filter:filterBy.value!:['type','id'] | filter:searchUserSelect.value:['user','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light">
         <td class="hover:bg-gray-100 p-3 h-14 sm:w-40 flex flex-row justify-between items-center">
           {{licence.id}}
           <span *ngIf="licence.user==null"class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-green-100 text-green-800 text-xs font-medium py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Disponible</span>
