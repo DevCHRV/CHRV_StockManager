@@ -16,6 +16,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import { SpinnerComponent } from './components/spinner/spinner.component';
 import { LoggedGuard } from '../guards/logged/logged.guard';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const staticRoutes: Routes = [
   {path: '', component: DashboardComponent, canActivate:[LoggedGuard]},
@@ -42,6 +43,7 @@ const staticRoutes: Routes = [
     MatCardModule,
     FormsModule,
     ReactiveFormsModule,
+    BrowserAnimationsModule,
     MatButtonModule,
   ],
   providers:[

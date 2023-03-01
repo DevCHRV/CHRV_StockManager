@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IUser, Role } from '../../models/user';
+import { IUser, Role, User } from '../../models/user';
 import { FormControl, FormBuilder } from '@angular/forms';
 import { Observable, startWith, map } from 'rxjs';
 import { ToastService } from '../../../services/toast/toast.service';
@@ -15,7 +15,7 @@ import { AuthService } from '../../../auth/services/auth/auth.service';
 })
 export class UserDetailsComponent {
 
-  public user:IUser;
+  public user:User;
   public roles:Role[] = [];
 
   public filteredRoleOptions:Observable<Role[]>;
@@ -80,7 +80,7 @@ export class UserDetailsComponent {
   private _load(){
     this.userService.getById(this.route.snapshot.paramMap.get('user_id')!).subscribe(
       res => {
-        this.user = res
+        this.user = new User(res.id, res.username, res.firstname, res.lastname, res.isActive, res.roles, res.licences);
       }
     )
     this.userService.getRoles().subscribe(
