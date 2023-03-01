@@ -137,10 +137,8 @@ export class ItemDetailsComponent {
     this.service.getById(this.route.snapshot.paramMap.get('id')!).subscribe(
       res=>{
         this.item=res
+        this.interventions = res.interventions
         this.itemLicences=res.licence
-        this.interventionService.getFor(this.item).subscribe(
-          res => this.interventions = res
-        )
       })
     //Then we fetch what is needed to populate the rest
     this.userService.get().subscribe(

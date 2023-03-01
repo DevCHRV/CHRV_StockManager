@@ -5,6 +5,7 @@ export interface IUser {
     username:string,
     firstname:string,
     lastname:string,
+    isActive:boolean,
     licences:Licence[] | null,
     roles:Role[],
 }
@@ -14,14 +15,16 @@ export class User implements IUser {
     username:string;
     firstname:string;
     lastname:string;
+    isActive:boolean;
     licences:Licence[] | null;
     roles:Role[];
 
-    constructor(id:number, username:string, firstname:string, lastname:string, roles:Role[], licences:Licence[]|null = []){
+    constructor(id:number, username:string, firstname:string, lastname:string, isActive:boolean = true, roles:Role[], licences:Licence[]|null = []){
         this.id = id;
         this.username = username;
         this.firstname = firstname;
         this.lastname = lastname;
+        this.isActive = isActive;
         this.licences = licences || [];
         this.roles = roles;
     }

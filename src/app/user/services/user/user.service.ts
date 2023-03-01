@@ -4,7 +4,7 @@ import axios from 'axios';
 import { map } from 'rxjs';
 import { RouterService } from 'src/app/services/router/router.service';
 import { environment } from 'src/environments/environment';
-import { IUser } from '../../models/user';
+import { IUser, Role } from '../../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -29,13 +29,19 @@ export class UserService {
 
   getById = (id:string) => {
     return this.http.get(`${this.base_url}${id}`).pipe(
-      map((data) => data as IUser)
+      map((data) => data! as IUser)
     )
   }
 
   put = (user:IUser) => {
     return this.http.put(`${this.base_url}${user.id}`, user, {}).pipe(
       map((data) => data as IUser)
+    )
+  }
+  
+  getRoles = () => {
+    return this.http.get(`${environment.apiUrl}role/`).pipe(
+      map((data) => data as Role[])
     )
   }
 }

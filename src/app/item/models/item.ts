@@ -1,6 +1,7 @@
 import { Licence } from '../../licence/models/licences';
 import { Order } from '../../order/models/order';
 import { ItemType } from '../../type/models/type';
+import { Intervention } from '../../intervention/models/intervention';
 export interface Item {
     id:number,
     reference:string,
@@ -12,6 +13,7 @@ export interface Item {
     warranty_expires_at?:Date,
     type:ItemType,
     licence:Licence[],
+    interventions:Intervention[],
     is_available:boolean,
     is_placed?:boolean,
     unit:string,

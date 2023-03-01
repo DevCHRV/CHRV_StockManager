@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
-import { map, tap } from 'rxjs';
+import { map, tap, of } from 'rxjs';
 import { RouterService } from 'src/app/services/router/router.service';
 import { environment } from 'src/environments/environment';
 import { IUser, User } from '../../../user/models/user';
@@ -12,7 +12,6 @@ import { IUser, User } from '../../../user/models/user';
 })
 export class AuthService {
   private base_url: string = `${environment.apiUrl}auth/`;
-  private user_url: string = `${environment.apiUrl}user/`;
 
   private user:User | null;
 
@@ -24,7 +23,7 @@ export class AuthService {
     const logged = localStorage.getItem("isLoggedIn")
     if(logged=="true"){
       this.fetchUser().subscribe(res=>{
-        this.user = new User(res.id, res.username, res.firstname, res.lastname, res.roles, res.licences);
+        this.user = new User(res.id, res.username, res.firstname, res.lastname, res.isActive, res.roles, res.licences);
       })
     }
   }
@@ -33,7 +32,7 @@ export class AuthService {
     return this.http.post(`${this.base_url}login`, props).pipe(
       map((data)=>data as IUser),
       tap(res=>{
-        this.user = new User(res.id, res.username, res.firstname, res.lastname, res.roles, res.licences);
+        this.user = new User(res.id, res.username, res.firstname, res.lastname, res.isActive, res.roles, res.licences);
         localStorage.setItem("isLoggedIn", "true")
         redirectUrl && this.router.navigateTo(redirectUrl)
       }),
@@ -57,6 +56,20 @@ export class AuthService {
 
   hasAuthority(authority_name:string){
     return this.user?.hasAuthority(authority_name)
+  }
+
+  hasAuthorityAsync(autority_name:string){
+    if(this.user){
+      return of(this.hasAuthority(autority_name))
+    }else{
+      return this.http.get(`${this.base_url}current`).pipe(
+        map((data)=>data as IUser),
+        map((user)=>{
+          this.user = new User(user.id, user.username, user.firstname, user.lastname, user.isActive, user.roles, user.licences);
+          return this.hasAuthority(autority_name)
+        })
+      )
+    }
   }
 
   getId(){
@@ -118,7 +131,7 @@ export class AuthService {
   }
 
   fetchUser(){
-    return this.http.get(`${this.user_url}current`).pipe(
+    return this.http.get(`${this.base_url}current`).pipe(
       map((data)=>data as IUser)
     )
   }

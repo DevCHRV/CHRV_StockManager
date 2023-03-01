@@ -70,7 +70,7 @@
         </td>
         <td class="p-3">{{order.date | date:'dd-MM-YYYY'}}</td>
         <td class="p-3">{{order.user.firstname}} {{order.user.lastname}}</td>
-        <td class="p-3 h-14"><button mat-flat-button color="accent" (click)="goTo(order.id)">Détails</button></td>
+        <td class="p-3 h-14"><button mat-flat-button color="accent" (click)="goTo(order.id)" class="w-24">Détails</button></td>
       </tr>
     </tbody>
   </table>

@@ -1,9 +1,8 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { Item } from '../../item/models/item';
 
 @Pipe({ name: 'sort' })
 export class SortPipe implements PipeTransform {
-  transform(values: any[], isAsc:boolean | null = true, property:string = ''): Item[] {
+  transform(values: any[], isAsc:boolean | null = true, property:string = ''): any[] {
 
     if(!values || property=='')
         return values

@@ -42,6 +42,10 @@ export class HeaderComponent {
     this.router.navigateTo('login')
   }
 
+  goToUser(){
+    this.router.navigateTo('user')
+  }
+
   goToDashboard(){
     this.router.navigateTo('/')
   }
