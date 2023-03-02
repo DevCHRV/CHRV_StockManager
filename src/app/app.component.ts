@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import axios from 'axios';
 import { AuthService } from './auth/services/auth/auth.service';
+import { RouterService } from './services/router/router.service';
 
 @Component({
   selector: 'app-root',
@@ -10,7 +10,7 @@ import { AuthService } from './auth/services/auth/auth.service';
 export class AppComponent {
   title = 'StockManager';
 
-  constructor(private auth:AuthService){
+  constructor(private auth:AuthService, private router:RouterService){
     this.auth.init()
   }
 }

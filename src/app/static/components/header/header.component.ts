@@ -71,7 +71,7 @@ export class HeaderComponent {
   }
 
   goToDashboard(){
-    this.router.navigateTo('/')
+    this.router.navigateTo('')
   }
 
   goToItem(){

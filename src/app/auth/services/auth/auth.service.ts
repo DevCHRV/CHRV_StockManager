@@ -23,7 +23,7 @@ export class AuthService {
     const logged = localStorage.getItem("isLoggedIn")
     if(logged=="true"){
       this.fetchUser().subscribe(res=>{
-        this.user = new User(res.id, res.username, res.firstname, res.lastname, res.isActive, res.roles, res.licences);
+        this.user = new User(res.id, res.username, res.email, res.firstname, res.lastname, res.isActive, res.roles, res.licences);
       })
     }
   }
@@ -32,7 +32,7 @@ export class AuthService {
     return this.http.post(`${this.base_url}login`, props).pipe(
       map((data)=>data as IUser),
       tap(res=>{
-        this.user = new User(res.id, res.username, res.firstname, res.lastname, res.isActive, res.roles, res.licences);
+        this.user = new User(res.id, res.username, res.email, res.firstname, res.lastname, res.isActive, res.roles, res.licences);
         localStorage.setItem("isLoggedIn", "true")
         redirectUrl && this.router.navigateTo(redirectUrl)
       }),
@@ -65,7 +65,7 @@ export class AuthService {
       return this.http.get(`${this.base_url}current`).pipe(
         map((data)=>data as IUser),
         map((user)=>{
-          this.user = new User(user.id, user.username, user.firstname, user.lastname, user.isActive, user.roles, user.licences);
+          this.user = new User(user.id, user.username, user.email, user.firstname, user.lastname, user.isActive, user.roles, user.licences);
           return this.hasAuthority(autority_name)
         })
       )
@@ -110,19 +110,19 @@ export class AuthService {
   }
 
   isLoggedIn(){
-    /*
-    const token = localStorage.getItem('token')
-    if(token){
-      const value:any = jwtDecode(token)
-      return (new Date().getTime()) < (value.exp*1000)
-    }
-    return false;
-    */
     const logged = localStorage.getItem('isLoggedIn')
     if(logged){
       return logged=="true"
     } else  
       return this.user != null && this.user != undefined;
+  }
+
+  isLoggedInAsync(){
+    const logged = localStorage.getItem('isLoggedIn')
+    if(logged){
+      return of(logged=="true")
+    } else  
+      return of(this.user != null && this.user != undefined);
   }
 
   removeUser(){

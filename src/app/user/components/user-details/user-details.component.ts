@@ -80,7 +80,7 @@ export class UserDetailsComponent {
   private _load(){
     this.userService.getById(this.route.snapshot.paramMap.get('user_id')!).subscribe(
       res => {
-        this.user = new User(res.id, res.username, res.firstname, res.lastname, res.isActive, res.roles, res.licences);
+        this.user = new User(res.id, res.username, res.email, res.firstname, res.lastname, res.isActive, res.roles, res.licences);
       }
     )
     this.userService.getRoles().subscribe(

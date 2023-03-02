@@ -3,6 +3,7 @@ import { Licence } from '../../licence/models/licences';
 export interface IUser {
     id:number,
     username:string,
+    email:string,
     firstname:string,
     lastname:string,
     isActive:boolean,
@@ -13,15 +14,17 @@ export interface IUser {
 export class User implements IUser {
     id:number;
     username:string;
+    email:string;
     firstname:string;
     lastname:string;
     isActive:boolean;
     licences:Licence[] | null;
     roles:Role[];
 
-    constructor(id:number, username:string, firstname:string, lastname:string, isActive:boolean = true, roles:Role[], licences:Licence[]|null = []){
+    constructor(id:number, username:string, email:string, firstname:string, lastname:string, isActive:boolean = true, roles:Role[], licences:Licence[]|null = []){
         this.id = id;
         this.username = username;
+        this.email = email;
         this.firstname = firstname;
         this.lastname = lastname;
         this.isActive = isActive;

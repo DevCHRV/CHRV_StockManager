@@ -3,7 +3,7 @@
     <div class="offcanvas offcanvas-start fixed bottom-0 flex flex-col max-w-full bg-white invisible bg-clip-padding shadow-sm outline-none transition duration-300 ease-in-out text-gray-700 top-0 left-0 border-none w-52" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
       <div class="flex items-center justify-between p-4">
         <mat-toolbar class="flex flex-row justify-between">
-          <a (click)="goToDashboard()" class="text-black cursor-pointer" data-bs-dismiss="offcanvas" aria-label="Close">Menu</a>
+          <button [disabled]="!auth.isLoggedIn()" (click)="goToDashboard()" class="text-black cursor-pointer" data-bs-dismiss="offcanvas" aria-label="Close">Menu</button>
           <button type="button" class="btn-close box-content w-4 h-4 p-2 -my-5 -mr-2 text-black border-none rounded-none opacity-50 focus:shadow-none focus:outline-none focus:opacity-100 hover:text-black hover:opacity-75 hover:no-underline" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </mat-toolbar>
       </div>
@@ -38,23 +38,23 @@
           <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
         </button>          
         </div>
-        <button (click)="goToDashboard()" class="text-white">StockManager | {{auth.getUsername()}}</button>
+        <button [disabled]="!auth.isLoggedIn()" (click)="goToDashboard()" class="text-white">StockManager | {{auth.getUsername()}}</button>
       </div>
       <div class="justify-between invisible md:visible">
-        <span *ngIf="auth.hasAuthority('ADM')" class="">
-          <a (click)="goToUser()" mat-flat-button color="primary">Utilisateurs</a>
+        <span *ngIf="auth.isLoggedIn()" class="">
+          <a *ngIf="auth.hasAuthority('ADM')" (click)="goToUser()" mat-flat-button color="primary">Utilisateurs</a>
         </span>
-        <span *ngIf="auth.hasAuthority('PGM')" class="">
-          <a (click)="goToItem()" mat-flat-button color="primary">Matériel</a>
+        <span *ngIf="auth.isLoggedIn()" class="">
+          <a *ngIf="auth.hasAuthority('PGM')"(click)="goToItem()" mat-flat-button color="primary">Matériel</a>
         </span>
-        <span *ngIf="auth.hasAuthority('PGM')" class="">
-          <a (click)="goToLicence()" mat-flat-button color="primary">Licences</a>
+        <span *ngIf="auth.isLoggedIn()" class="">
+          <a *ngIf="auth.hasAuthority('PGM')" (click)="goToLicence()" mat-flat-button color="primary">Licences</a>
         </span>
-        <span *ngIf="auth.hasAuthority('TEC')" class="">
-          <a (click)="goToIntervention()" mat-flat-button color="primary">Opérations</a>
+        <span *ngIf="auth.isLoggedIn()" class="">
+          <a *ngIf="auth.hasAuthority('TEC')" (click)="goToIntervention()" mat-flat-button color="primary">Opérations</a>
         </span>
-        <span *ngIf="auth.hasAuthority('PGM')" class="">
-          <a (click)="goToOrder()" mat-flat-button color="primary">Commandes</a>
+        <span *ngIf="auth.isLoggedIn()" class="">
+          <a *ngIf="auth.hasAuthority('PGM')" (click)="goToOrder()" mat-flat-button color="primary">Commandes</a>
         </span>
         <span *ngIf="!auth.isLoggedIn()" class="">
           | <a (click)="goToLogin()" mat-flat-button color="primary">Login</a>

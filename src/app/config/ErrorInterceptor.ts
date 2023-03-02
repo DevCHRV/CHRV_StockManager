@@ -16,7 +16,7 @@ export class ErrorInterceptor implements HttpInterceptor{
           if(error.status == 401){
             this.auth.removeUser()
             this.toast.setError("La session a expiré, veuillez vous reconnecter.")
-            return throwError(()=>new Error("La session a expiré, veuillez vous reconnecter."))
+            return throwError(()=>error)
           }
           if(error.status == 400) {
             this.toast.setError(`Une erreur s'est produite pendant l'opération: ${error.error}`)
