@@ -1,12 +1,14 @@
 <div *ngIf="intervention && intervention.item" class="flex flex-col justify-center min-h-5/6 pt-10">
-    <div class="font-bold text-2xl pb-10">
-        <p>Opération: </p>
+    <div class="pb-10 flex flex-row justify-between">
+        <p class="font-bold text-2xl">Opération: </p>
+        <a *ngIf="intervention.ticketNumber" mat-button mat-flat-button color="accent" href="https://jira.chrverviers.be/browse/{{intervention.ticketNumber}}" target="_blank">{{intervention.ticketNumber}}</a>
+        <a *ngIf="!intervention.ticketNumber" mat-button mat-flat-button color="accent" (click)="generateTicket(intervention)">Créer un ticket</a>
     </div>
     <div class="font-bold text-2xl pb-10">
         <div class="flex flex-col justify-between">
             <p>{{intervention.type.name}}</p>
-            <p>{{intervention.item.reference}} | {{intervention.item.serial_number}}</p>
-            <p>{{intervention.unit}} | {{intervention.room}}</p>
+            <p>{{intervention.item.reference}} | {{intervention.item.serialNumber}}</p>
+            <p>{{intervention.room.unit.name}} | {{intervention.room.name}}</p>
         </div>
     </div>
     <div class="py-4">
@@ -28,12 +30,8 @@
                 <input disabled value="{{intervention.type.name}})" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"/>
             </div>
             <div>
-                <label for="unit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Unité</label>
-                <input disabled name="unit" [(ngModel)]="intervention.unit" type="text" id="unit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            </div>
-            <div>
                 <label for="room" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Local</label>
-                <input disabled name="room" [(ngModel)]="intervention.room" type="text" id="room" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <input disabled name="room" value="{{intervention.room.unit.name}} | {{intervention.room.name}}" type="text" id="room" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
             </div>
             <div>
                 <label for="user" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Demandeur</label>
@@ -77,7 +75,7 @@
             <thead class="text-left">
                 <tr>
                     <th class="p-3">Type</th>
-                    <th class="p-3">Description</th>
+                    <th class="p-3">Référence</th>
                     <th class="p-3">Valeur</th>
                     <th class="p-3">Utilisateur</th>
                 </tr>
@@ -85,7 +83,7 @@
             <tbody *ngIf="intervention.licences" class="text-left">
                 <tr *ngFor="let licence of intervention.licences">
                 <td class="p-3">{{licence.type.name}}</td>
-                <td class="p-3">{{licence.description}}</td>
+                <td class="p-3">{{licence.reference}}</td>
                 <td class="p-3">{{licence.value}}</td>
                 <td class="p-3">{{licence.user?.firstname}} {{licence.user?.lastname}}</td>
                 </tr>

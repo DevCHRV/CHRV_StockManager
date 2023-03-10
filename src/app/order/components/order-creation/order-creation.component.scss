@@ -11,6 +11,23 @@ table {
   width: 100%;
 }
 
+@media (min-width: 640px) {
+  td {
+    border:none !important;
+  }
+}
+
+tr:last-child > td {
+  border-bottom: none !important;
+}
+
+.border-bottom-accent{
+  border-bottom-width: 2px;
+  --tw-border-opacity: 1;
+  border-color: mat.get-color-from-palette($accent-palette, A200);
+}
+
+
 .mat-column-actions {
   text-align: right;
 }

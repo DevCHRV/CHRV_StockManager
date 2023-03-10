@@ -1,24 +1,6 @@
 <div class="grid grid-cols-2 sm:grid-cols-5 gap-6 justify-between pt-5 items-center content-center align-middle">
     <div>
       <div>
-        <label>Trier par: </label>
-        <div class="flex flex-row items-center content-center align-middle">
-          <select matInput [formControl]="sortBy" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            <option value="id">ID</option>
-            <option value="description">Description</option>
-            <option value="value">Valeur</option>
-          </select>
-          <button *ngIf="isAsc.value" (click)="setAsc(false)">
-            <mat-icon>arrow_upward</mat-icon>
-          </button>
-          <button *ngIf="!isAsc.value" (click)="setAsc(true)">
-            <mat-icon>arrow_downward</mat-icon>
-          </button>
-        </div>
-      </div>
-    </div>
-    <div>
-      <div>
         <label>Filtrer par type: </label>
         <div class="flex flex-row items-center content-center align-middle">
           <select matInput [formControl]="filterBy" (change)="checkNotNull($event)" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
@@ -33,7 +15,26 @@
     </div>
     <div>
       <div>
-        <label>Filtrer par Utilisateur: </label>
+        <label>Filtrer par disponibilité: </label>
+        <div class="flex flex-row items-center content-center align-middle">
+          <select matInput [formControl]="filterBy2" (change)="checkNotNull2($event)" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <option [value]="null" selected>---</option>
+            <!-- 
+              Value for Disponible is 'false' because we trick the filter to check if the value contained in licence[item] is null or not
+              And in the case, if it's null (which equals false) then it is available
+            -->
+            <option [value]="false">Disponible</option>
+            <option [value]="true">Indisponible</option>
+          </select>
+          <button (click)="resetFilter2()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div>
+        <label>Filtrer par utilisateur: </label>
         <div class="flex flex-row items-center content-center align-middle">
           <input type="text" matInput [formControl]="searchUserSelect"
           class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -76,40 +77,69 @@
     <thead class="text-white sm:border-b-2-black">
       <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2 border-primary">
         <th class="p-3 text-left h-14 sm:w-40">ID</th>
-        <th class="p-3 text-left">Type</th>
-        <th class="p-3 text-left">Description</th>
-        <th class="p-3 text-left">Valeur</th>
-        <th class="p-3 text-left">Utilisateur</th>
+        <th class="p-3 text-left h-11">Type</th>
+        <th class="p-3 text-left h-11">Référence</th>
+        <th class="p-3 text-left h-11">Valeur</th>
+        <th class="p-3 text-left h-11">Utilisateur</th>
         <th class="p-3 text-left h-14">Actions</th>
       </tr>
-      <tr *ngFor="let licence of dataSource.data | filter:filterBy.value!:['type','id'] | filter:searchUserSelect.value:['user','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2 border-primary">
-        <th class="p-3 text-left h-14 sm:w-40">ID</th>
-        <th class="p-3 text-left h-12">Type</th>
-        <th class="p-3 text-left h-12">Description</th>
-        <th class="p-3 text-left h-12">Valeur</th>
-        <th class="p-3 text-left h-12">Utilisateur</th>
+      <tr *ngFor="let licence of dataSource.data | filter:filterBy2.value:['user'] | filter:filterBy.value!:['type','id'] | filter:searchUserSelect.value:['user','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2 border-primary">
+        <th class="p-3 text-left h-14 sm:w-40 cursor-pointer" (click)="orderBy('id')">
+          <div class="flex flex-row justify-between align-middle self-center">
+            <p class="mr-2">ID</p>
+            <mat-icon *ngIf="sortBy.value == 'id' && isAsc.value">arrow_upward</mat-icon>
+            <mat-icon *ngIf="sortBy.value == 'id' && !isAsc.value">arrow_downward</mat-icon>
+          </div>
+        </th>   
+        <th class="p-3 text-left h-11 cursor-pointer" (click)="orderBy('type')">
+          <div class="flex flex-row justify-between align-middle self-center">
+            <p class="mr-2">Type</p>
+            <mat-icon *ngIf="sortBy.value == 'type' && isAsc.value">arrow_upward</mat-icon>
+            <mat-icon *ngIf="sortBy.value == 'type' && !isAsc.value">arrow_downward</mat-icon>
+          </div>
+        </th>         <th class="p-3 text-left h-11 cursor-pointer" (click)="orderBy('reference')">
+          <div class="flex flex-row justify-between align-middle self-center">
+            <p class="mr-2">Référence</p>
+            <mat-icon *ngIf="sortBy.value == 'reference' && isAsc.value">arrow_upward</mat-icon>
+            <mat-icon *ngIf="sortBy.value == 'reference' && !isAsc.value">arrow_downward</mat-icon>
+          </div>
+        </th>   
+        <th class="p-3 text-left h-11 cursor-pointer" (click)="orderBy('value')">
+          <div class="flex flex-row justify-between align-middle self-center">
+            <p class="mr-2">Valeur</p>
+            <mat-icon *ngIf="sortBy.value == 'value' && isAsc.value">arrow_upward</mat-icon>
+            <mat-icon *ngIf="sortBy.value == 'value' && !isAsc.value">arrow_downward</mat-icon>
+          </div>
+        </th>    
+        <th class="p-3 text-left h-11 cursor-pointer" (click)="orderBy('user')">
+          <div class="flex flex-row justify-between align-middle self-center">
+            <p class="mr-2">Utilisateur</p>
+            <mat-icon *ngIf="sortBy.value == 'user' && isAsc.value">arrow_upward</mat-icon>
+            <mat-icon *ngIf="sortBy.value == 'user' && !isAsc.value">arrow_downward</mat-icon>
+          </div>
+        </th>            
         <th class="p-3 text-left h-14" width="110px">Actions</th>
       </tr>
     </thead>
     <tbody class="flex-1 sm:flex-none">
       <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 border-grey-light border-primary">
         <td class="hover:bg-gray-100 p-3 h-14 sm:w-40">Pas de donnée</td>
-        <td class="hover:bg-gray-100 p-3 h-12"></td>
-        <td class="hover:bg-gray-100 p-3 h-12"></td>
-        <td class="hover:bg-gray-100 p-3 h-12"></td>
-        <td class="hover:bg-gray-100 p-3 h-12"></td>
+        <td class="hover:bg-gray-100 p-3 h-11"></td>
+        <td class="hover:bg-gray-100 p-3 h-11"></td>
+        <td class="hover:bg-gray-100 p-3 h-11"></td>
+        <td class="hover:bg-gray-100 p-3 h-11"></td>
         <td class="hover:bg-gray-100 p-3 h-14"></td>
       </tr>
-      <tr *ngFor="let licence of dataSource.data | filter:filterBy.value!:['type','id'] | filter:searchUserSelect.value:['user','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light">
+      <tr *ngFor="let licence of dataSource.data | filter:filterBy2.value:['user'] | filter:filterBy.value!:['type','id'] | filter:searchUserSelect.value:['user','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light">
         <td class="hover:bg-gray-100 p-3 h-14 sm:w-40 flex flex-row justify-between items-center">
           {{licence.id}}
           <span *ngIf="licence.user==null"class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-green-100 text-green-800 text-xs font-medium py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Disponible</span>
           <span *ngIf="licence.user!=null" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-red-100 text-red-800 text-xs font-medium py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Indisponible</span>
         </td>
-        <td class="hover:bg-gray-100 p-3 h-12">{{licence.type.name}}</td>
-        <td class="hover:bg-gray-100 p-3 h-12">{{licence.description}}</td>
-        <td class="hover:bg-gray-100 p-3 h-12">{{licence.value}}</td>
-        <td class="hover:bg-gray-100 p-3 h-12">{{licence.user?.firstname}} {{licence.user?.lastname}}</td>
+        <td class="hover:bg-gray-100 p-3 h-11">{{licence.type.name}}</td>
+        <td class="hover:bg-gray-100 p-3 h-11">{{licence.reference}}</td>
+        <td class="hover:bg-gray-100 p-3 h-11">{{licence.value}}</td>
+        <td class="hover:bg-gray-100 p-3 h-11">{{licence.user?.firstname}} {{licence.user?.lastname}}</td>
         <td class="hover:bg-gray-100 p-3 h-14"><button mat-flat-button color="accent" (click)="goTo(licence.id)">Détails</button></td>
       </tr>
     </tbody>

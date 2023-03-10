@@ -35,9 +35,9 @@ export class LicenceService {
     )
   }
 
-  post(licence: Licence) {
+  post(licence: any) {
     return this.http.post(`${this.base_url}`, licence).pipe(
-      map((data) => data as Item)
+      map((data) => data as Licence)
     )  
   }
 }

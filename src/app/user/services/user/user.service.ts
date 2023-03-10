@@ -27,6 +27,14 @@ export class UserService {
     )
   }
 
+  getLDAP = () => {
+    return this.http.get(`${this.base_url}ldap`).pipe(
+      map((data) =>{
+        return data as IUser[];
+      })
+    )
+  }
+
   getById = (id:string) => {
     return this.http.get(`${this.base_url}${id}`).pipe(
       map((data) => data! as IUser)

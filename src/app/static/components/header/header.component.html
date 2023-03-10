@@ -14,6 +14,7 @@
             <a *ngIf="auth.isLoggedIn()" mat-list-item (click)="goToLogout()"><mat-icon>exit_to_app</mat-icon> Logout</a>
             <div *ngIf="auth.isLoggedIn()">
               <a *ngIf="auth.hasAuthority('ADM')" mat-list-item (click)="goToUser()" data-bs-dismiss="offcanvas">Utilisateurs</a>
+              <a *ngIf="auth.hasAuthority('TEC')" mat-list-item (click)="goToUnit()" data-bs-dismiss="offcanvas">Services</a>
               <a *ngIf="auth.hasAuthority('PGM')" mat-list-item (click)="goToItem()" data-bs-dismiss="offcanvas">Matériel</a>
               <a *ngIf="auth.hasAuthority('PGM')" mat-list-item (click)="goToLicence()" data-bs-dismiss="offcanvas">Licences</a>
               <a *ngIf="auth.hasAuthority('TEC')" mat-list-item (click)="goToIntervention()" data-bs-dismiss="offcanvas">Opérations</a>
@@ -43,6 +44,9 @@
       <div class="justify-between invisible md:visible">
         <span *ngIf="auth.isLoggedIn()" class="">
           <a *ngIf="auth.hasAuthority('ADM')" (click)="goToUser()" mat-flat-button color="primary">Utilisateurs</a>
+        </span>
+        <span *ngIf="auth.isLoggedIn()" class="">
+          <a *ngIf="auth.hasAuthority('TEC')" (click)="goToUnit()" mat-flat-button color="primary">Services</a>
         </span>
         <span *ngIf="auth.isLoggedIn()" class="">
           <a *ngIf="auth.hasAuthority('PGM')"(click)="goToItem()" mat-flat-button color="primary">Matériel</a>

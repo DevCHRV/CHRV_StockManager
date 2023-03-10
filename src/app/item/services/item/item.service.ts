@@ -11,6 +11,7 @@ import { Item } from '../../models/item';
 })
 export class ItemService {
 
+  private selectedItems:Item[] = []
   private base_url: string = `${environment.apiUrl}item/`;
 
   constructor(private http: HttpClient, private router: RouterService) {
@@ -39,5 +40,21 @@ export class ItemService {
     return this.http.post(`${this.base_url}`, item).pipe(
       map((data) => data as Item)
     )  
+  }
+
+  pushSelected(item:Item){
+    this.selectedItems.push(item)
+  }
+
+  removeSelected(item:Item){
+    this.selectedItems = this.selectedItems.filter(i=>i.id != item.id)
+  }
+
+  getSelected(){
+    return this.selectedItems
+  }
+
+  clearSelected(){
+    this.selectedItems = []
   }
 }

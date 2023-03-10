@@ -12,11 +12,12 @@ import { RouterModule, Routes } from '@angular/router';
 import { MatNativeDateModule } from '@angular/material/core';
 import {MatDialogModule} from '@angular/material/dialog'
 import { OrderListComponent } from './components/order-list/order-list.component';
-import { OrderDetailsComponent } from './components/order-details/order-details.component';
+import { OrderDetailsComponent, UpdateModal } from './components/order-details/order-details.component';
 import {MatTreeModule} from '@angular/material/tree'
 import { MatExpansionModule } from '@angular/material/expansion';
 import { LoggedGuard } from '../guards/logged/logged.guard';
 import { ProgrammerGuard } from '../guards/programmer/programmer.guard';
+import { MatFormFieldModule } from '@angular/material/form-field';
 
 const orderRoutes: Routes = [
   {path:'order', component:OrderListComponent, canActivate:[ProgrammerGuard]},
@@ -31,6 +32,7 @@ const orderRoutes: Routes = [
     OrderListComponent,
     OrderDetailsComponent,
     Modal,
+    UpdateModal,
   ],
   imports: [
     CommonModule,
@@ -39,6 +41,7 @@ const orderRoutes: Routes = [
     PipeModule,
     MatInputModule,
     MatSelectModule,
+    MatFormFieldModule,
     MatAutocompleteModule,
     ReactiveFormsModule,
     MatButtonModule,
@@ -54,6 +57,7 @@ const orderRoutes: Routes = [
     OrderListComponent,
     OrderDetailsComponent,
     Modal,
+    UpdateModal,
   ]
 })
 export class OrderModule { }

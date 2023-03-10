@@ -58,4 +58,10 @@ export class InterventionService {
       map((data) => data as InterventionType[])
     )
   }
+
+  generateTicket(intervention:Intervention){
+    return this.http.put(`${this.base_url}${intervention.id}/ticket`, intervention).pipe(
+      map((data) => data as string)
+    )
+  }
 }

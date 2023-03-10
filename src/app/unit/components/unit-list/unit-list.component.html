@@ -1,0 +1,51 @@
+<div class="grid grid-cols-2 sm:grid-cols-5 gap-6 justify-between pt-5 items-center content-center align-middle">
+    <div>
+      <div>
+        <label>Chercher: </label>
+        <input matInput [formControl]="searchBy" name="search" placeholder="Rechercher" type="text" id="search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">  
+      </div>
+    </div>
+    <div class="flex flex-row justify-end align-middle sm:col-span-4">
+        <a mat-button mat-flat-button color="primary" (click)="goToCreation()">Ajouter</a>
+    </div>
+  </div>
+  <div class="flex items-center">
+    <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg sm:shadow-lg my-5 overflow-auto">
+      <thead class="text-white sm:border-b-2-black">
+        <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2 border-primary">
+          <th class="p-3 text-left h-14">ID</th>
+          <th class="p-3 text-left">Nom</th>
+          <th class="p-3 text-left h-14" width="110px">Actions</th>
+        </tr>
+        <tr *ngFor="let item of dataSource.data | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2 border-primary">
+          <th class="p-3 h-14 text-left cursor-pointer" (click)="orderBy('id')">
+            <div class="flex flex-row justify-between align-middle self-center">
+              <p class="mr-2">ID</p>
+              <mat-icon *ngIf="sortBy.value == 'id' && isAsc.value">arrow_upward</mat-icon>
+              <mat-icon *ngIf="sortBy.value == 'id' && !isAsc.value">arrow_downward</mat-icon>
+            </div>
+          </th>          
+          <th class="p-3 h-11 text-left cursor-pointer" (click)="orderBy('name')">
+            <div class="flex flex-row justify-between align-middle self-center">
+              <p class="mr-2">Nom</p>
+              <mat-icon *ngIf="sortBy.value == 'name' && isAsc.value">arrow_upward</mat-icon>
+              <mat-icon *ngIf="sortBy.value == 'name' && !isAsc.value">arrow_downward</mat-icon>
+            </div>
+          </th>
+          <th class="p-3 text-left h-14" width="110px">Actions</th>
+        </tr>
+      </thead>
+      <tbody class="flex-1 sm:flex-none">
+        <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 border-grey-light ">
+          <td class="hover:bg-gray-100 p-3 h-11">Pas de donnée</td>
+          <td class="hover:bg-gray-100 p-3 h-11"></td>
+          <td class="hover:bg-gray-100 p-3 h-11"></td>
+        </tr>
+        <tr *ngFor="let unit of dataSource.data | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light">
+          <td class="p-3 h-14 text-left">{{unit.id}}</td>
+          <td class="p-3 h-11 text-left">{{unit.name}}</td>
+          <td class="hover:bg-gray-100 p-3 h-14"><button mat-flat-button color="accent" (click)="goTo(unit.id)">Détails</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>

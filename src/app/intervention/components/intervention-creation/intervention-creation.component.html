@@ -4,8 +4,8 @@
     </div>
     <div class="font-bold text-2xl pb-10">
         <div class="flex flex-col justify-between">
-            <p>Sur {{intervention.item.reference}} | {{intervention.item.serial_number}} ({{intervention.item.type.name}})</p>
-            <p>{{intervention.item.unit}} | {{intervention.item.room}}</p>
+            <p>Sur {{intervention.item.reference}} | {{intervention.item.serialNumber}} ({{intervention.item.type.name}})</p>
+            <p>{{intervention.item.room.unit.name}} | {{intervention.item.room.name}}</p>
         </div>
     </div>
     <div class="py-4">
@@ -33,27 +33,30 @@
                 </mat-select>
             </div>
             <div>
-                <label for="unit" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Unité</label>
-                <input name="unit" formControlName="unit" [(ngModel)]="intervention.unit" type="text" id="unit" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                <mat-error *ngIf="form.hasError('required', 'unit')">Ce champs est requis !</mat-error>
-                <mat-error *ngIf="form.hasError('minlength', 'unit')">Cette valeur est trop courte !</mat-error>
-            </div>
-            <div>
                 <label for="room" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Local</label>
-                <input name="room" formControlName="room" [(ngModel)]="intervention.room" type="text" id="room" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                <mat-error *ngIf="form.hasError('required', 'room')">Ce champs est requis !</mat-error>
-                <mat-error *ngIf="form.hasError('minlength', 'room')">Cette valeur est trop courte !</mat-error>
+                <div *ngIf="rooms" class="mr-2 h-10 col-span-1">
+                    <input type="text" matInput [formControl]="searchRoomSelect" [(ngModel)]="intervention.room"
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Chercher un local"
+                    required
+                    [matAutocomplete]="autoRoom">
+                    <mat-autocomplete #autoRoom="matAutocomplete" [displayWith]="getRoomDisplay.bind(this)" >
+                    <mat-option *ngFor="let room of filteredRoomOptions | async" [value]="room" selected>
+                        {{room.unit.name}} ({{room.name}})
+                    </mat-option>
+                    </mat-autocomplete>
+                </div>
             </div>
             <div>
                 <label for="user" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Demandeur</label>
-                <div *ngIf="users" class="mr-2 h-10 col-span-1">
+                <div *ngIf="ldapUsers" class="mr-2 h-10 col-span-1">
                     <input type="text" matInput [formControl]="searchNotifierSelect"
                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     placeholder="Chercher un Utilisateur"
                     required
                     [matAutocomplete]="autoNotifier">
                     <mat-autocomplete #autoNotifier="matAutocomplete" [displayWith]="getUserDisplay.bind(this)" >
-                    <mat-option *ngFor="let user of filteredNotifierOptions | async" [value]="user.id">
+                    <mat-option *ngFor="let user of filteredNotifierOptions | async" [value]="user.username">
                         {{user.username}} ({{user.firstname}} {{user.lastname}})
                     </mat-option>
                     </mat-autocomplete>
@@ -67,7 +70,6 @@
             <div>
                 <label for="actualDate" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date de réalisation</label>
                 <input name="actualDate" formControlName="actualDate" [ngModel]="intervention.actualDate | date:'yyyy-MM-dd'" (ngModelChange)="intervention.actualDate=$event" type="date" id="actualDate" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                <mat-error *ngIf="form.hasError('required', 'actualDate')">Ce champs est requis !</mat-error>
             </div>
         </div>
     </form>
@@ -87,13 +89,13 @@
                         placeholder="Chercher un Utilisateur"
                         [matAutocomplete]="autoUser">
                         <mat-autocomplete #autoUser="matAutocomplete" [displayWith]="getUserDisplay.bind(this)" >
-                        <mat-option *ngFor="let user of filteredUserOptions | async" [value]="user.id">
+                        <mat-option *ngFor="let user of filteredUserOptions | async" [value]="user.username">
                             {{user.username}} ({{user.firstname}} {{user.lastname}})
                         </mat-option>
                         </mat-autocomplete>
                     </div>
                 </div>
-                <div class="flex flex-row items-center justify-center align-middle col-span-3">
+                <div *ngIf="licences" class="flex flex-row items-center justify-center align-middle col-span-3">
                     <div class="mr-4 h-10 w-full">
                         <input type="text" matInput [formControl]="searchLicenceSelect"
                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"

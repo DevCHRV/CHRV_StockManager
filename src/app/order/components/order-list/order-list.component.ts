@@ -25,6 +25,7 @@ export class OrderListComponent implements OnInit {
   public sortBy = new FormControl<string>('id');
   public isAsc = new FormControl<boolean>(true);
   public filterBy = new FormControl<number|null>(null);
+  public filterBy2 = new FormControl<boolean|null>(null);
   public searchBy = new FormControl<string>('');
 
   constructor(private orderService:OrderService, private userService:UserService, private router:RouterService) {
@@ -41,6 +42,17 @@ export class OrderListComponent implements OnInit {
     this.userService.get().subscribe(res=>this.users = res)
   }
 
+  
+  orderBy(property:string){
+    if(this.sortBy.value == property){
+      this.isAsc.patchValue(!this.isAsc.value)
+      this.sortBy.patchValue(property)
+    } else {
+      this.isAsc.patchValue(true)
+      this.sortBy.patchValue(property)
+    }
+  }
+
   goTo(id:number){
     this.router.navigateTo(`/order/${id}`)
   }
@@ -55,5 +67,9 @@ export class OrderListComponent implements OnInit {
 
   resetFilter(){
     this.filterBy.setValue(null)
+  }
+
+  resetFilter2(){
+    this.filterBy2.setValue(null)
   }
 }

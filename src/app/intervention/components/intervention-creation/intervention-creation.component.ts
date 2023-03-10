@@ -13,6 +13,8 @@ import { Item } from '../../../item/models/item';
 import { Licence } from '../../../licence/models/licences';
 import { LicenceService } from '../../../licence/services/licence/licence.service';
 import { InterventionTypeEnum } from '../../models/InterventionTypeEnum';
+import { Room } from '../../../unit/models/unit';
+import { UnitService } from '../../../unit/services/unit/unit.service';
 
 @Component({
   selector: 'app-intervention-creation',
@@ -26,30 +28,38 @@ export class InterventionCreationComponent {
     description:'',
     notifier:{id:-1},
     expectedDate: this._getCurrentDateForInput(),
-    actualDate: this._getCurrentDateForInput(),
+    actualDate: null,
     item: null,
     licences: [],
     unit:'',
     room:'',
     type: {id:1} as unknown as InterventionType,
   } as unknown as Intervention;
-  public licences:Licence[];
-  public users:IUser[];
-  public types:InterventionType[];
+  public licences:Licence[] = [];
+  public rooms:Room[] = []
+  public ldapUsers:IUser[] = [];
+  public types:InterventionType[] = [];
 
   public filteredNotifierOptions:Observable<IUser[]>;
-  public searchNotifierSelect = new FormControl<string>('---');
+  public searchNotifierSelect = new FormControl<string>("");
+
+  public filteredRoomOptions:Observable<Room[]>;
+  public searchRoomSelect = new FormControl<string>("");
 
   public filteredUserOptions:Observable<IUser[]>;
-  public searchUserSelect = new FormControl<string>('---');
+  public searchUserSelect = new FormControl<string>("");
 
-  public searchLicenceSelect = new FormControl<string>('---');
   public filteredLicenceOptions:Observable<Licence[]>;
+  public searchLicenceSelect = new FormControl<string>('---');
+
 
   public form:FormGroup
 
-  constructor(private toast:ToastService, private service:InterventionService, private itemService:ItemService, private userService:UserService, private licenceService:LicenceService, private router:RouterService, private builder:FormBuilder, private route:ActivatedRoute){
-
+  constructor(private toast:ToastService, private service:InterventionService, private itemService:ItemService, private userService:UserService, private licenceService:LicenceService, private unitService:UnitService, private router:RouterService, private builder:FormBuilder, private route:ActivatedRoute){
+    this.form = builder.group({
+      description: ['', [Validators.required, Validators.minLength(1)]],
+      expectedDate: ['', [Validators.required]],
+    })  
   }
 
   ngOnInit(){
@@ -58,23 +68,28 @@ export class InterventionCreationComponent {
         this.intervention.licences = res.licence
         res.licence = []
         this.intervention.item = res
-        this.intervention.item = res
-        this.licences = res.licence
+        this.licences = [...this.licences, ...res.licence]
         this._init()
       })
+    this.userService.getLDAP().subscribe(
+      res=>{
+        this.ldapUsers = res
+        this.filterUserOptions()
+      }
+    )
+    this.unitService.getRooms().subscribe(
+      res=>{
+        this.rooms = res
+        this.filterRoomOptions()
+      }
+    )
     this.service.getTypes().subscribe(
       res=>this.types = res
     )
-    this.userService.get().subscribe(
+    this.licenceService.get().subscribe(
       res=>{
-        this.users = res
-        this.licenceService.get().subscribe(
-          res=>{
-            this.licences = res
-            //console.log(this.licences)
-            this.filterOptions()
-          }
-        )
+        this.licences = res
+        this.filterLicenceOptions()
       }
     )
   }
@@ -97,7 +112,7 @@ export class InterventionCreationComponent {
     //Little trick to force js to assign a number instead of an object
     //So that the back-end is happy and there are no parsing errors (in theory)
     licence!.item = this.intervention.item.id as unknown as Item
-    const user = this.users.find(l=>l.id==parseInt(userValue!))
+    const user = this.ldapUsers.find(l=>l.username==userValue)
     licence!.user = user ? user : null
     licence && this.intervention.licences.push(licence)
     this.resetInputs()
@@ -118,12 +133,15 @@ export class InterventionCreationComponent {
     this.searchUserSelect.setValue('---')
   }
 
-  getUserDisplay(id:number){
-    const tmp = this.users.find(u=>u.id==id)
+  getUserDisplay(username:string){
+    const tmp = this.ldapUsers.find(u=>u.username==username)
     return tmp ? `${tmp.username}`: ''
   }
 
-  
+  getRoomDisplay(room:Room){
+    return room ? `${room.unit.name} | ${room.name}`: ''
+  }
+
   getLicenceDescription(id:number){
     const tmp = this.licences?.find(l=>l.id==id)
     return tmp ? tmp.description : ''
@@ -132,23 +150,31 @@ export class InterventionCreationComponent {
   filterOptions(){
     this.filterUserOptions()
     this.filterLicenceOptions()
+    this.filterRoomOptions()
   }
 
   filterUserOptions(){
     this.filteredUserOptions = this.searchUserSelect.valueChanges.pipe(
       startWith(''),
-      map(value =>this._filterUser(value!||-1)))
+      map(value => {
+        return value == '' ? this.ldapUsers :
+        this._filterLDAPUsers(value!||-1)
+      }))
     this.filteredNotifierOptions = this.searchNotifierSelect.valueChanges.pipe(
       startWith(''),
       tap(value=>{
-        if( typeof(value)!='string'){
-          this.intervention.notifier = this.users.find(u=>u.id==value)
+        const notifier = this.ldapUsers.find(u=>u.username==value)
+        if(notifier){
+          this.intervention.notifier = notifier
         }
         else {
           this.intervention.notifier = undefined
         }
       }),
-      map(value => this._filterUser(value!||-1)))
+      map(value => {
+        return value == '' ? this.ldapUsers :
+        this._filterLDAPUsers(value!||-1)
+      }))
   }
 
   filterLicenceOptions(){
@@ -157,6 +183,13 @@ export class InterventionCreationComponent {
       map(value => this._filterLicence(value!||-1)),
       map(value => value.filter(l=>l.item==null)),
       )
+  }
+
+  filterRoomOptions(){
+    this.filteredRoomOptions = this.searchRoomSelect.valueChanges.pipe(
+      startWith(''),
+      map(value => this._filterRoom(value!||-1)),
+    )
   }
 
   isLicenceIntervention(){
@@ -171,16 +204,14 @@ export class InterventionCreationComponent {
   private _initForm(){
     this.form = this.builder.group({
       description: ['', [Validators.required, Validators.minLength(10)]],
-      unit: [this.intervention.item.unit, [Validators.required, Validators.minLength(2)]],
-      room: [this.intervention.item.room, [Validators.required, Validators.minLength(2)]],
+      room: [this.intervention.item.room, [Validators.required]],
       expectedDate: [this._getCurrentDateForInput(), [Validators.required]],
-      actualDate: [this._getCurrentDateForInput(), [Validators.required]],
+      actualDate: [null, []],
     })
   }
 
   private _fillModelValues(){
     this.intervention.room = this.intervention.item.room
-    this.intervention.unit = this.intervention.item.unit
   }
 
   private _getCurrentDateForInput(){
@@ -191,18 +222,14 @@ export class InterventionCreationComponent {
     return date.toISOString().split('T')[0]
   }
 
-  private _filterUser(value: number|string): IUser[] {
-    return typeof(value)=="string" ? this._doFilterUserString(`${value}`)
-      :this._doFilterUserInt(value)
+  private _filterLDAPUsers(value: number|string): IUser[] {
+    return this._doFilterLDAPUsersString(`${value}`)
   }
 
-  private _doFilterUserInt(id:number){
-    const tmp = this.users.find(u=>u.id==id)
-    return tmp ? this.users.filter(u=>u.id==tmp.id):this.users
-  }
-
-  private _doFilterUserString(input:string){
-    return this.users.filter(u=>`${u.username}${u.firstname}${u.lastname}`.toLowerCase().includes(input.toLowerCase()))
+  private _doFilterLDAPUsersString(input:string){
+    return this.ldapUsers.filter(u=>{
+      return `${u.username||''}${u.firstname||''} ${u.lastname||''}`.toLowerCase().includes(input.toLowerCase())
+    })
   }
 
   private _filterLicence(value: number|string): Licence[] {
@@ -217,6 +244,20 @@ export class InterventionCreationComponent {
 
   private _doFilterLicenceString(input:string){
     return this.licences.filter(l=>l.description.toLowerCase().includes(input.toLowerCase()))
+  }
+
+  private _filterRoom(value: number|string): Room[] {
+    return typeof(value)=="string" ? this._doFilterRoomString(`${value}`)
+      :this._doFilterRoomInt(value)
+  }
+
+  private _doFilterRoomInt(id:number){
+    const tmp = this.rooms.find(r=>r.id==id)
+    return tmp ? this.rooms.filter(r=>r.name==tmp.name):this.rooms
+  }
+
+  private _doFilterRoomString(input:string){
+    return this.rooms.filter(r=>`${r.unit.name} ${r.name}`.toLowerCase().includes(input.toLowerCase()))
   }
 
 }

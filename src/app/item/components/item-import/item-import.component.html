@@ -16,7 +16,7 @@
         <input #csvInput hidden="true" type="file" onclick="this.value=null" (change)="fileChange($event)" accept=".xlsx"/>
         <button mat-flat-button color="primary" (click)="csvInput.click()">Choisir un fichier (CSV)</button>
     </div>
-    <mat-expansion-panel hideToggle *ngFor="let type of item_types"  [expanded]="true" class="items-center justify-center content-center align-middle">
+    <mat-expansion-panel hideToggle *ngFor="let type of item_types"  [expanded]="type.items!.length>0" class="items-center justify-center content-center align-middle">
         <mat-expansion-panel-header>
           <mat-panel-title>
             {{type.type.name}}
@@ -28,6 +28,7 @@
         <table class="table-auto w-full md:table-fixed">
             <thead class="text-left">
             <tr class="rounded-l-lg sm:rounded-none mb-0 sm:mb-2 hidden sm:table-row">
+                <th class="p-3 text-left">Nom DNS</th>
                 <th class="p-3 text-left">Référence</th>
                 <th class="p-3 text-left">Numéro de série</th>
                 <th class="p-3 text-left">Description</th>
@@ -35,22 +36,21 @@
                 <th class="p-3 text-left">Date de réception</th>
                 <th class="p-3 text-left">Prix</th>
                 <th class="p-3 text-left">Fournisseur</th>
-                <th class="p-3 text-left">Emplacement</th>
                 <th class="p-3 text-center h-full">Validité</th>
             </tr>
             </thead>
             <tbody *ngIf="type" class="text-left flex-1 sm:flex-none">
                 <tr *ngFor="let item of type.items" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
+                    <td class="p-3 text-left">{{item.name}}</td>
                     <td class="p-3 text-left">{{item.reference}}</td>
-                    <td class="p-3 text-left">{{item.serial_number}}</td>
+                    <td class="p-3 text-left">{{item.serialNumber}}</td>
                     <td class="p-3 text-left">{{item.description}}</td>
-                    <td class="p-3 text-left">{{item.purchased_at}}</td>
-                    <td class="p-3 text-left">{{item.received_at}}</td>
+                    <td class="p-3 text-left">{{item.purchasedAt}}</td>
+                    <td class="p-3 text-left">{{item.receivedAt}}</td>
                     <td class="p-3 text-left">{{item.price}}</td>
                     <td class="p-3 text-left">{{item.provider}}</td>
-                    <td class="p-3 text-left">{{item.unit}} | {{item.room}}</td>
-                    <td *ngIf="item.is_valid" class="p-3 h-full text-center color bg-green-100"><div class="flex justify-center items-center"><mat-icon>check-circle</mat-icon></div></td>
-                    <td *ngIf="!item.is_valid" class="p-3 h-full text-center color bg-red-100"><div class="flex justify-center items-center"><mat-icon>close</mat-icon></div></td>
+                    <td *ngIf="item.isValid" class="box-border p-3 h-full text-center color bg-green-100 border-bottom-accent sm:border-none"><div class="flex justify-center items-center"><mat-icon>check-circle</mat-icon></div></td>
+                    <td *ngIf="!item.isValid" class="box-border p-3 h-full text-center color bg-red-100 border-bottom-accent sm:border-none"><div class="flex justify-center items-center"><mat-icon>close</mat-icon></div></td>
                 </tr>
             </tbody>
         </table>          

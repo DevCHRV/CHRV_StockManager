@@ -6,6 +6,9 @@ module.exports = {
   theme: {
     extend: {},
   },
+  corePlugins:{
+    preflight: true
+  },
   plugins: [
     require('tw-elements/dist/plugin')
   ],

@@ -74,4 +74,10 @@ export class InterventionDetailsComponent {
   isLicenceIntervention(){
     return this.intervention.type.id == InterventionTypeEnum.InstallationLicence || this.intervention.type.id == InterventionTypeEnum.DesinstallationLicence
   }
+
+  generateTicket(intervention:Intervention){
+    this.service.generateTicket(intervention).subscribe(
+      res => this.toast.setSuccess("Le mail à bien été envoyé, la création du ticket peut prendre quelques minutes.")
+    );
+  }
 }

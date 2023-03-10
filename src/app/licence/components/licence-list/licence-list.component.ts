@@ -22,6 +22,7 @@ export class LicenceListComponent implements OnInit {
   public sortBy = new FormControl<string>('id');
   public isAsc = new FormControl<boolean>(true);
   public filterBy = new FormControl<number|null>(null);
+  public filterBy2 = new FormControl<boolean|null>(null);
   public filteredUsersOptions:Observable<IUser[]>;
   public searchUserSelect = new FormControl<string>('');
   public searchBy = new FormControl<string>('');
@@ -53,6 +54,16 @@ export class LicenceListComponent implements OnInit {
           map(value =>this._filterUser(value!||-1)))
       }
     )
+  }
+
+  orderBy(property:string){
+    if(this.sortBy.value == property){
+      this.isAsc.patchValue(!this.isAsc.value)
+      this.sortBy.patchValue(property)
+    } else {
+      this.isAsc.patchValue(true)
+      this.sortBy.patchValue(property)
+    }
   }
 
   getLicenceType(){
@@ -89,6 +100,10 @@ export class LicenceListComponent implements OnInit {
     this.filterBy.setValue(null)
   }
 
+  resetFilter2(){
+    this.filterBy2.setValue(null)
+  }
+
   getUserDisplay(id:number){
     const tmp = this.users.find(u=>u.id==id)
     return tmp ? `${tmp.username}`: ''
@@ -107,7 +122,7 @@ export class LicenceListComponent implements OnInit {
   checkNotNull2(event:any){
     let value = event.target.value
     if(value==null || value=='null')
-      this.resetSearchUserSelect()
+    this.resetFilter2()
   }
 
   private _filterUser(value: number|string): IUser[] {

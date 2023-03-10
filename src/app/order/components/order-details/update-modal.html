@@ -1,0 +1,46 @@
+<h2 mat-dialog-title>Modifier du matériel</h2>
+<mat-dialog-content [formGroup]="form" class="mat-typography">
+    <div class="grid gap-6 mb-6 md:grid-cols-2">
+        <div>
+            <label for="description" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+            <input name="description" formControlName="description" [(ngModel)]="item.description" placeholder="description" type="text" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <mat-error *ngIf="form.hasError('required', 'description')">Ce champs est requis !</mat-error>
+            <mat-error *ngIf="form.hasError('minlength', 'description')">Cette valeur est trop courte !</mat-error>
+        </div>
+        <div>
+            <label for="serialNumber" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Numéro de série</label>
+            <input cdkFocusInitial [autofocus]="true" (keyup.enter)="close()" name="serialNumber" formControlName="serialNumber" [(ngModel)]="item.serialNumber" placeholder="serialNumber" type="text" id="serialNumber" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <mat-error *ngIf="form.hasError('required', 'serialNumber')">Ce champs est requis !</mat-error>
+            <mat-error *ngIf="form.hasError('minlength', 'serialNumber')">Cette valeur est trop courte !</mat-error>
+        </div>
+        <div>
+            <label for="price" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Prix</label>
+            <input name="price" formControlName="price" [(ngModel)]="item.price" placeholder="price" type="number" step="0.01" min="0" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <mat-error *ngIf="form.hasError('required', 'price')">Ce champs est requis !</mat-error>
+            <mat-error *ngIf="form.hasError('min', 'price')">Cette valeur est trop petite !</mat-error>
+        </div>
+    </div>
+    <div class="py-4">
+        <hr class="">
+    </div>
+    <div class="grid gap-6 mb-6 md:grid-cols-2">
+        <div>
+            <label for="receivedAt" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date de réception</label>
+            <input name="receivedAt" formControlName="receivedAt" [ngModel]="item.receivedAt | date:'yyyy-MM-dd'" (ngModelChange)="item.receivedAt=$event" type="date" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <mat-error *ngIf="form.hasError('required', 'receivedAt')">Ce champs est requis !</mat-error>
+        </div>
+        <div>
+            <label for="checkupInterval" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Interval de maintenance</label>
+            <input name="checkupInterval" formControlName="checkupInterval" [(ngModel)]="item.checkupInterval" type="number" min="1" step="1" placeholder="checkupInterval" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+            <mat-error *ngIf="form.hasError('required', 'checkupInterval')">Ce champs est requis !</mat-error>
+            <mat-error *ngIf="form.hasError('min', 'checkupInterval')">Cette valeur est trop petite !</mat-error>
+        </div>
+    </div>
+</mat-dialog-content>
+<div class="py-4">
+    <hr class="">
+</div>
+<mat-dialog-actions align="end">
+    <button mat-button mat-flat-button [mat-dialog-close]="true"color="warn">Annuler</button>
+    <button [disabled]="!form.valid" mat-button mat-flat-button [mat-dialog-close]="true" (click)="close()" color="accent">Valider</button>
+</mat-dialog-actions>

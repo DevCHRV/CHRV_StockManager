@@ -1,42 +1,23 @@
 <div class="grid grid-cols-2 sm:grid-cols-5 gap-6 justify-between pt-5 items-center content-center align-middle">
+  <div>
     <div>
-      <div>
-        <label>Trier par: </label>
-        <div class="flex flex-row items-center content-center align-middle">
-          <select matInput [formControl]="sortBy" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            <option value="id">ID</option>
-            <option value="username">Nom d'utilisateur</option>
-            <option value="firstname">Nom</option>
-            <option value="lastname">Prénom</option>
-          </select>
-          <button *ngIf="isAsc.value" (click)="setAsc(false)">
-            <mat-icon>arrow_upward</mat-icon>
-          </button>
-          <button *ngIf="!isAsc.value" (click)="setAsc(true)">
-            <mat-icon>arrow_downward</mat-icon>
-          </button>
-        </div>
+      <label>Filtrer par: </label>
+      <div class="flex flex-row items-center content-center align-middle">
+        <select matInput [formControl]="filterBy" (change)="checkNotNull($event)" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          <option [value]="null" selected>---</option>
+          <option [value]="true">Actif</option>
+          <option [value]="false">Inactif</option>
+        </select>
+        <button (click)="resetFilter()">
+          <mat-icon>close</mat-icon>
+        </button>
       </div>
     </div>
-    <div>
-      <div>
-        <label>Filtrer par: </label>
-        <div class="flex flex-row items-center content-center align-middle">
-          <select matInput [formControl]="filterBy" (change)="checkNotNull($event)" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-            <option [value]="null" selected>---</option>
-            <option [value]="true">Actif</option>
-            <option [value]="false">Inactif</option>
-          </select>
-          <button (click)="resetFilter()">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
-      </div>
-    </div>
-    <div>
-      <label>Chercher: </label>
-      <input matInput [formControl]="searchBy" name="search" placeholder="Rechercher" type="text" id="search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-    </div>
+  </div>
+  <div>
+    <label>Chercher: </label>
+    <input matInput [formControl]="searchBy" name="search" placeholder="Rechercher" type="text" id="search" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+  </div>
 </div>
 <div class="flex flex-col items-center my-5">
   <div class="w-full flex flex-row">
@@ -51,25 +32,49 @@
     <thead class="text-white sm:border-b-2-black">
       <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2 border-primary">
         <th class="p-3 text-left h-14 sm:w-40">ID</th>
-        <th class="p-3 text-left">Nom d'utilisateur</th>
-        <th class="p-3 text-left">Nom</th>
-        <th class="p-3 text-left">Prénom</th>
+        <th class="p-3 text-left h-11">Nom d'utilisateur</th>
+        <th class="p-3 text-left h-11">Nom</th>
+        <th class="p-3 text-left h-11">Prénom</th>
         <th class="p-3 text-left h-14" >Actions</th>
       </tr>
       <tr *ngFor="let item of dataSource.data | filter:filterBy.value!:['isActive'] | sort:isAsc.value:sortBy.value!" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2 border-primary">
-        <th class="p-3 text-left h-14 sm:w-40">ID</th>
-        <th class="p-3 text-left">Nom d'utilisateur</th>
-        <th class="p-3 text-left">Nom</th>
-        <th class="p-3 text-left">Prénom</th>
+        <th class="p-3 text-left h-14 sm:w-40 cursor-pointer" (click)="orderBy('id')">
+          <div class="flex flex-row justify-between align-middle self-center">
+            <p class="mr-2">Id</p>
+            <mat-icon *ngIf="sortBy.value == 'id' && isAsc.value">arrow_upward</mat-icon>
+            <mat-icon *ngIf="sortBy.value == 'id' && !isAsc.value">arrow_downward</mat-icon>
+          </div>
+        </th>
+        <th class="p-3 text-left h-11 cursor-pointer" (click)="orderBy('username')">
+          <div class="flex flex-row justify-between align-middle self-center">
+            <p class="mr-2">Nom d'utilisateur</p>
+            <mat-icon *ngIf="sortBy.value == 'username' && isAsc.value">arrow_upward</mat-icon>
+            <mat-icon *ngIf="sortBy.value == 'username' && !isAsc.value">arrow_downward</mat-icon>
+          </div>
+        </th>
+        <th class="p-3 text-left h-11 cursor-pointer" (click)="orderBy('firstname')">
+          <div class="flex flex-row justify-between align-middle self-center">
+            <p class="mr-2">Nom</p>
+            <mat-icon *ngIf="sortBy.value == 'firstname' && isAsc.value">arrow_upward</mat-icon>
+            <mat-icon *ngIf="sortBy.value == 'firstname' && !isAsc.value">arrow_downward</mat-icon>
+          </div>
+        </th>
+        <th class="p-3 text-left h-11 cursor-pointer" (click)="orderBy('lastname')">
+          <div class="flex flex-row justify-between align-middle self-center">
+            <p class="mr-2">Prénom</p>
+            <mat-icon *ngIf="sortBy.value == 'lastname' && isAsc.value">arrow_upward</mat-icon>
+            <mat-icon *ngIf="sortBy.value == 'lastname' && !isAsc.value">arrow_downward</mat-icon>
+          </div>
+        </th>
         <th class="p-3 text-left sm:text-center h-14">Actions</th>
       </tr>
     </thead>
     <tbody class="flex-1 sm:flex-none">
         <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 border-primary">
             <td class="hover:bg-gray-100 p-3 h-14 sm:w-40">Pas de donnée</td>
-            <td class="hover:bg-gray-100 p-3"></td>
-            <td class="hover:bg-gray-100 p-3"></td>
-            <td class="hover:bg-gray-100 p-3"></td>
+            <td class="hover:bg-gray-100 p-3 h-11"></td>
+            <td class="hover:bg-gray-100 p-3 h-11"></td>
+            <td class="hover:bg-gray-100 p-3 h-11"></td>
             <td class="hover:bg-gray-100 p-3 h-14"></td>
           </tr>
           <tr *ngFor="let user of dataSource.data | filter:filterBy.value!:['isActive'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light">
@@ -78,9 +83,9 @@
               <span *ngIf="user.isActive" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-green-100 text-green-800 text-xs font-medium py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Actif</span>
               <span *ngIf="!user.isActive" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-red-100 text-red-800 text-xs font-medium py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Inactif</span>
             </td>
-            <td class="p-3">{{user.username}}</td>
-            <td class="p-3">{{user.firstname}}</td>
-            <td class="p-3">{{user.lastname}}</td>
+            <td class="p-3 h-11">{{user.username}}</td>
+            <td class="p-3 h-11">{{user.firstname}}</td>
+            <td class="p-3 h-11">{{user.lastname}}</td>
             <td class="p-3 h-14  flex flex-row justify-around">
               <button mat-flat-button color="accent" (click)="goTo(user.id)" class="w-24">Détails</button>
               <button *ngIf="user.isActive" mat-flat-button color="warn" (click)="deactivate(user)" class="w-24">Désactiver</button>

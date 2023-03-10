@@ -25,6 +25,11 @@ export class SearchPipe implements PipeTransform {
   }
 
   _filter(value: any, current:string, keys:any[], input:string):any{
+    return JSON.stringify(value).toLowerCase().indexOf(input.toLowerCase())!=-1
+  }
+
+  /*
+  _filter(value: any, current:string, keys:any[], input:string):any{
     if(keys.length>1){
       if((typeof(value[keys[0]])!='string' && typeof(value[keys[0]])!='number') || new RegExp('[0-9]{4}(/|-)[0-9]{2}(/|-)[0-9]{2}$').test(value[keys[0]])){
         return this._filter(value, `${current}`, keys.slice(1, keys.length), input)
@@ -36,4 +41,5 @@ export class SearchPipe implements PipeTransform {
     }
     return `${current}${value[keys[0]]}`.toLowerCase().indexOf(input.toLowerCase())!=-1
   }
+  */
 }

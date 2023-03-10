@@ -9,15 +9,25 @@
         <div class="grid gap-6 mb-6 md:grid-cols-2">
             <div>
                 <label for="description" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
-                <input matInput required name="description" formControlName="description" [(ngModel)]="licence.description" placeholder="description" type="text" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <input matInput required name="description" formControlName="description" [(ngModel)]="licence.description" placeholder="Clef Office 365 2023" type="text" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 <mat-error *ngIf="form.hasError('required', 'description')">Ce champs est requis !</mat-error>
                 <mat-error *ngIf="form.hasError('minlength', 'description')">Cette valeur est trop courte !</mat-error>
             </div>
             <div>
+                <label for="quantity" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Quantité</label>
+                <input name="quantity" formControlName="quantity" [(ngModel)]="licence.quantity" placeholder="quantity" type="number" step="1" id="quantity" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <mat-error *ngIf="form.hasError('required', 'quantity')">Ce champs est requis !</mat-error>
+                <mat-error *ngIf="form.hasError('minlength', 'quantity')">Cette valeur est trop courte !</mat-error>            
+            </div>
+            <div>
                 <label for="value" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Valeur</label>
-                <input name="value" formControlName="value" [(ngModel)]="licence.value" placeholder="serial_number" type="text" id="value" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <input name="value" formControlName="value" [(ngModel)]="licence.value" placeholder="AZED-QFFD-WVBN" type="text" id="value" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 <mat-error *ngIf="form.hasError('required', 'value')">Ce champs est requis !</mat-error>
                 <mat-error *ngIf="form.hasError('minlength', 'value')">Cette valeur est trop courte !</mat-error>            
+            </div>
+            <div>
+                <label for="purchased_at" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date d'achat</label>
+                <input name="purchased_at" formControlName="purchasedAt" [ngModel]="licence.purchasedAt| date:'yyyy-MM-dd'" (ngModelChange)="licence.purchasedAt=$event" type="date" id="purchased_at" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
             </div>
             <div>
                 <div *ngIf="types">

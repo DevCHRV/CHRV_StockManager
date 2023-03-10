@@ -2,24 +2,26 @@ import { Licence } from '../../licence/models/licences';
 import { Order } from '../../order/models/order';
 import { ItemType } from '../../type/models/type';
 import { Intervention } from '../../intervention/models/intervention';
+import { Room } from '../../unit/models/unit';
 export interface Item {
     id:number,
+    name:string,
     reference:string,
-    serial_number:string,
+    serialNumber:string,
     description:string,
     price:number,
-    received_at?:Date,
-    purchased_at?:Date,
-    warranty_expires_at?:Date,
+    receivedAt?:Date,
+    purchasedAt?:Date,
+    warrantyExpiresAt?:Date,
     type:ItemType,
     licence:Licence[],
     interventions:Intervention[],
-    is_available:boolean,
-    is_placed?:boolean,
+    isAvailable:boolean,
+    isPlaced?:boolean,
     unit:string,
-    room:string,
-    last_checkup_at:Date,
-    checkup_interval:number,
+    room:Room,
+    lastCheckupAt:Date,
+    checkupInterval:number,
     provider:string
     order:Order | null,
 }

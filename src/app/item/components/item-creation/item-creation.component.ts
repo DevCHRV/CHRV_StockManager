@@ -21,6 +21,7 @@ import { ToastService } from '../../../services/toast/toast.service';
 export class ItemCreationComponent {
 
   public item:Item = {
+    name:'',
     reference: '',
     description: '',
     type: {id:1} as ItemType,
@@ -32,11 +33,11 @@ export class ItemCreationComponent {
     unit: '',
     licence: [],
     serial_number: '',
-    purchased_at: null,
-    received_at: null,
-    warranty_expires_at: null,
-    is_available: true, 
-    is_placed: false
+    purchasedAt: this._getCurrentDateForInput(),
+    receivedAt: this._getCurrentDateForInput(),
+    warrantyExpiresAt: null,
+    isAvailable: true, 
+    isPlaced: false
   } as unknown as Item;
 
   public itemLicences:Licence[] = [];
@@ -54,13 +55,14 @@ export class ItemCreationComponent {
     this.getItem()
     this.form = builder.group({
       reference: ['', [Validators.required]],
+      name: ['', [Validators.required, Validators.minLength(5)]],
       price: ['', [Validators.required, Validators.min(1)]],
       serial_number: ['', [Validators.required, Validators.minLength(5)]],
       unit: ['', [Validators.required, Validators.minLength(2)]],
       room: ['', [Validators.required, Validators.minLength(2)]],
       description: ['', [Validators.required, Validators.minLength(10)]],
       provider: ['', [Validators.required, Validators.minLength(5)]],
-      purchased_at: ['', [Validators.required]],
+      purchased_at: [this._getCurrentDateForInput(), [Validators.required]],
       received_at: ['', [Validators.required]],
       warranty_expires_at: ['', [Validators.required]],
       checkup_interval: ['', [Validators.required, Validators.min(1)]],
@@ -106,20 +108,20 @@ export class ItemCreationComponent {
   }
 
   toggleAvailability(){
-    if(this.item.is_placed)
+    if(this.item.isPlaced)
       return;
-    this.item.is_available = !this.item.is_available
+    this.item.isAvailable = !this.item.isAvailable
   }
 
   togglePlacement(){
-    if(!this.item.is_available&&!this.item.is_placed)
+    if(!this.item.isAvailable&&!this.item.isPlaced)
       return
-    if(this.item.is_placed){
-      this.item.is_placed = false
-      this.item.is_available = true
+    if(this.item.isPlaced){
+      this.item.isPlaced = false
+      this.item.isAvailable = true
     }else{
-      this.item.is_placed = true
-      this.item.is_available = false
+      this.item.isPlaced = true
+      this.item.isAvailable = false
     }
   }
 
@@ -146,7 +148,7 @@ export class ItemCreationComponent {
     if(this.form.valid)
       this.service.post(this.item).subscribe(
         res => {
-          this.router.navigateTo(`/item/${res}`)
+          this.router.navigateTo(`/item/${res.id}`)
           this.toast.setSuccess()
         }
       )

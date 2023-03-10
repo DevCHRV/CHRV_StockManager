@@ -23,6 +23,7 @@ export interface ItemTypeMap{
 
 export interface CSVItem{
   ID:number,
+  NAME:string
   REFERENCE:string,
   SERIAL_NUMBER:string,
   DESCRIPTION:string,
@@ -33,8 +34,6 @@ export interface CSVItem{
   TYPE_ID:number,
   IS_AVAILABLE:string,
   IS_PLACED?:string,
-  UNIT:string,
-  ROOM:string,
   LAST_CHECKUP_AT:Date,
   CHECKUP_INTERVAL:number,
   PROVIDER:string
@@ -42,22 +41,21 @@ export interface CSVItem{
 
 export interface ItemFromCSV {
   id:number,
+  name:string
   reference:string,
-  serial_number:string,
+  serialNumber:string,
   description:string,
   price:number,
-  received_at?:Date,
-  purchased_at?:Date,
-  warranty_expires_at?:Date,
+  receivedAt?:Date,
+  purchasedAt?:Date,
+  warrantyExpiresAt?:Date,
   type:ItemType,
-  is_available:boolean,
-  is_placed?:boolean,
-  unit:string,
-  room:string,
-  last_checkup_at:Date,
-  checkup_interval:number,
+  isAvailable:boolean,
+  isPlaced?:boolean,
+  lastCheckupAt:Date,
+  checkupInterval:number,
   provider:string
-  is_valid:boolean
+  isValid:boolean
 }
 
 @Component({
@@ -118,40 +116,39 @@ export class ItemImportComponent {
       }
       this.items.push({
         id: item.ID,
+        name: item.NAME,
         description: item.DESCRIPTION,
-        checkup_interval: item.CHECKUP_INTERVAL,
-        is_available: item.IS_AVAILABLE =="1"?true:false,
-        is_placed: item.IS_PLACED =="1"?true:false,
-        last_checkup_at: item.LAST_CHECKUP_AT,
+        checkupInterval: item.CHECKUP_INTERVAL,
+        isAvailable: item.IS_AVAILABLE =="1"?true:false,
+        isPlaced: item.IS_PLACED =="1"?true:false,
+        lastCheckupAt: item.LAST_CHECKUP_AT,
         price: item.PRICE,
         provider: item.PROVIDER,
         reference: item.REFERENCE,
-        room:item.ROOM,
-        serial_number: item.SERIAL_NUMBER,
-        unit:item.UNIT,
-        purchased_at: item.PURCHASED_AT,
-        received_at:item.RECEIVED_AT,
-        warranty_expires_at:item.WARRANTY_EXPIRES_AT,
+        serialNumber: item.SERIAL_NUMBER,
+        purchasedAt: item.PURCHASED_AT,
+        receivedAt:item.RECEIVED_AT,
+        warrantyExpiresAt:item.WARRANTY_EXPIRES_AT,
         type: type,
-        is_valid: valid
+        isValid: valid
       } as ItemFromCSV)
     }
   }
 
   private _getValidItems(){
-    return this.items.filter(i=>i.is_valid)
+    return this.items.filter(i=>i.isValid)
   }
 
   private _verifyCSVItem(item:CSVItem){
-    if(!item.SERIAL_NUMBER || !item.REFERENCE || !item.DESCRIPTION || !item.PURCHASED_AT || !item.WARRANTY_EXPIRES_AT || !item.TYPE_ID){
+    if(!item.SERIAL_NUMBER || !item.REFERENCE || !item.NAME || !item.DESCRIPTION || !item.PURCHASED_AT || !item.WARRANTY_EXPIRES_AT || !item.TYPE_ID){
       return false
     }
     return true
   }
 
   private _verifyItem(item:ItemFromCSV){
-    if(!item.serial_number || !item.reference || !item.description || !item.purchased_at || !item.warranty_expires_at || !item.type){
-      item.is_valid = false
+    if(!item.serialNumber || !item.reference || !item.name || !item.description || !item.purchasedAt || !item.warrantyExpiresAt || !item.type){
+      item.isValid = false
       return false
     }
     return true
@@ -168,7 +165,7 @@ export class ItemImportComponent {
       this.item_types.push({type:type, items:this.items.filter(i=>{
         return i.type.id == type.id}) })
     }
-    const invalid_items= this.items.filter(i=>i.is_valid==false)
+    const invalid_items= this.items.filter(i=>i.isValid==false)
     this.item_types.push({type: {id:-1, name:"Invalides", description:"Entrées invalides", totalQuantity:invalid_items.length, availableQuantity: invalid_items.length, expected_lifetime:0}, items: invalid_items})
   }
 

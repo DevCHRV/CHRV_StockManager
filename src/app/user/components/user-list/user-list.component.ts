@@ -41,6 +41,16 @@ export class UserListComponent {
     this.is_total = !this.is_total
   }
 
+  orderBy(property:string){
+    if(this.sortBy.value == property){
+      this.isAsc.patchValue(!this.isAsc.value)
+      this.sortBy.patchValue(property)
+    } else {
+      this.isAsc.patchValue(true)
+      this.sortBy.patchValue(property)
+    }
+  }
+
   getType(){
     return {total: this.dataSource.data.length, active:this.dataSource.data.filter(u=>u.isActive).length, role:null}
   }

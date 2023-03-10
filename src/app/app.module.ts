@@ -24,6 +24,7 @@ import { SuccessInterceptor } from './config/SuccessInterceptor';
 import { InterventionModule } from './intervention/intervention.module';
 import { OrderModule } from './order/order.module';
 import { UserModule } from './user/user.module';
+import { UnitModule } from './unit/unit.module';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { UserModule } from './user/user.module';
     InterventionModule,
     OrderModule,
     UserModule,
+    UnitModule,
 
     //IMPORTANT: LEAVE THE STATIC MODULE AFTER THE OTHER APP MODULES OR IT WILL OVERRIDE OTHER MODULES' ROUTES
     StaticModule,

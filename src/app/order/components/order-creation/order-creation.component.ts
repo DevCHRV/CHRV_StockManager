@@ -1,8 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Item } from '../../../item/models/item';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Order } from '../../models/order';
+import { Order, OrderItem, OrderType, OrderCreation } from '../../models/order';
 import { ItemTypeService } from '../../../type/services/type/type.service';
 import { OrderService } from '../../service/order/order.service';
 import { RouterService } from '../../../services/router/router.service';
@@ -18,13 +17,13 @@ export class OrderCreationComponent {
 
   public is_shown: boolean = false;
 
-  public order:Order = {
+  public order:OrderCreation = {
     date: this._getCurrentDateForInput(),
     items: [],
     user: null,
-    types:null,
+    types:[] = [],
     isReceived: false,
-  } as unknown as Order;
+  } as unknown as OrderCreation;
 
   public form:FormGroup
 
@@ -35,8 +34,9 @@ export class OrderCreationComponent {
   }
 
   public post(){
+    //TODO Write items in a readable way for the back-end
     if(this.form.valid)
-      this.orderService.post(this.order).subscribe(
+      this.orderService.post(this.order as unknown as Order).subscribe(
         res=>{
           this.router.navigateTo(`order/${res}`)
           this.toast.setSuccess()
@@ -48,23 +48,34 @@ export class OrderCreationComponent {
     const dialogRef = this.dialog.open(Modal);
 
     dialogRef.afterClosed().subscribe(result => {
-      typeof result == "object" && this.order.items.push(result)
-    });
-  }
-
-  updateDialog(item:Item) {
-    const dialogRef = this.dialog.open(Modal, {data:item});
-
-    dialogRef.afterClosed().subscribe(result => {
       if(typeof result == "object"){
-        this.order.items = this.order.items.filter(i=>i.reference != result.reference && i.serial_number != result.serial_number);
-        this.order.items.push(result)
+        const type = this.order.types.find(t=>t.id == result.type.id)
+        if(!type){
+          this.order.types.push({id: result.type.id, alias: result.type.alias, name:result.type.name, description: result.type.description, items: [result]})
+        }
+        else {
+          type.items?.push(result)
+        }
       }
     });
   }
 
-  removeItem(item:Item){
-    this.order.items = this.order.items.filter(i=>i.reference != item.reference && i.serial_number != item.serial_number)
+  updateDialog(type:OrderType, index:number) {
+    const dialogRef = this.dialog.open(Modal, {data:type.items![index]});
+
+    dialogRef.afterClosed().subscribe(result => {
+      if(typeof result == "object"){
+        //this.order.types = this.types.items.filter(i=>i.reference != result.reference && i.serial_number != result.serial_number);
+        type!.items![index] = result
+      }
+    });
+  }
+
+  removeItem(type:OrderType, index:number){
+    type.items?.splice(index,1)
+    if(type.items?.length==0){
+      this.order.types = this.order.types.filter(t=>t.id!=type.id)
+    }
   }
 
   public toggleShown(){
@@ -81,48 +92,37 @@ export class OrderCreationComponent {
 }
 
 @Component({
-  selector: 'modal',
+  selector: 'creation-modal',
   templateUrl: 'modal.html',
 })
 
 export class Modal {
 
-  constructor(public dialogRef: MatDialogRef<Modal>, private builder:FormBuilder, private itemTypeService:ItemTypeService, @Inject(MAT_DIALOG_DATA) private data?:Item){
+  constructor(public dialogRef: MatDialogRef<Modal>, private builder:FormBuilder, private itemTypeService:ItemTypeService, @Inject(MAT_DIALOG_DATA) private data?:OrderItem){
     this.form = builder.group({
-      reference: [data?.reference ? data.reference : '', [Validators.required]],
       price: [data?.price ? data.price : '', [Validators.required, Validators.min(1)]],
+      quantity: [data?.quantity? data?.quantity : 0, [Validators.required, Validators.min(1)]],
       type: [data?.type ? data.type : '', Validators.required],
-      serial_number: [data?.serial_number ? data.serial_number : '', [Validators.required, Validators.minLength(5)]],
-      unit: [data?.unit ? data.unit : '', [Validators.required, Validators.minLength(2)]],
-      room: [data?.room ? data.room : '', [Validators.required, Validators.minLength(2)]],
       description: [data?.description ? data.description : '', [Validators.required, Validators.minLength(10)]],
       provider: [data?.provider ? data.provider : '', [Validators.required, Validators.minLength(5)]],
-      purchased_at: [data?.purchased_at ? this._getDateForInput(data.purchased_at) : this._getCurrentDateForInput(), [Validators.required]],
-      received_at: [data?.received_at ? this._getDateForInput(data.received_at) : ''],
-      warranty_expires_at: [data?.warranty_expires_at ? this._getDateForInput(data.warranty_expires_at) : '', [Validators.required]],
-      checkup_interval: [data?.checkup_interval ? data.checkup_interval : 365, [Validators.required, Validators.min(1)]],
+      purchasedAt: [data?.purchasedAt ? this._getDateForInput(data.purchasedAt) : this._getCurrentDateForInput(), [Validators.required]],
+      warrantyExpiresAt: [data?.warrantyExpiresAt ? this._getDateForInput(data.warrantyExpiresAt) : '', [Validators.required]],
+      checkupInterval: [data?.checkupInterval ? data.checkupInterval : 365, [Validators.required, Validators.min(1)]],
     })
   }
-
-  public item:Item = {
-    reference: this.data?.reference ? this.data.reference : '',
+  
+  public item:OrderItem = {
     description: this.data?.description ? this.data.description : '',
     type: this.data?.type ? this.data.type :{id:1, name:"tmp"} as ItemType,
-    checkup_interval: this.data?.checkup_interval ? this.data.checkup_interval : 365,
-    last_checkup_at: this.data?.last_checkup_at ? this._getDateForInput(this.data.last_checkup_at) : this._getCurrentDateForInput(),
+    checkupInterval: this.data?.checkupInterval ? this.data.checkupInterval : 365,
+    lastCheckupAt: this.data?.lastCheckupAt ? this._getDateForInput(this.data.lastCheckupAt) : this._getCurrentDateForInput(),
     price: this.data?.price ? this.data.price : '',
+    quantity: this.data?.quantity ? this.data.quantity : 0,
     provider: this.data?.provider ? this.data.provider : '',
-    room: this.data?.room ? this.data.room : '',
-    unit: this.data?.room ? this.data.room : '',
-    licence: [],
-    serial_number: this.data?.serial_number ? this.data.serial_number : '',
-    purchased_at: this.data?.purchased_at ? this._getDateForInput(this.data.purchased_at) : this._getCurrentDateForInput(),
-    received_at: this.data?.received_at ? this._getDateForInput(this.data.received_at) : '',
-    warranty_expires_at: this.data?.warranty_expires_at ? this._getDateForInput(this.data.warranty_expires_at) : this._getCurrentDateForInput(),
-    is_available: true, 
-    is_placed: false,
+    purchasedAt: this.data?.purchasedAt ? this._getDateForInput(this.data.purchasedAt) : this._getCurrentDateForInput(),
+    warrantyExpiresAt: this.data?.warrantyExpiresAt ? this._getDateForInput(this.data.warrantyExpiresAt) : this._getCurrentDateForInput(),
     order:null
-  } as unknown as Item;
+  } as unknown as OrderItem;
 
   public form:FormGroup
 

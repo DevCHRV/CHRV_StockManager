@@ -6,19 +6,25 @@
         <div class="grid gap-6 md:grid-cols-2 font-bold text-xl">
             <!--ROW 1-->
             <div class="flex flex-row justify-between">
-                <a (click)="toggleAvailability()" *ngIf="item.is_available" class="w-24 h-6 cursor-pointer flex text-center content-center align-middle items-center justify-center bg-green-100 max-w-sm text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Disponible</a>    
-                <a (click)="toggleAvailability()" *ngIf="!item.is_available" class="w-24 h-6 cursor-pointer flex text-center content-center align-middle items-center justify-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Indisponible</a>
+                <a (click)="toggleAvailability()" *ngIf="item.isAvailable" class="w-24 h-6 cursor-pointer flex text-center content-center align-middle items-center justify-center bg-green-100 max-w-sm text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Disponible</a>    
+                <a (click)="toggleAvailability()" *ngIf="!item.isAvailable" class="w-24 h-6 cursor-pointer flex text-center content-center align-middle items-center justify-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Indisponible</a>
             </div>
             <!--ROW 1-->
             <div class="flex flex-row justify-between">
-                <a (click)="togglePlacement()" *ngIf="item.is_placed" class="w-24 h-6 cursor-pointer flex text-center content-center align-middle items-center justify-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Installé</a>
-                <a (click)="togglePlacement()" *ngIf="!item.is_placed" class="w-24 h-6 cursor-pointer flex text-center content-center align-middle items-center justify-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Pas installé</a>
+                <a (click)="togglePlacement()" *ngIf="item.isPlaced" class="w-24 h-6 cursor-pointer flex text-center content-center align-middle items-center justify-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Installé</a>
+                <a (click)="togglePlacement()" *ngIf="!item.isPlaced" class="w-24 h-6 cursor-pointer flex text-center content-center align-middle items-center justify-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Pas installé</a>
             </div>
         </div>
             <div class="py-4">
                 <hr class="">
             </div>
         <div class="grid gap-6 mb-6 md:grid-cols-2">
+            <div>
+                <label for="name" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom DNS</label>
+                <input matInput required name="name" formControlName="name" [(ngModel)]="item.name" placeholder="name" type="text" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <mat-error *ngIf="form.hasError('required', 'name')">Ce champs est requis !</mat-error>
+                <mat-error *ngIf="form.hasError('minlength', 'name')">Cette valeur est trop courte !</mat-error>
+            </div>
             <div>
                 <label for="reference" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Référence</label>
                 <input matInput required name="reference" formControlName="reference" [(ngModel)]="item.reference" placeholder="reference" type="text" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
@@ -27,7 +33,7 @@
             </div>
             <div>
                 <label for="serial_number" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Numéro de série</label>
-                <input name="serial_number" formControlName="serial_number" [(ngModel)]="item.serial_number" placeholder="serial_number" type="text" id="serial_number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <input name="serial_number" formControlName="serial_number" [(ngModel)]="item.serialNumber" placeholder="serial_number" type="text" id="serial_number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 <mat-error *ngIf="form.hasError('required', 'serial_number')">Ce champs est requis !</mat-error>
                 <mat-error *ngIf="form.hasError('minlength', 'serial_number')">Cette valeur est trop courte !</mat-error>            
             </div>
@@ -77,23 +83,23 @@
         </div>
         <div class="grid gap-6 mb-6 md:grid-cols-2">
             <div>
-                <label for="purchased_at" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date d'achat</label>
-                <input name="purchased_at" formControlName="purchased_at" [ngModel]="item.purchased_at | date:'yyyy-MM-dd'" (ngModelChange)="item.purchased_at=$event" type="date" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <label for="purchased_at" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date de réception</label>
+                <input name="purchased_at" formControlName="purchased_at" placeholder="purchased_at" [ngModel]="item.purchasedAt| date:'yyyy-MM-dd'" (ngModelChange)="item.purchasedAt=$event" type="date" id="purchasedAt" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 <mat-error *ngIf="form.hasError('required', 'purchased_at')">Ce champs est requis !</mat-error>
             </div>
             <div>
                 <label for="received_at" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date de réception</label>
-                <input name="received_at" formControlName="received_at" placeholder="received_at" [ngModel]="item.received_at| date:'yyyy-MM-dd'" (ngModelChange)="item.received_at=$event" type="date" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <input name="received_at" formControlName="received_at" placeholder="received_at" [ngModel]="item.receivedAt| date:'yyyy-MM-dd'" (ngModelChange)="item.receivedAt=$event" type="date" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 <mat-error *ngIf="form.hasError('required', 'received_at')">Ce champs est requis !</mat-error>
             </div>
             <div>
                 <label for="warranty_expires_at" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date fin de garantie</label>
-                <input name="warranty_expires_at" formControlName="warranty_expires_at" [ngModel]="item.warranty_expires_at | date:'yyyy-MM-dd'" (ngModelChange)="item.warranty_expires_at=$event" type="date" placeholder="warranty_expires_at" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <input name="warranty_expires_at" formControlName="warranty_expires_at" [ngModel]="item.warrantyExpiresAt | date:'yyyy-MM-dd'" (ngModelChange)="item.warrantyExpiresAt=$event" type="date" placeholder="warranty_expires_at" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 <mat-error *ngIf="form.hasError('required', 'warranty_expires_at')">Ce champs est requis !</mat-error>
             </div>
             <div>
                 <label for="checkup_interval" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Interval de maintenance</label>
-                <input name="checkup_interval" formControlName="checkup_interval" [(ngModel)]="item.checkup_interval" type="number" min="1" step="1" placeholder="checkup_interval" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                <input name="checkup_interval" formControlName="checkup_interval" [(ngModel)]="item.checkupInterval" type="number" min="1" step="1" placeholder="checkup_interval" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 <mat-error *ngIf="form.hasError('required', 'checkup_interval')">Ce champs est requis !</mat-error>
                 <mat-error *ngIf="form.hasError('min', 'checkup_interval')">Cette valeur est trop petite !</mat-error>
             </div>

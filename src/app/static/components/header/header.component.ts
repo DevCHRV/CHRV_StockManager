@@ -70,6 +70,10 @@ export class HeaderComponent {
     this.router.navigateTo('user')
   }
 
+  goToUnit(){
+    this.router.navigateTo('unit')
+  }
+
   goToDashboard(){
     this.router.navigateTo('')
   }

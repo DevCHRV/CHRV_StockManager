@@ -1,7 +1,7 @@
 import { environment } from 'src/environments/environment';
 import { AfterViewInit, Component, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { map, startWith, Observable, of, filter } from 'rxjs';
+import { map, startWith, Observable, of, filter, catchError } from 'rxjs';
 import { RouterService } from 'src/app/services/router/router.service';
 import { ItemType } from 'src/app/type/models/type';
 import { ItemTypeService } from 'src/app/type/services/type/type.service';
@@ -34,6 +34,7 @@ export class ItemDetailsComponent {
   public interventions:Intervention[];
   public users:IUser[];
   public is_locked:boolean = true;
+  public is_printing:boolean = false;
   public filteredLicenceOptions:Observable<Licence[]>;
   public filteredUserOptions:Observable<IUser[]>;
   public searchLicenceSelect = new FormControl<string>('---');
@@ -55,10 +56,51 @@ export class ItemDetailsComponent {
 
   getAsPdf(){    
     let data = this.pdfRef.nativeElement
+    //We genereate the PDF
     this.generatePDF(data)
   }
 
   //For the love of god, please don't touch this.
+  generatePDF(data: any) {
+    //We lock the page to make all buttons disappear
+    this.is_locked = true
+    this.is_printing = true
+    //To ensure that the page looks good we need to resize it to a fixed size
+    //For some reason, doing it inside the onclone method of html2canvas doesn't work
+    data.style.width="1100px"
+    //We use a small timeout to ensure that the page changes had enough time to process, otherwise it would not work consistently
+    setTimeout(()=>{
+      html2canvas(data, {scale:2, scrollY:-window.scrollY}).then((canvas) => {
+        //We do weird voodoo magic
+        let HTML_Width = canvas.width;
+        let HTML_Height = canvas.height;
+        let top_left_margin = 15;
+        let PDF_Width = HTML_Width + (top_left_margin * 2);
+        let PDF_Height = (PDF_Width * 1.5) + (top_left_margin * 2);
+        let canvas_image_width = HTML_Width;
+        let canvas_image_height = HTML_Height;
+        let totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
+        canvas.getContext('2d');
+        let imgData = canvas.toDataURL("image/jpeg", 1.0);
+        let pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
+        pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+        for (let i = 1; i <= totalPDFPages; i++) {
+          pdf.addPage([PDF_Width, PDF_Height], 'p');
+          pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
+        }
+        //We revert the changes on the page to change it make to normal
+        data.style.width="100%"
+        this.is_printing = false
+        //We download the file
+        const blob = pdf.output('blob')
+        window.open(URL.createObjectURL(blob))
+        //pdf.output('dataurlnewwindow', {filename:`item_${this.item.id}.pdf`})
+        //pdf.save(`item_${this.item.id}.pdf`)
+      });
+    }, 200)
+  }
+
+  /*
   generatePDF(data: any) {
     data.style.width="1100px"
     html2canvas(data, {scale:2, scrollY:-window.scrollY}).then((canvas) => {
@@ -71,6 +113,7 @@ export class ItemDetailsComponent {
       data.style.width="100%"
     });
   }
+  */
 
   addLicence(){
     const licenceValue = this.searchLicenceSelect.value
@@ -107,28 +150,27 @@ export class ItemDetailsComponent {
 
   toggleLock(){
     this.is_locked = !this.is_locked
-    this.load()
   }
 
   toggleAvailability(){
     if(this.is_locked)
       return;
-    if(this.item.is_placed)
+    if(this.item.isPlaced)
       return;
-    this.item.is_available = !this.item.is_available
+    this.item.isAvailable = !this.item.isAvailable
   }
 
   togglePlacement(){
     if(this.is_locked)
       return;
-    if(!this.item.is_available&&!this.item.is_placed)
+    if(!this.item.isAvailable&&!this.item.isPlaced)
       return
-    if(this.item.is_placed){
-      this.item.is_placed = false
-      this.item.is_available = true
+    if(this.item.isPlaced){
+      this.item.isPlaced = false
+      this.item.isAvailable = true
     }else{
-      this.item.is_placed = true
-      this.item.is_available = false
+      this.item.isPlaced = true
+      this.item.isAvailable = false
     }
   }
 
@@ -136,16 +178,22 @@ export class ItemDetailsComponent {
     //We get Item first so that the page display quickly
     this.service.getById(this.route.snapshot.paramMap.get('id')!).subscribe(
       res=>{
-        this.item=res
+        this.item = res
         this.interventions = res.interventions
-        this.itemLicences=res.licence
+        this.itemLicences = res.licence
       })
+      this.typeService.get().subscribe(
+        res=>this.types = res
+      )
     //Then we fetch what is needed to populate the rest
+    /*
     this.userService.get().subscribe(
       res => {
         this.users = res
       }
     )
+    */
+    /*
     this.licenceService.get().subscribe(
       res=>{
         this.licences = res
@@ -156,13 +204,20 @@ export class ItemDetailsComponent {
         )
       }
     )
+    */
   }
 
   put(){
-    this.service.put(this.item).subscribe(
+    this.service.put(this.item)
+    .pipe(
+      catchError(err=>{
+        this.load()
+        return of()
+      })
+    )
+    .subscribe(
       res => {
         this.is_locked=true
-        this.load()
         this.toast.setSuccess()
       }
     )
@@ -230,5 +285,15 @@ export class ItemDetailsComponent {
 
   goToInterventionCreation(){
     this.router.navigateTo(`intervention/create/${this.item.id}`)
+  }
+
+  goToIntervention(intervention:Intervention){
+    this.router.navigateTo(`intervention/${intervention.id}`)
+  }
+
+  generateTicket(intervention:Intervention){
+    this.interventionService.generateTicket(intervention).subscribe(
+      res => this.toast.setSuccess("Le mail à bien été envoyé, la création du ticket peut prendre quelques minutes.")
+    );
   }
 }

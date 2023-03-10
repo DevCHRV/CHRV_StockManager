@@ -5,3 +5,20 @@
 $color-config:    mat.get-color-config($chr-theme);
 $primary-palette: map.get($color-config, 'primary');
 $accent-palette: map.get($color-config, 'accent');
+
+@media (min-width: 640px) {
+    td {
+      border:none !important;
+    }
+  }
+  
+  tr:last-child > td {
+    border-bottom: none !important;
+  }
+  
+  .border-bottom-accent{
+    border-bottom-width: 2px;
+    --tw-border-opacity: 1;
+    border-color: mat.get-color-from-palette($accent-palette, A200);
+  }
+  

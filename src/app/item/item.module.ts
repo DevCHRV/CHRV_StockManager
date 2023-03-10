@@ -23,16 +23,19 @@ import {MatExpansionModule} from '@angular/material/expansion'
 import { MatCard, MatCardModule } from '@angular/material/card';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatChipsModule} from '@angular/material/chips';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 import { ItemImportComponent } from './components/item-import/item-import.component'
 import { MatDivider, MatDividerModule } from '@angular/material/divider';
 import { LoggedGuard } from '../guards/logged/logged.guard';
 import { ProgrammerGuard } from '../guards/programmer/programmer.guard';
 import { TechnicianGuard } from '../guards/technician/technician.guard';
+import { ItemQRListComponent } from './components/itemQR-list/itemQR-list.component';
 
 const itemRoutes: Routes = [
   {path:'item', component:ItemListComponent, canActivate:[ProgrammerGuard]},
   {path:'item/create', component:ItemCreationComponent, canActivate:[ProgrammerGuard]},
   {path:'item/import', component:ItemImportComponent, canActivate:[ProgrammerGuard]},
+  {path:'item/qr', component:ItemQRListComponent, canActivate:[TechnicianGuard]},
   {path:'item/:id', component:ItemDetailsComponent, canActivate:[TechnicianGuard]},
 ]
 
@@ -43,6 +46,7 @@ const itemRoutes: Routes = [
     ItemUpdateComponent,
     ItemDetailsComponent,
     ItemImportComponent,
+    ItemQRListComponent,
   ],
   imports: [
     CommonModule,
@@ -55,6 +59,7 @@ const itemRoutes: Routes = [
     MatNativeDateModule,
     ReactiveFormsModule,
     MatSelectModule,
+    MatCheckboxModule,
     MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
@@ -77,6 +82,7 @@ const itemRoutes: Routes = [
     ItemUpdateComponent,
     ItemDetailsComponent,
     ItemImportComponent,
+    ItemQRListComponent,
   ]
 })
 export class ItemModule { }

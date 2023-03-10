@@ -1,25 +1,22 @@
 <div class="grid grid-cols-2 sm:grid-cols-5 gap-6 justify-between pt-5 items-center content-center align-middle">
   <div>
     <div>
-      <label>Trier par: </label>
+      <label>Filtrer par status: </label>
       <div class="flex flex-row items-center content-center align-middle">
-        <select matInput [formControl]="sortBy" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-          <option value="id">ID</option>
-          <option value="date">Date</option>
-          <option value="isReceived">Réception</option>
+        <select matInput [formControl]="filterBy2" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+          <option [value]="null" selected>---</option>
+          <option [value]="true" selected>Reçue</option>
+          <option [value]="false" selected>En attente</option>
         </select>
-        <button *ngIf="isAsc.value" (click)="setAsc(false)">
-          <mat-icon>arrow_upward</mat-icon>
-        </button>
-        <button *ngIf="!isAsc.value" (click)="setAsc(true)">
-          <mat-icon>arrow_downward</mat-icon>
+        <button (click)="resetFilter2()">
+          <mat-icon>close</mat-icon>
         </button>
       </div>
     </div>
   </div>
   <div>
     <div>
-      <label>Filtrer par: </label>
+      <label>Filtrer par utilisateur: </label>
       <div class="flex flex-row items-center content-center align-middle">
         <select matInput [formControl]="filterBy" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
           <option [value]="null" selected>---</option>
@@ -42,34 +39,52 @@
 <div class="flex items-center">
   <table class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg sm:shadow-lg my-5 overflow-auto">
     <thead class="text-white sm:border-b-2-black">
-      <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
+      <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2 border-primary">
         <th class="p-3 text-left h-14 w-40">ID</th>
-        <th class="p-3 text-left">Date</th>
-        <th class="p-3 text-left">Utilisateur</th>
+        <th class="p-3 text-left h-11">Date</th>
+        <th class="p-3 text-left h-11">Utilisateur</th>
         <th class="p-3 text-left h-14" >Actions</th>
       </tr>
-      <tr *ngFor="let order of dataSource.data | filter:filterBy.value!:['user','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2">
-        <th class="p-3 text-left h-14 w-40">ID</th>
-        <th class="p-3 text-left">Date</th>
-        <th class="p-3 text-left">Utilisateur</th>
+      <tr *ngFor="let order of dataSource.data | filter:filterBy.value!:['user','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2 border-primary">
+        <th class="p-3 h-14 w-40 text-left cursor-pointer" (click)="orderBy('id')">
+          <div class="flex flex-row justify-between align-middle self-center">
+            <p class="mr-2">ID</p>
+            <mat-icon *ngIf="sortBy.value == 'id' && isAsc.value">arrow_upward</mat-icon>
+            <mat-icon *ngIf="sortBy.value == 'id' && !isAsc.value">arrow_downward</mat-icon>
+          </div>
+        </th>
+        <th class="p-3 text-left cursor-pointer" (click)="orderBy('date')">
+          <div class="flex flex-row justify-between align-middle self-center">
+            <p class="mr-2">Date</p>
+            <mat-icon *ngIf="sortBy.value == 'date' && isAsc.value">arrow_upward</mat-icon>
+            <mat-icon *ngIf="sortBy.value == 'date' && !isAsc.value">arrow_downward</mat-icon>
+          </div>
+        </th>        
+        <th class="p-3 text-left cursor-pointer" (click)="orderBy('user')">
+          <div class="flex flex-row justify-between align-middle self-center">
+            <p class="mr-2">Utilisateur</p>
+            <mat-icon *ngIf="sortBy.value == 'user' && isAsc.value">arrow_upward</mat-icon>
+            <mat-icon *ngIf="sortBy.value == 'user' && !isAsc.value">arrow_downward</mat-icon>
+          </div>
+        </th>           
         <th class="p-3 text-left h-14">Actions</th>
       </tr>
     </thead>
     <tbody class="flex-1 sm:flex-none">
       <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 border-grey-light">
         <td class="hover:bg-gray-100 p-3 h-14 w-40">Pas de donnée</td>
-        <td class="hover:bg-gray-100 p-3"></td>
-        <td class="hover:bg-gray-100 p-3"></td>
+        <td class="hover:bg-gray-100 p-3 h-11"></td>
+        <td class="hover:bg-gray-100 p-3 h-11"></td>
         <td class="hover:bg-gray-100 p-3 h-14"></td>
       </tr>
-      <tr *ngFor="let order of dataSource.data | filter:filterBy.value!:['user','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light">
+      <tr *ngFor="let order of dataSource.data | filter:filterBy.value!:['user','id'] | filter:filterBy2.value!:['isReceived'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light">
         <td class="p-3 h-14 w-40 flex flex-row justify-between items-center">
           {{order.id}}
           <span *ngIf="order.isReceived" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-green-100 text-green-800 text-xs font-medium py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Reçue</span>
           <span *ngIf="!order.isReceived" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-red-100 text-red-800 text-xs font-medium py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">En attente</span>
         </td>
-        <td class="p-3">{{order.date | date:'dd-MM-YYYY'}}</td>
-        <td class="p-3">{{order.user.firstname}} {{order.user.lastname}}</td>
+        <td class="p-3 h-11">{{order.date | date:'dd-MM-YYYY'}}</td>
+        <td class="p-3 h-11">{{order.user.firstname}} {{order.user.lastname}}</td>
         <td class="p-3 h-14"><button mat-flat-button color="accent" (click)="goTo(order.id)" class="w-24">Détails</button></td>
       </tr>
     </tbody>

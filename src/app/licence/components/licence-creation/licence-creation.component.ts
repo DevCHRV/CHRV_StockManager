@@ -11,6 +11,7 @@ import { IUser } from '../../../user/models/user';
 import { UserService } from '../../../user/services/user/user.service';
 import { LicenceTypeService } from '../../services/type/type.service';
 import { ToastService } from '../../../services/toast/toast.service';
+import { LicenceCreation } from '../../models/licences';
 
 @Component({
   selector: 'app-licence-creation',
@@ -19,13 +20,15 @@ import { ToastService } from '../../../services/toast/toast.service';
 })
 export class LicenceCreationComponent {
 
-  public licence:Licence = {
+  public licence:LicenceCreation = {
     value: '',
     description: '',
-    user: {},
-    item: {},
-    type: {id:1} as ItemType,
-  } as unknown as Licence;
+    reference: '',
+    purchasedAt: this._getCurrentDateForInput(),
+    type: {id:1} as LicenceType,
+  } as unknown as LicenceCreation;
+
+  public quantity:number = 1
 
   public types:LicenceType[];
 
@@ -36,8 +39,10 @@ export class LicenceCreationComponent {
       res=>this.types = res
     )
     this.form = builder.group({
+      quantity: ['', [Validators.required, Validators.min(1)]],
       value: ['', [Validators.required, Validators.minLength(10)]],
       description: ['', [Validators.required, Validators.minLength(10)]],
+      purchasedAt: [this._getCurrentDateForInput(), [Validators.required]],
     })
   }
 
@@ -49,9 +54,17 @@ export class LicenceCreationComponent {
     if(this.form.valid)
       this.service.post(this.licence).subscribe(
         res => {
-          this.router.navigateTo(`/licence/${res}`)
+          this.router.navigateTo(`/licence/${res.id}`)
           this.toast.setSuccess()
         }
       ) 
+  }
+
+  private _getCurrentDateForInput(){
+    return this._getDateForInput(new Date(Date.now()))
+  }
+
+  private _getDateForInput(date:Date){
+    return date.toISOString().split('T')[0]
   }
 }

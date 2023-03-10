@@ -1,0 +1,61 @@
+<div class="flex flex-row content-end items-end justify-end align-middle mt-5">
+    <a mat-button mat-flat-button color="accent" (click)="getAsPdf()">Imprimer</a>
+</div>
+<div class="flex flex-col items-center my-5">
+  <table id="pdfContainer" #pdfContainer class="w-full flex flex-row flex-no-wrap sm:bg-white rounded-lg sm:shadow-lg  overflow-auto">
+    <thead class="text-white sm:border-b-2-black">
+      <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2 border-primary">
+        <th class="p-3 h-14 text-left sm:w-40">
+          ID
+        </th>
+        <th class="p-3 h-11 text-left sm:w-40">
+          Référence
+        </th>        
+        <th class="p-3 h-11 text-left sm:w-40">
+          QR
+        </th>
+      </tr>
+      <tr *ngFor="let item of dataSource.data" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2 border-primary">
+        <th class="p-3 h-14 text-left sm:w-40">
+          ID
+        </th>
+        <th class="p-3 h-11 text-left sm:w-40">
+          Référence
+        </th>        
+        <th class="p-3 h-24 text-left sm:w-40">
+          QR
+        </th>
+      </tr>
+    </thead>
+    <tbody class="flex-1 sm:flex-none">
+      <tr *ngIf="dataSource.data.length<=0" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 border-primary">
+        <td class="hover:bg-gray-100 p-3 h-14 sm:w-40">Aucune machine sélectionnée</td>
+        <td class="hover:bg-gray-100 p-3 h-11"></td>
+        <td class="hover:bg-gray-100 p-3 h-11"></td>
+      </tr>
+      <tr *ngFor="let item of dataSource.data" class="flex flex-col flex-no-wrap sm:table-row sm:mb-2 mb-0 sm:border-2 sm:border-grey-light">
+        <td class="p-3 h-14">{{item.id}}</td>
+        <td class="p-3 h-11">{{item.reference}}</td>
+        <td class="p-3 h-24">
+          <qrcode
+          [qrdata]="getQRCodeUrl(item)"
+          [allowEmptyString]="true"
+          [ariaLabel]="'QR Code for item'"
+          [cssClass]="'center'"
+          [colorDark]="'#003e8f'"
+          [colorLight]="'#fafafa'"
+          [elementType]="'canvas'"
+          [errorCorrectionLevel]="'M'"
+          [imageSrc]="'./assets/CHRV_Logo.png'"
+          [imageHeight]="20"
+          [imageWidth]="20"
+          [margin]="1"
+          [scale]="4"
+          [title]="'Item Name'"
+          [width]="5"
+        ></qrcode>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

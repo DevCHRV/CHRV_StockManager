@@ -6,12 +6,13 @@ import { RouterService } from 'src/app/services/router/router.service';
 import { InterventionListDataSource } from './intervention-list-datasource';
 import { InterventionService } from '../../services/intervenction/intervention.service';
 import { FormControl } from '@angular/forms';
-import { InterventionType } from '../../models/intervention';
+import { Intervention, InterventionType } from '../../models/intervention';
 import { UserService } from '../../../user/services/user/user.service';
 import { IUser } from '../../../user/models/user';
 import { Item } from '../../../item/models/item';
 import { ItemService } from '../../../item/services/item/item.service';
 import { Observable, startWith, map } from 'rxjs';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-intervention-list',
@@ -20,8 +21,9 @@ import { Observable, startWith, map } from 'rxjs';
 })
 export class InterventionListComponent implements OnInit {
   public sortBy = new FormControl<string>('id');
-  public isAsc = new FormControl<boolean>(true);
+  public isAsc = new FormControl<boolean>(false);
   public filterBy = new FormControl<number|null>(null);
+  public filterBy2 = new FormControl<boolean|null>(null);
   public filteredItemsOptions:Observable<Item[]>;
   public searchItemSelect = new FormControl<string>('');
   public filteredUsersOptions:Observable<IUser[]>;
@@ -63,6 +65,16 @@ export class InterventionListComponent implements OnInit {
       map(value =>this._filterUser(value!||-1)))
   }
 
+  orderBy(property:string){
+    if(this.sortBy.value == property){
+      this.isAsc.patchValue(!this.isAsc.value)
+      this.sortBy.patchValue(property)
+    } else {
+      this.isAsc.patchValue(true)
+      this.sortBy.patchValue(property)
+    }
+  }
+
   goTo(id:number){
     this.router.navigateTo(`/intervention/${id}`)
   }
@@ -73,6 +85,10 @@ export class InterventionListComponent implements OnInit {
 
   resetFilter(){
     this.filterBy.setValue(null)
+  }
+
+  resetFilter2(){
+    this.filterBy2.setValue(null)
   }
 
   resetSearchUserSelect(){
@@ -91,6 +107,18 @@ export class InterventionListComponent implements OnInit {
   getUserDisplay(id:number){
     const tmp = this.users.find(u=>u.id==id)
     return tmp ? `${tmp.username}`: ''
+  }
+
+  //Return 1 if date is equal or passed
+  isExpectedClose(intervention:Intervention){
+    if(intervention.actualDate)
+      return -1
+
+    if(moment().isAfter(intervention.expectedDate)){
+      return 1
+    } else {
+      return 0
+    }
   }
 
   private _filterItem(value: number|string): Item[] {

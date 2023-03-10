@@ -2,16 +2,17 @@
     <div class="font-bold text-2xl pb-10 flex flex-row justify-between">
         <h2>Détails: </h2>
         <div>
-            <a *ngIf="!isMobile()" mat-button mat-flat-button color="accent" (click)="getAsPdf()" class="mr-4">Imprimer</a>
+            <a mat-button mat-flat-button color="accent" (click)="getAsPdf()" class="mr-4">Imprimer</a>
             <a mat-button mat-flat-button color="accent" (click)="goToInterventionCreation()">Nouvelle opération</a>
         </div>
     </div>
     <div id="pdfContainer" #pdfContainer>
     <div class="grid gap-6 sm:grid-cols-3 font-bold text-xl">
         <!--COL 1-->
-        <div class="flex flex-col justify-between">
-            <p>{{item.reference}} | {{item.serial_number}} ({{item.type.name}})</p>
-            <p>{{item.unit}} | {{item.room}}</p>
+        <div class="">
+            <p class="pb-2">{{item.name}} | {{item.reference}}</p>
+            <p class="pb-2">({{item.type.name}})</p>
+            <p class="pb-5">{{item.room.unit.name}} | {{item.room.name}}</p>
         </div>
         <div class="flex flex-col justify-center align-middle items-center">
             <qrcode
@@ -34,10 +35,10 @@
         </div>
         <!--COL 3-->
         <div class="flex sm:flex-col justify-between sm:items-end">
-            <a (click)="togglePlacement()" *ngIf="item.is_placed" [ngClass]="{'cursor-pointer':!is_locked}" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Installé</a>
-            <a (click)="togglePlacement()" *ngIf="!item.is_placed" [ngClass]="{'cursor-pointer':!is_locked}" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Pas installé</a>
-            <a (click)="toggleAvailability()" *ngIf="item.is_available" [ngClass]="{'cursor-pointer':!is_locked}" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-green-100 max-w-sm text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Disponible</a>    
-            <a (click)="toggleAvailability()" *ngIf="!item.is_available" [ngClass]="{'cursor-pointer':!is_locked}" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Indisponible</a>
+            <a (click)="togglePlacement()" *ngIf="item.isPlaced" [ngClass]="{'cursor-pointer':!is_locked}" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Installé</a>
+            <a (click)="togglePlacement()" *ngIf="!item.isPlaced" [ngClass]="{'cursor-pointer':!is_locked}" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Pas installé</a>
+            <a (click)="toggleAvailability()" *ngIf="item.isAvailable" [ngClass]="{'cursor-pointer':!is_locked}" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-green-100 max-w-sm text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Disponible</a>    
+            <a (click)="toggleAvailability()" *ngIf="!item.isAvailable" [ngClass]="{'cursor-pointer':!is_locked}" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-red-100 text-red-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-red-900 dark:text-red-300">Indisponible</a>
         </div>
         </div>
             <div class="py-4">
@@ -45,6 +46,14 @@
             </div>
         <form>
             <div class="grid gap-6 mb-6 md:grid-cols-2">
+                <div>
+                    <label for="name" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nom DNS</label>
+                    <input name="name" [disabled]="is_locked" [(ngModel)]="item.name" placeholder="name" type="text" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                </div>
+                <div>
+                    <label for="serial_number" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Numéro de série</label>
+                    <input name="serial_number" [disabled]="is_locked" [(ngModel)]="item.serialNumber" placeholder="serial_number" type="text" id="serial_number" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                </div>
                 <div>
                     <label for="description" class="form-control block mb-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
                     <input name="description" [disabled]="is_locked" [(ngModel)]="item.description" placeholder="description" type="text" id="description" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
@@ -57,7 +66,7 @@
                 </div>
                 <div *ngIf="!is_locked">
                     <mat-label>Type</mat-label>
-                    <mat-select [(value)]="item.type.id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <mat-select *ngIf="types" [(value)]="item.type.id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                         <mat-option>--</mat-option>
                         <mat-option *ngFor="let type of types" [value]="type.id">
                         {{type.name}}
@@ -79,29 +88,43 @@
             <div class="grid gap-6 mb-6 md:grid-cols-2">
                 <div>
                     <label for="purchased_at" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date d'achat</label>
-                    <input name="purchased_at" [disabled]="is_locked" [ngModel]="item.purchased_at | date:'yyyy-MM-dd'" (ngModelChange)="item.purchased_at=$event" type="date" id="purchased_at" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <input name="purchased_at" [disabled]="is_locked" [ngModel]="item.purchasedAt| date:'yyyy-MM-dd'" (ngModelChange)="item.purchasedAt=$event" type="date" id="purchased_at" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 </div>
                 <div>
                     <label for="received_at" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date de réception</label>
-                    <input name="purchased_at" placeholder="received_at" [disabled]="is_locked" [ngModel]="item.received_at| date:'yyyy-MM-dd'" (ngModelChange)="item.received_at=$event" type="date" id="received_at" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <input name="purchased_at" placeholder="received_at" [disabled]="is_locked" [ngModel]="item.receivedAt| date:'yyyy-MM-dd'" (ngModelChange)="item.receivedAt=$event" type="date" id="received_at" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 </div>
                 <div>
                     <label for="warranty_expires_at" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date fin de garantie</label>
-                    <input name="warranty_expires_at" [disabled]="is_locked" [ngModel]="item.warranty_expires_at | date:'yyyy-MM-dd'" (ngModelChange)="item.warranty_expires_at=$event" type="date" placeholder="warranty_expires_at" id="warranty_expires_at" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <input name="warranty_expires_at" [disabled]="is_locked" [ngModel]="item.warrantyExpiresAt | date:'yyyy-MM-dd'" (ngModelChange)="item.warrantyExpiresAt=$event" type="date" placeholder="warranty_expires_at" id="warranty_expires_at" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 </div>
                 <div>
                     <label for="last_checkup_at" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Dernière maintenance</label>
-                    <input name="last_checkup_at" [disabled]="is_locked" [ngModel]="item.last_checkup_at | date:'yyyy-MM-dd'" (ngModelChange)="item.last_checkup_at=$event" type="date" placeholder="last_checkup_at" id="last_checkup_at" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <input name="last_checkup_at" [disabled]="is_locked" [ngModel]="item.lastCheckupAt | date:'yyyy-MM-dd'" (ngModelChange)="item.lastCheckupAt=$event" type="date" placeholder="last_checkup_at" id="last_checkup_at" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 </div>
                 <div>
                     <label for="checkup_interval" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Interval de maintenance</label>
-                    <input name="checkup_interval" [disabled]="is_locked" [(ngModel)]="item.checkup_interval" type="number" min="1" step="1" placeholder="checkup_interval" id="checkup_interval" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    <input name="checkup_interval" [disabled]="is_locked" [(ngModel)]="item.checkupInterval" type="number" min="1" step="1" placeholder="checkup_interval" id="checkup_interval" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
                 </div>
             </div>
-            <div class="py-4">
+            <div *ngIf="!is_printing" class="py-4">
                 <hr class="">
             </div>
-            <div class="max-w-full overflow-auto">
+            <div *ngIf="!is_printing" class="flex flex-row-reverse justify-between">
+                <div *ngIf="!is_locked" class="flex flex-row-reverse mb-6">
+                    <button (click)="put()" mat-button mat-flat-button color="primary">Valider</button>
+                </div>
+                <div *ngIf="is_locked && auth.hasAuthority('PGM')" class="flex flex-row-reverse mb-6">
+                    <a (click)="toggleLock()" mat-button mat-flat-button color="accent">Modifier</a>
+                </div>
+                <div *ngIf="!is_locked" class="flex flex-row-reverse mb-6">
+                    <a (click)="toggleLock()" mat-button mat-flat-button color="warn">Annuler</a>
+                </div>
+            </div>
+            <div *ngIf="!is_printing" class="py-4">
+                <hr class="">
+            </div>
+            <div *ngIf="interventions.length>0" class="max-w-full overflow-auto">
                 <div class="font-bold text-xl pb-4 ">
                     <h2>Opérations:</h2>
                 </div>
@@ -109,105 +132,63 @@
                     <thead class="text-left">
                     <tr>
                         <th class="p-2 sm:p-3">Type</th>
+                        <th class="p-2 sm:p-3">Ticket</th>
                         <th class="p-2 sm:p-3">Utilisateur</th>
-                        <th class="p-2 sm:p-3">Description</th>
+                        <th class="p-2 sm:p-3 max-w-[250px]">Description</th>
                         <th class="p-2 sm:p-3">Date</th>
                         <th class="p-2 sm:p-3">Emplacement</th>
+                        <th *ngIf="!is_printing" class="p-2 sm:p-3">Actions</th>
                     </tr>
                     </thead>
-                    <tbody *ngIf="interventions" class="text-left">
+                    <tbody *ngIf="interventions.length>0" class="text-left">
                     <tr *ngFor="let intervention of interventions" class="w-full">
                         <td class="p-2 sm:p-3">{{intervention.type.name}}</td>
+                        <td class="p-2 sm:p-3">
+                            <a *ngIf="intervention.ticketNumber" href="https://jira.chrverviers.be/browse/{{intervention.ticketNumber}}" target="_blank">{{intervention.ticketNumber}}</a>
+                            <p *ngIf="!intervention.ticketNumber">Pas de ticket</p>
+                        </td>
                         <td class="p-2 sm:p-3">{{intervention.user.firstname}} {{intervention.user.lastname}}</td>
                         <td class="p-2 sm:p-3">{{intervention.description}}</td>
                         <td class="p-2 sm:p-3">{{intervention.actualDate|date:'dd-MM-yyyy'}}</td>
-                        <td class="p-2 sm:p-3">{{intervention.unit}} | {{intervention.room}}</td>
+                        <td class="p-2 sm:p-3">{{intervention.room.unit.name}} | {{intervention.room.name}}</td>
+                        <td *ngIf="!is_printing" class="p-2 sm:p-3 flex flex-row justify-between">
+                            <button mat-button mat-flat-button color="accent" class="mr-4" (click)="goToIntervention(intervention)">Détails</button>
+                            <button *ngIf="!intervention.ticketNumber" mat-button mat-flat-button color="accent" (click)="generateTicket(intervention)">Ticket</button>
+                        </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="py-4">
+            <div *ngIf="!is_printing" class="py-4">
                 <hr class="">
             </div>
-            <div class="grid gap-6 mb-6 md:grid-cols-5">
+            <div *ngIf="itemLicences.length>0" class="grid gap-6 mb-6 md:grid-cols-5">
                 <div class="font-bold text-xl pb-4 ">
                     <h2>Licences:</h2>
                 </div>
-                <div class="col-span-4 grid gap-6 md:grid-cols-4 items-center justify-center align-middle">
-                    <div *ngIf="!is_locked" class="col-span-1">
-                        <div class="mr-2 h-10 col-span-1">
-                            <input type="text" matInput [formControl]="searchUserSelect"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Chercher un Utilisateur"
-                            [matAutocomplete]="auto">
-                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="getUserDisplay.bind(this)" >
-                            <mat-option *ngFor="let user of filteredUserOptions | async" [value]="user.id">
-                                {{user.username}} ({{user.firstname}} {{user.lastname}})
-                            </mat-option>
-                            </mat-autocomplete>
-                        </div>
-                    </div>
-                    <div *ngIf="!is_locked" class="flex flex-row items-center justify-center align-middle col-span-3">
-                        <div class="mr-4 h-10 w-full">
-                            <input type="text" matInput [formControl]="searchLicenceSelect"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            placeholder="Chercher une licence"
-                            [matAutocomplete]="auto">
-                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="getLicenceDescription.bind(this)" >
-                            <mat-option *ngFor="let licence of filteredLicenceOptions | async" [value]="licence.id">
-                                {{licence.description}}
-                            </mat-option>
-                            </mat-autocomplete>
-                        </div>
-                        <button mat-button mat-flat-button color="accent" (click)="addLicence()">Ajouter</button>
-                    </div>
-                </div>
             </div>
-            <div class="max-w-full overflow-auto">
+            <div *ngIf="itemLicences.length>0" class="max-w-full overflow-auto">
                 <table class="table-auto w-full">
                     <thead class="text-left">
                     <tr>
                         <th class="p-3">Type</th>
-                        <th class="p-3">Description</th>
+                        <th class="p-3">Référence</th>
                         <th class="p-3">Valeur</th>
                         <th class="p-3">Utilisateur</th>
-                        <th *ngIf="!is_locked" class="p-3 w-44"></th>
                     </tr>
                     </thead>
-                    <tbody *ngIf="itemLicences" class="text-left">
+                    <tbody class="text-left">
                     <tr *ngFor="let licence of itemLicences">
                         <td class="p-3">{{licence.type.name}}</td>
-                        <td class="p-3">{{licence.description}}</td>
+                        <td class="p-3">{{licence.reference}}</td>
                         <td class="p-3">{{licence.value}}</td>
                         <td class="p-3">{{licence.user?.firstname}} {{licence.user?.lastname}}</td>
-                        <td *ngIf="!is_locked" class="p-3 md:flex md:flex-row">
-                            <div class="w-fit pr-2">
-                                <button mat-button mat-flat-button color="warn" (click)="removeLicence(licence.id)">Supprimer</button>
-                            </div>
-                            <div>
-                                <button mat-button mat-flat-button color="warn" (click)="removeUserFromLicence(licence.id)">Libérer</button>
-                            </div>
-                        </td>
                     </tr>
                     </tbody>
                 </table>
             </div>
         </form>
         <div class="py-4">
-        </div>
-    </div>
-    <div class="py-4">
-        <hr class="">
-    </div>
-    <div class="flex flex-row-reverse justify-between">
-        <div *ngIf="!is_locked" class="flex flex-row-reverse mb-6">
-            <button (click)="put()" mat-button mat-flat-button color="primary">Valider</button>
-        </div>
-        <div *ngIf="is_locked && auth.hasAuthority('PGM')" class="flex flex-row-reverse mb-6">
-            <a (click)="toggleLock()" mat-button mat-flat-button color="accent">Modifier</a>
-        </div>
-        <div *ngIf="!is_locked" class="flex flex-row-reverse mb-6">
-            <a (click)="toggleLock()" mat-button mat-flat-button color="warn">Annuler</a>
         </div>
     </div>
 </div>
