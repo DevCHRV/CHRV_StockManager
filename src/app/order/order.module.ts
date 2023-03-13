@@ -18,12 +18,13 @@ import { MatExpansionModule } from '@angular/material/expansion';
 import { LoggedGuard } from '../guards/logged/logged.guard';
 import { ProgrammerGuard } from '../guards/programmer/programmer.guard';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { TechnicianGuard } from '../guards/technician/technician.guard';
 
 const orderRoutes: Routes = [
-  {path:'order', component:OrderListComponent, canActivate:[ProgrammerGuard]},
+  {path:'order', component:OrderListComponent, canActivate:[TechnicianGuard]},
   {path:'order/create', component:OrderCreationComponent, canActivate:[ProgrammerGuard]},
   //{path:'item/create', component:ItemCreationComponent, canActivate:[LoggedGuard]},
-  {path:'order/:order_id', component:OrderDetailsComponent, canActivate:[ProgrammerGuard]},
+  {path:'order/:order_id', component:OrderDetailsComponent, canActivate:[TechnicianGuard]},
 ]    
 
 @NgModule({

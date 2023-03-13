@@ -38,7 +38,7 @@ export class User implements IUser {
                 return true
             }
         }
-        return false    
+        return false;
     }
 
     hasRole(role_name:string){

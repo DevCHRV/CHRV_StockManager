@@ -13,8 +13,8 @@ import { UnitCreationComponent } from './components/unit-creation/unit-creation.
 
 const unitRoutes: Routes = [
   {path:'unit', component:UnitListComponent, canActivate:[TechnicianGuard]},
-  {path:'unit/create', component:UnitCreationComponent, canActivate:[ProgrammerGuard]},
-  {path:'unit/:unit_id', component:UnitDetailsComponent, canActivate:[ProgrammerGuard]},
+  {path:'unit/create', component:UnitCreationComponent, canActivate:[TechnicianGuard]},
+  {path:'unit/:unit_id', component:UnitDetailsComponent, canActivate:[TechnicianGuard]},
 ]    
 
 @NgModule({

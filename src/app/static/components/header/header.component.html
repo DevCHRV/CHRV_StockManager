@@ -18,7 +18,7 @@
               <a *ngIf="auth.hasAuthority('PGM')" mat-list-item (click)="goToItem()" data-bs-dismiss="offcanvas">Matériel</a>
               <a *ngIf="auth.hasAuthority('PGM')" mat-list-item (click)="goToLicence()" data-bs-dismiss="offcanvas">Licences</a>
               <a *ngIf="auth.hasAuthority('TEC')" mat-list-item (click)="goToIntervention()" data-bs-dismiss="offcanvas">Opérations</a>
-              <a *ngIf="auth.hasAuthority('PGM')" mat-list-item (click)="goToOrder()" data-bs-dismiss="offcanvas">Commandes</a>
+              <a *ngIf="auth.hasAuthority('TEC')" mat-list-item (click)="goToOrder()" data-bs-dismiss="offcanvas">Commandes</a>
             </div>
           </mat-nav-list>
         </div>
@@ -58,7 +58,7 @@
           <a *ngIf="auth.hasAuthority('TEC')" (click)="goToIntervention()" mat-flat-button color="primary">Opérations</a>
         </span>
         <span *ngIf="auth.isLoggedIn()" class="">
-          <a *ngIf="auth.hasAuthority('PGM')" (click)="goToOrder()" mat-flat-button color="primary">Commandes</a>
+          <a *ngIf="auth.hasAuthority('TEC')" (click)="goToOrder()" mat-flat-button color="primary">Commandes</a>
         </span>
         <span *ngIf="!auth.isLoggedIn()" class="">
           | <a (click)="goToLogin()" mat-flat-button color="primary">Login</a>

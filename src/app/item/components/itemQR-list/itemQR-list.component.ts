@@ -14,6 +14,9 @@ import { ItemType } from '../../../type/models/type';
 import { Capacitor } from '@capacitor/core';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import { FileOpener } from '@capacitor-community/file-opener';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import write_blob from "capacitor-blob-writer";
 
 @Component({
   selector: 'app-itemQR-list',
@@ -55,7 +58,7 @@ export class ItemQRListComponent implements OnInit {
     data.style.width="1100px"
     //We use a small timeout to ensure that the page changes had enough time to process, otherwise it would not work consistently
     setTimeout(()=>{
-      html2canvas(data, {scale:2, scrollY:-window.scrollY}).then((canvas) => {
+      html2canvas(data, {scale:2, scrollY:-window.scrollY}).then(async (canvas) => {
         //We do weird voodoo magic
         let HTML_Width = canvas.width;
         let HTML_Height = canvas.height;
@@ -66,19 +69,43 @@ export class ItemQRListComponent implements OnInit {
         let canvas_image_height = HTML_Height;
         let totalPDFPages = Math.ceil(HTML_Height / PDF_Height) - 1;
         canvas.getContext('2d');
-        let imgData = canvas.toDataURL("image/jpeg", 1.0);
+        let imgData = canvas.toDataURL("image/jpeg");
         let pdf = new jsPDF('p', 'pt', [PDF_Width, PDF_Height]);
-        pdf.addImage(imgData, 'JPG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+        if(Capacitor.getPlatform()=="web"){
+          pdf.addImage(imgData, 'JPEG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height);
+        } else {
+          pdf.addImage(imgData, 'JPEG', top_left_margin, top_left_margin, canvas_image_width, canvas_image_height, 'FAST');
+        }
         for (let i = 1; i <= totalPDFPages; i++) {
           pdf.addPage([PDF_Width, PDF_Height], 'p');
-          pdf.addImage(imgData, 'JPG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
+          if(Capacitor.getPlatform()=="web"){
+            pdf.addImage(imgData, 'JPEG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height);
+          } else {
+            pdf.addImage(imgData, 'JPEG', top_left_margin, -(PDF_Height * i) + (top_left_margin * 4), canvas_image_width, canvas_image_height, 'FAST');
+          }
         }
         //We revert the changes on the page to change it make to normal
         data.style.width="100%"
         //We download the file
         const blob = pdf.output('blob')
-        window.open(URL.createObjectURL(blob))
-        //pdf.output('dataurlnewwindow', {filename:`item_qrs_${Date.now()}.pdf`})
+        if(Capacitor.getPlatform()=="web"){
+          window.open(URL.createObjectURL(blob))
+        }else {
+          //Write the file in the cache so that it can be openend on a mobile device
+          const now = `item_qrs_${Date.now()}.pdf`
+          const file = await write_blob({
+            path:`item_qrs_${now}.pdf`,
+            directory: Directory.Cache,
+            blob: blob
+          })
+          //Get the uri from Capacitor (otherwise he will not like the uri we give him)
+          const result = await Filesystem.getUri({
+            path: `item_qrs_${now}.pdf`,
+            directory: Directory.Cache,
+          })
+          //Open the file using FileOpener2 because for some reason the buildt-in CapacitorBrowser would crash
+          FileOpener.open({filePath:result.uri, contentType:"application/pdf"})
+        }        //pdf.output('dataurlnewwindow', {filename:`item_qrs_${Date.now()}.pdf`})
         //pdf.save(`item_qrs_${Date.now()}.pdf`)
       });
     }, 200)

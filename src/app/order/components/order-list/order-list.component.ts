@@ -12,6 +12,7 @@ import { OrderService } from '../../service/order/order.service';
 import { UserService } from '../../../user/services/user/user.service';
 import { IUser } from 'src/app/user/models/user';
 import { Order } from '../../models/order';
+import { AuthService } from '../../../auth/services/auth/auth.service';
 
 @Component({
   selector: 'app-order-list',
@@ -28,7 +29,7 @@ export class OrderListComponent implements OnInit {
   public filterBy2 = new FormControl<boolean|null>(null);
   public searchBy = new FormControl<string>('');
 
-  constructor(private orderService:OrderService, private userService:UserService, private router:RouterService) {
+  constructor(private orderService:OrderService, private userService:UserService, private router:RouterService, public auth:AuthService) {
 
   }
 

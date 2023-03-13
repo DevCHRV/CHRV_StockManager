@@ -23,6 +23,7 @@ export class OrderDetailsComponent {
     orderService.getById(this.route.snapshot.paramMap.get('order_id')!).subscribe(
       res=>{
         this.order = res
+        this._setReceivedDate();
         this._mergeItemsAndTypes();
         this._computePrice();
       }
@@ -61,7 +62,7 @@ export class OrderDetailsComponent {
   }
 
   updateDialog(type:any, index:any) {
-    const dialogRef = this.dialog.open(UpdateModal, {data:{item: type.items![index], types: this.types}});
+    const dialogRef = this.dialog.open(UpdateModal, {data:type.items![index]});
 
     dialogRef.afterClosed().subscribe(result => {
       if(typeof result == "object"){
@@ -112,6 +113,13 @@ export class OrderDetailsComponent {
   private _getDateForInput(date:Date){
     return date.toISOString().split('T')[0]
   }
+
+  private _setReceivedDate(){
+    for(let item of this.order.items){
+      if(!item.receivedAt)
+        item.receivedAt = this._getCurrentDateForInput() as unknown as Date
+    }
+  } 
 }
 
 @Component({
@@ -124,12 +132,15 @@ export class UpdateModal {
   public item: Item
   public types: ItemType[]
 
-  constructor(public dialogRef: MatDialogRef<UpdateModal>, private builder:FormBuilder, @Inject(MAT_DIALOG_DATA) private data:{item: Item, types: ItemType[]}){
+  constructor(public dialogRef: MatDialogRef<UpdateModal>, private builder:FormBuilder, @Inject(MAT_DIALOG_DATA) private data: Item){
+    this.item = data
+    /*
     this.item = structuredClone(data.item)
     this.types = data.types;
+    */
     if(!this.item.receivedAt)
-      this.item.receivedAt = new Date(this._getCurrentDateForInput())
-
+      this.item.receivedAt = this._getCurrentDateForInput() as unknown as Date
+  
   }
 
   public form:FormGroup
@@ -138,7 +149,7 @@ export class UpdateModal {
     this.form = this.builder.group({
       price: [this.item?.price ? this.item.price : '', [Validators.required, Validators.min(1)]],
       description: [this.item?.description ? this.item.description : '', [Validators.required, Validators.minLength(10)]],
-      serialNumber: [this.item?.serialNumber ? this.item.serialNumber : '', [Validators.required, Validators.minLength(5)]],
+      serialNumber: [this.item?.serialNumber ? this.item.serialNumber : '', [Validators.required]],
       receivedAt: [this.item.receivedAt, [Validators.required]],
       purchasedAt: [this.item?.purchasedAt ? this._getDateForInput(this.item.purchasedAt) : this._getCurrentDateForInput(), [Validators.required]],
       checkupInterval: [this.item?.checkupInterval ? this.item.checkupInterval : 365, [Validators.required, Validators.min(1)]],

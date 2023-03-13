@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="be.chrverviers.stockmanager" xmlns:tools="http://schemas.android.com/tools">
   <uses-permission android:name="android.permission.CAMERA" />
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <uses-sdk tools:overrideLibrary="com.google.zxing.client.android" />
 
   <application android:allowBackup="true"

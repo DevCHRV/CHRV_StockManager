@@ -19,7 +19,11 @@ import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { CanvasRenderer } from 'html2canvas/dist/types/render/canvas/canvas-renderer';
 import { AuthService } from '../../../auth/services/auth/auth.service';
-import { Capacitor } from '@capacitor/core';
+import { Capacitor, Plugin } from '@capacitor/core';
+import { Browser } from '@capacitor/browser';
+import { FileOpener } from '@capacitor-community/file-opener';
+import { Filesystem, Directory } from '@capacitor/filesystem';
+import write_blob from "capacitor-blob-writer";
 
 @Component({
   selector: 'app-item-details',
@@ -70,7 +74,7 @@ export class ItemDetailsComponent {
     data.style.width="1100px"
     //We use a small timeout to ensure that the page changes had enough time to process, otherwise it would not work consistently
     setTimeout(()=>{
-      html2canvas(data, {scale:2, scrollY:-window.scrollY}).then((canvas) => {
+      html2canvas(data, {scale:2, scrollY:-window.scrollY}).then(async (canvas) => {
         //We do weird voodoo magic
         let HTML_Width = canvas.width;
         let HTML_Height = canvas.height;
@@ -93,12 +97,37 @@ export class ItemDetailsComponent {
         this.is_printing = false
         //We download the file
         const blob = pdf.output('blob')
-        window.open(URL.createObjectURL(blob))
+        if(Capacitor.getPlatform()=="web"){
+          window.open(URL.createObjectURL(blob))
+        }else {
+          //Write the file in the cache so that it can be openend on a mobile device
+          const file = await write_blob({
+            path: `item_${this.item.id}.pdf`,
+            directory: Directory.Cache,
+            blob: blob
+          })
+          //Get the uri from Capacitor (otherwise he will not like the uri we give him)
+          const result = await Filesystem.getUri({
+            path: `item_${this.item.id}.pdf`,
+            directory: Directory.Cache,
+          })
+          //Open the file using FileOpener2 because for some reason the buildt-in CapacitorBrowser would crash
+          FileOpener.open({filePath:result.uri, contentType:"application/pdf"})
+        }
         //pdf.output('dataurlnewwindow', {filename:`item_${this.item.id}.pdf`})
         //pdf.save(`item_${this.item.id}.pdf`)
       });
     }, 200)
   }
+
+  private convertBlobtoBase64 = (blob:Blob) => new Promise((resolve, reject)=>{
+    const reader = new FileReader;
+    reader.onerror = reject;
+    reader;onload = () => {
+      resolve(reader.result)
+    }
+    reader.readAsDataURL(blob)
+  })
 
   /*
   generatePDF(data: any) {

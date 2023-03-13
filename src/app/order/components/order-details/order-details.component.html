@@ -4,7 +4,7 @@
         <a *ngIf="order.isReceived" class="w-24 h-6 flex text-center content-center align-middle items-center justify-center bg-green-100 text-green-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-green-900 dark:text-green-300">Reçue</a>
         <a *ngIf="!order.isReceived" [disabled]="!isComplete()" mat-button mat-flat-button color="accent" (click)="receive()">Réceptionner</a>
     </div>
-    <form>
+    <form (keydown.enter)="$event.preventDefault()">
         <div class="grid gap-6 mb-6 md:grid-cols-2">
             <div>
                 <label for="date" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date de la commande</label>
@@ -43,7 +43,7 @@
                 <thead class="text-left">
                 <tr class="rounded-l-lg sm:rounded-none mb-0 sm:mb-2 hidden sm:table-row">
                     <th class="p-3 text-left">Référence</th>
-                    <th class="p-3 text-left">Numéro de série</th>
+                    <th class="p-3 h-16 text-left">Numéro de série</th>
                     <th class="p-3 text-left">Description</th>
                     <th class="p-3 text-left">Prix</th>
                     <th *ngIf="!is_locked" class="p-3 text-left">Actions</th>
@@ -52,7 +52,13 @@
                 <tbody *ngIf="type" class="text-left flex-1 sm:flex-none">
                     <tr *ngFor="let item of type.items;  let i = index" [attr.data-index]="i" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2 last:border-none">
                         <td class="p-3 text-left">{{item.reference}}</td>
-                        <td class="p-3 text-left">{{item.serialNumber}}</td>
+                        <td *ngIf="!item.serialNumber" class="p-3 h-16 text-left">
+                            <input *ngIf="!is_locked" name="serialNumber" [(ngModel)]="item.serialNumber" type="serialNumber" id="serialNumber" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                        </td>
+                        <td *ngIf="item.serialNumber" class="p-3 text-left">
+                            {{item.serialNumber}}
+                        </td>
+                        <td class="p-3 text-left" *ngIf="order.isReceived">{{item.serialNumber}}</td>
                         <td class="p-3 text-left">{{item.description}}</td>
                         <td [ngClass]="is_locked ? 'text-left border-bottom-accent sm:border-none' :''" class="p-3 text-left">{{item.price.toFixed(2)}}</td>
                         <td *ngIf="!is_locked" class="p-3 text-left border-bottom-accent sm:border-none">
@@ -65,11 +71,11 @@
         <div class="py-4">
             <hr class="">
         </div>
-        <div *ngIf="!order.isReceived" class="flex flex-row-reverse justify-between">
+        <div *ngIf="!order.isReceived && auth.hasAuthority('TEC')"class="flex flex-row-reverse justify-between">
             <div *ngIf="!is_locked" class="flex flex-row-reverse mb-6">
                 <button (click)="put()" mat-button mat-flat-button color="primary">Valider</button>
             </div>
-            <div *ngIf="is_locked && auth.hasAuthority('TEC')" class="flex flex-row-reverse mb-6">
+            <div *ngIf="is_locked" class="flex flex-row-reverse mb-6">
                 <a (click)="toggleLock()" mat-button mat-flat-button color="accent">Modifier</a>
             </div>
             <div *ngIf="!is_locked" class="flex flex-row-reverse mb-6">
