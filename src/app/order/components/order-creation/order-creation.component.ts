@@ -19,10 +19,8 @@ export class OrderCreationComponent {
 
   public order:OrderCreation = {
     date: this._getCurrentDateForInput(),
-    items: [],
-    user: null,
-    types:[] = [],
-    isReceived: false,
+    items: [] as OrderItem[],
+    types: [] as OrderType[],
   } as unknown as OrderCreation;
 
   public form:FormGroup

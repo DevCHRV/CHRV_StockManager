@@ -1,4 +1,4 @@
-import { environment } from './../../../../environments/environment.development';
+import { environment } from 'src/environments/environment';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { RouterService } from '../../../services/router/router.service';

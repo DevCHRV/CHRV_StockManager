@@ -121,7 +121,7 @@
         <td [ngClass]="isCheckUpClose(item)==1?'hover:bg-red-400':isCheckUpClose(item)==0?'hover:bg-orange-400':'hover:bg-gray-100'" class="p-3 h-14 flex flex-row justify-around align-middle">
           <button mat-flat-button color="accent" (click)="goTo(item.id)">Détails</button>
           <div class="flex flex-row align-middle justify-center items-center">
-            <input *ngIf="!isMobile()" id="checked-checkbox" type="checkbox" (change)="check($event, item)" class="w-5 h-5 text-primary accent-accent bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+            <input id="checked-checkbox" type="checkbox" (change)="check($event, item)" class="w-5 h-5 text-primary accent-accent bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
           </div>
         </td>
       </tr>

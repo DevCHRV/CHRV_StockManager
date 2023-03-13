@@ -28,6 +28,7 @@ export class ErrorInterceptor implements HttpInterceptor{
           }
           else {
             this.toast.setError("Une erreur s'est produite de notre côté.")
+            this.toast.setError(error.message)
             return throwError(()=>error)        
           }
         }
