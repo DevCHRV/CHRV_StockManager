@@ -45,7 +45,7 @@
         <th class="p-3 text-left h-11">Utilisateur</th>
         <th class="p-3 text-left h-14" >Actions</th>
       </tr>
-      <tr *ngFor="let order of dataSource.data | filter:filterBy.value!:['user','id'] | sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2 border-primary">
+      <tr *ngFor="let order of dataSource.data | filter:filterBy.value!:['user','id'] | filter:filterBy2.value!:['isReceived'] |sort:isAsc.value:sortBy.value! | search:searchBy.value!" class="flex flex-col flex-no-wrap sm:table-row rounded-l-lg sm:rounded-none mb-0 sm:mb-2 border-primary">
         <th class="p-3 h-14 w-40 text-left cursor-pointer" (click)="orderBy('id')">
           <div class="flex flex-row justify-between align-middle self-center">
             <p class="mr-2">ID</p>
